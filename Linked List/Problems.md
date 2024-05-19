@@ -185,11 +185,12 @@ Time complexity: `O(m+n)`
 
 ```c
 struct ListNode*PairSwitchList(struct ListNode*list){
-    if(list->next == NULL) return list;
+    if(list==NULL || list->next == NULL) return list;
     int temp;
     temp=list->data;
     list->data=list->next->data;
     list->next->data=temp;
     list->next->next=PairSwitchList(list->next->next);
+    return list;
 }
 ```
