@@ -1,6 +1,6 @@
 # Problems on Linked List
 
-### Q. Check whether the given linked list is either NULL-termminated or ends in a cycle
+### Q1. Check whether the given linked list is either NULL-termminated or ends in a cycle
 
 ```c
 void check(LLNode*head){
@@ -48,11 +48,11 @@ int isLinkedListContainsLoop(struct ListNode*head){
 Time complexity: O(n)
 Space complexity: O(1)
 
-### Q. Check whether the given linked list is either NULL-terminated or cyclic. If there is a cycle find the start node of the loop
+### Q2. Check whether the given linked list is either NULL-terminated or cyclic. If there is a cycle find the start node of the loop
 
-### Q. Check whether the given linked list is either NULL-terminated or not. If there is a cycle, find the length of the loop
+### Q3. Check whether the given linked list is either NULL-terminated or not. If there is a cycle, find the length of the loop
 
-### Q. Suppose there are two singly linked lists both of which intersect at some point and become a single linked list. The head or start pointer of both the lists are known, but the intersecting node is not known. Also the number of nodes in each of the lsit ebfore they intersect are unknown and both list may have it different. List1 may have n node before it reaches intersection point and List2 might have m nodes before it reaches intersection point. GIve an algorithm for finding the merging point
+### Q4. Suppose there are two singly linked lists both of which intersect at some point and become a single linked list. The head or start pointer of both the lists are known, but the intersecting node is not known. Also the number of nodes in each of the lsit ebfore they intersect are unknown and both list may have it different. List1 may have n node before it reaches intersection point and List2 might have m nodes before it reaches intersection point. GIve an algorithm for finding the merging point
 
 ##### Solution 1: Using hash tables
 
@@ -108,7 +108,7 @@ Space complexity: `O(Max(m,n))`
 Time complexity: `O(max(m,n))`
 Space complexity: `O(1)`
 
-### Q. Find middle of the linked list
+### Q5. Find middle of the linked list
 
 ```c
 struct ListNode*FindMiddle(struct ListNode*head){
@@ -133,7 +133,7 @@ struct ListNode*FindMiddle(struct ListNode*head){
 Time: O(n)
 Space: O(1)
 
-### How will you display a linked list from the end?
+### Q6. How will you display a linked list from the end?
 
 ```c
 void PrintListFromEnd(struct ListNode*head){
@@ -146,7 +146,7 @@ void PrintListFromEnd(struct ListNode*head){
 Time: O(n)
 Space: O(n)
 
-### Check whether the given LL length is even or odd?
+### Q7. Check whether the given LL length is even or odd?
 
 ```c
 int isLLEven(struct ListNode*head){
@@ -161,7 +161,7 @@ int isLLEven(struct ListNode*head){
 Time: O(n)
 Space: O(1)
 
-### Given two sorted LL, we need to merge them into the third list sorted order.
+### Q8. Given two sorted LL, we need to merge them into the third list sorted order.
 
 ```c
 struct ListNode*MergeList(struct ListNode*a,struct ListNode*b){
@@ -181,7 +181,7 @@ struct ListNode*MergeList(struct ListNode*a,struct ListNode*b){
 
 Time complexity: `O(m+n)`
 
-### Q. Reverse the linked list in pairs. If you have a linked list that holds 1->2->3->4->X, then after the function has been called the linekd list would hold 2->1->4->3->X.
+### Q9. Reverse the linked list in pairs. If you have a linked list that holds 1->2->3->4->X, then after the function has been called the linekd list would hold 2->1->4->3->X.
 
 ```c
 struct ListNode*PairSwitchList(struct ListNode*list){
@@ -194,3 +194,24 @@ struct ListNode*PairSwitchList(struct ListNode*list){
     return list;
 }
 ```
+
+### Q10. How will you check if the linked list is palindrome or not?
+
+- Get the middle of the linked list
+- Reverse the second half of the linked list
+- Compare the first half and second half.
+- Construct the original linked list by reversing the second half agian and attaching it back to first half.
+
+Time complexity: O(n)
+Space complexity: O(1)
+
+
+### Q11. For a given K value reverse blocks of K nodes in a list. Example: Input: 1 2 3 4 5 6 7 8 9 10. Output for different K values: For K=2: 2 1 4 3 6 5 8 7 10 9, For K=3: 3 2 1 6 5 4 9 8 7 10, For K=4:4 3 2 1 8 7 6 5 9 10
+
+[Answer](Q11.cpp)
+
+###### Write the answer there with poitner diagram to explain
+
+### Q12. Is it possible to get O(1) access time for LinkedList?
+
+Yes. create a linked list at the same time keep it in a hash table. For n elements we have to keep all the elements into hash table which gives preprocessing time of O(n). To read any element we require only constant time O(1).
