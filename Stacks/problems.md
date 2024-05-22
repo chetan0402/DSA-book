@@ -142,3 +142,21 @@ Now, let us change the above algorithm to improve the space complexity. We still
 
 ![alt text](image-5.png)
 
+### Q10. Finding Spans: Given an array A the span S[i] of A[i] is the maximum number of consecutive elements A[j] immediately preceding A[i] and such that A[j]<=A[i]?
+
+![alt text](image-6.png)
+
+This is a very common problem in stack markets to find the peaks. Spans have applications to financial analysis. The span of a stocks price on a certain day, i, is the maximum number of consecutive days the price of the stock has been less than or equal to its price on i. As an example, let us consider the following table and the corresponding spans diagram. In the figure teh arrows indicates the length of spans.
+
+### Q11. Largest rectangle under histogram: A histogram is a polygon composed of a sequence of rectangles aligned at a common base line. For simplicity. assume that the rectangles are having equal widths butmay have different heights. For example, the figure on the left shows the histogram that consist of rectangles with the heights 3,2,5,6,1,4,4 measured in units where 1 is the width of the rectangles. here our problem is: given an array with heights of rectangles, we need to find the largest rectangle possible. For the given example of largest rectangle is the shared part.
+
+![alt text](image-7.png)
+
+A straightforward answer is to go for each bar in the histogram and find the maximum possible area in histogram for it. Finally, find the maximum of these values. This will require O(n^2)
+
+### Q12. For Q11, can we improve time complexity?
+
+**LInear search using a stack of incomplete subproblems**: Process the elements in left-to-right order and maintain a stack of information about started but yet unfinished sub histograms
+
+If the stack is empty, open a new subproblem by pushing the element onto the stack. Otherwise compare it to the element on top of the stack. If the new one is greater we again push it. If the new one is equal we skip it. In all these cases, we continue with the next new element. If the new one is less, we finish th eoptmost subproblem by updating the maximum area iwht repsect to the element at the top of the stack. Then, we discard the elemnt at the top, and repeat the procedure keeping the current new element. This way, all subproblems are finished until the stack becomes empty, or its top element is less than or equal to the new element, leading to the actions described above. If all elements have been processed, and the stack is not yet empty, we finish the remaining subproblems by updating the maximum area with respect to the elements at the top.
+
