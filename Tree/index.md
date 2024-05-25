@@ -104,3 +104,151 @@ The sequence in which these entities processed defines a particular traversal me
 There is another traversal method which does not depend on above order and it is:
 
 - Level Order Traversal: This method is inspired from Breadth First traversal (BFS of graph algorithms)
+
+
+## PreOrder Traversal
+
+In pre-order traversal, each node is processed before (pre) either of its sub-trees. This is the simplest traversal to understand. However, even though each node is processed before the subtrees, it still requires that some information must be maintained while moving down the tree. In the example above, the 1 is processed first, then the left sub-tree followed by the right subtree. Therefore, processing must return to the right sub-tree after finishing the processing of the left subtree. To move to right subtree after processing left subtree, we must maintain the root information. The obvious ADT for such information is a stack. because of its LIFO sturcture, it is possible to get the informaiton about the right subtrees back in the reverse order.
+
+Preorder traversal is defined as follows:
+- Visit the root
+- Traverse the left subtree in preorder
+- Traverse the right subtree in preorder
+
+The nodes of tree would be visited in the order: 1 2 4 5 3 6 7
+
+```c
+void PreOrder(struct BinaryTreeNodoe*root){
+    if(root){
+        printf("%d",root->data);
+        PreOrder(root->left);
+        PreOrder(root->right);
+    }
+}
+```
+Time complexity: O(n)
+Space complexity: O(n)
+
+### Non-recursive Preorder Traversal
+
+In recursive version a stack is required as we need to rememeber the current node so that after completing the left subtree we can go to right subtree. To simulate the same, first we process the current node and before going to left subtree, we store the current node on stack. After completing the left subtree processing, pop the element and go to its right subtree. Continue this process until stack is nonempty.
+
+```c
+void PreOrderNonRecursive(struct BinaryTreeNode*root){
+    while(1){
+        while(root){
+            printf("%d",root->data);
+            Push(S,root);
+            root=root->left;
+        }
+        if(isEmptyStack(S)) break;
+        root = Pop(S);
+        root = root->right;
+    }
+    DeleteStack(S);
+}
+```
+
+Time complexity: O(n)
+Space complexity: O(n)
+
+## InOrder Traversal
+
+In inorder traversal the root is visited between the subtrees. Inorder traversal is defined as follow:
+- Traverse the left subtree in Inorder
+- Visit the root
+- Traverse the right subtree in Inorder
+
+The nodes of tree would be visited in the order: 4 2 5 1 6 3 7
+
+```c
+void InOrder(struct BinaryTreeNode*root){
+    if(root){
+        InOrder(root->left);
+        printf("%d",root->data);
+        InOrder(root->right);
+    }
+}
+```
+
+Time complexity: O(n)
+Space complexity: O(n)
+
+### Non-recursive Inorder Traversal
+
+Non-recursive version of Inorder traversal is very much similar to Preorder. The only change is, instead of processing the node before going to left subtree, proess it after popping
+
+```c
+void InOrderNonRecursive(struct BinaryTreeNode*root){
+    struct Stack*S=CreateStack();
+    while(1){
+        while(root){
+            Push(S,root);
+            root=root->left;
+        }
+        if(isEmptyStack(S)) break;
+        root = Pop(S);
+        printf("%d",root->data);
+        root = root ->right;
+    }
+    DeleteStack(S);
+}
+```
+Time complexity: O(n)
+Space complexity: O(n)
+
+## PostOrder Traversal
+
+In postorder traversal, the root is visited after both subtrees. Postorder traversal is defined as follows:
+- Traverse the left subtree in Postorder
+- Traverse the right subtree in Postorder
+- Visit the root
+
+The nodes of tree would be visited in the order: 4 5 2 6 7 3 1
+
+```c
+void PostOrder(struct BInaryTreeNode*root){
+    if(root){
+        PostOrder(root->left);
+        PostOrder(root->right);
+        printf("%d",root->data);
+    }
+}
+```
+Time complexity: O(n)
+Space complexity: O(n)
+
+### Non-recursive postorder traversal
+
+In preorder and inorder traversals, after poping the stack element we do not need to visit the same vertex again. But in postorder traversal, each node is visited twice. That means, after processing left subtree we will be visitng the current node and also after processing the right subtree we will be visitng the same current node. But we should be processing the node during the second visit. here the problem is how to differentiate whether we are returning from left subtree or right subtree?
+
+Trick for this problem is: after popping an element from stack, check whether that element and right of top of the stack are same or not. if they are same then we are done with processing of left subtree and right subtree. In this case we just need to pop the stack one more time and print its data.
+
+```c
+void PostOrderNonRecursive(struct BinaryTreeNode*root){
+    struct Stack*S=CreateStack();
+    while(1){
+        if(root){
+            Push(S,root);
+            root=root->left;
+        }else{
+            if(isEmptyStack(S)){
+                return;
+            }else if(Top(S)->right == NULL){
+                root = Pop(S);
+                printf("%d",root->data);
+                if(root == Top(S)->right){
+                    printf("%d",Top(S)->data);
+                    Pop(S);
+                }
+            }
+            if(!isEmptyStack(S)) root = Top(S)->right;
+            else root=NULL;
+        }
+    }
+    DeleteStack(S);
+}
+```
+
+Time complexity: O(n)
+Space complexity: O(n)
