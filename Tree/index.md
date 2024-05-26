@@ -252,3 +252,32 @@ void PostOrderNonRecursive(struct BinaryTreeNode*root){
 
 Time complexity: O(n)
 Space complexity: O(n)
+
+## Level Order Traversal
+
+Level order traversal is defined as follows:
+
+- Visit the root
+- While traversing level l, keep all the elemnt at level l+1 in queue
+- Go to the next level and visit all the nodes at that level
+- Repeat this until all levels are completed
+
+The nodes of tree would be visited in the order: 1 2 3 4 5 6 7
+
+```c
+void LevelOreder(struct BinaryTreeNode*root){
+    struct BinaryTreeNode*temp;
+    struct Queue*Q=CreateQueue();
+    if(!root) return;
+    EnQueue(Q,root);
+    while(!isEmptyQueue(Q)){
+        temp=DeQueue(Q);
+        printf("%d",temp->data);
+        if(temp->left) EnQueue(Q,temp->left);
+        if(temp->right) EnQueue(Q,temp->right);
+    }
+    DeleteQueue(Q);
+}
+```
+Time complexity: O(n)
+Space complexity: O(n)
