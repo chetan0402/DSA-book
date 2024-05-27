@@ -108,3 +108,77 @@ void insert(struct BinaryTreeNode*root,int data){
 
 Time complexity: O(n)
 Space complexity: O(n)
+
+### Q6. Give an algorithm for finding the size of binary tree.
+
+```c
+int sizeOfBinaryTree(struct BinaryTreenode*root){
+    if(root==NULL) return 0;
+    return (SizeOfBinaryTree(root->left) +1 +SizeOfBinaryTree(root->right));
+}
+```
+
+### Q8. Give an algorithm for printing the level order data in reverse order. For example, the output for the below tree should be: 4 5 6 7 2 3 1
+
+![alt text](image-7.png)
+
+```c
+void printInReverse(struct BinaryTreeNode*root){
+    struct Queue*Q;
+    struct Stack*s=CreateStack();
+    struct BinaryTreeNode*temp;
+    if(!root) return;
+    Q=CreateQueue();
+    EnQueue(Q,root);
+    while(!isEmptyQueue(Q)){
+        temp=DeQueue(Q);
+        if(temp->right) EnQueue(Q,temp->right);
+        if(temp->left) EnQueue(Q,temp->left);
+        Push(S,temp);
+    }
+    while(!isEmptyStack(s)) printf("%d",Pop(s)->data);
+}
+```
+
+Time complexity: O(n)
+Space complexity: O(n)
+
+### Q9. Give an algorithm for deleting the tree.
+
+Recursively delete the tree
+
+### Q10. Give an algorithm for finding the height of the binary tree
+
+```c
+int HeightOfBinaryTree(struct BinaryTree*root){
+    if(root==NULL) return 0;
+    return max(HeightOfBinaryTree(root->left),HeightOfBinaryTree(root->right)) +1;
+}
+```
+
+### Q11. Sol the above without cursion
+
+```c
+int FindHeightOfBinaryTree(struct BinaryTreeNode*root){
+    int level=1;
+    struct Queue*Q;
+    if(!root) return 0;
+    Q=CreateQueue();
+    EnQueue(Q,root);
+    EnQueue(Q,NULL);
+    while(!isEmptyQueue(Q)){
+        root=DeQueue(Q)
+        if(root==NULL){
+            if(!isEmptyQueue(Q)) EnQueue(Q,NULL);
+            level++;
+        }else{
+            if(root->left) EnQueue(Q,root->left);
+            if(root->right) EnQueue(Q,root->right);
+        }
+    }
+    return level;
+}
+```
+
+**I have doubt in this**
+
