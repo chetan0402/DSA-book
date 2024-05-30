@@ -281,3 +281,30 @@ void LevelOreder(struct BinaryTreeNode*root){
 ```
 Time complexity: O(n)
 Space complexity: O(n)
+
+# Generic Trees (N-ary trees)
+
+In the previous section we have discussed binary trees where each node can have maximum of two children only and represented them easily with two pointers. But suppose if we have a tree with many children at every node and also if we do not know how many children a node can have, how do we represent them? For example, consider the tree shown.
+
+![alt text](image-15.png)
+
+## Representation of generic trees
+
+Since our objective is to reach all nodes of the tree, a posisble to this is as follows:
+
+- At each node link children of same parent from left to right
+- Remove the links from parent to all children except the first child
+
+![alt text](image-16.png)
+
+What these above statements say is if we have a link between childrens then we do not need extra links from parent to all children. This is because we can traverse all the elements by starting at the first child of the parent. So if we have link between parent and first child and also links between all children of same parent then it solves our problem. This representaion is sometimes called first child/next sibling representation. First child/next sibling representation of the generic tree is shown above.
+
+```c
+struct TreeNode{
+    int data;
+    struct TreeNode*firstChild;
+    struct TreeNode*nextSibling;
+}
+```
+
+**Note**:- Since we are able to represent any generic tree with binary representation, in practice we use only binary tree.

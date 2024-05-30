@@ -389,3 +389,232 @@ struct BinaryTreeNode*BuildBinaryTree(int inOrder[],int preOrder[],int Start,int
 ```
 
 #### Don't understand yet.
+
+### Q28. If we are given two traversal seqs, can we construct the binary tree uniquely?
+
+It depends on what traversals are given. If one of the traversal methods is Inorder then the tree can be constructed uniquely, otherwise not.
+
+### Q29. Give an algorithm for printing all the ancestors of a node in a binary tree. for the below tree, for 7 the ancestors are 1 3 7
+
+![alt text](image-11.png)
+
+```c
+int printAllAncestors(struct BinaryTreeNode*root,struct BinaryTreeNode*node){
+    if(root==NULL) return 0;
+    if(root->left==node || root->right == node || printAllAncestors(root->left,node) || printAllAncestors(root->right,node)){
+        printf("%d ",root->data);
+        return 1;
+    }
+    return 0;
+}
+```
+
+### Q30. Zigzag tree traversal: Give an algorithm to traverse a binary tree in zigzag order. For example, the output for the below tree shoudl be : 1 3 2 4 5 6 7
+
+![alt text](image-12.png)
+
+This problem can be solved easily using two stacks. Assume the two stacks are: currentLevel and nextLevel. We should also need a variable to keep track of the current level order.
+
+We pop from currentLevel stack and print the nodes value. Whenever the current level order is from left to right, push the nodes left child, then its right child to stack nextLevel. Since a stack is a Last In First OUT sturcture, next time when nodes are popped off nextLevel, it will be in reverse order. On the other hand, when the current level order is from right to left, we would push the nodes right child first, then its left child. Finally, dont forgot to swap those two stacks at the end of each level.
+
+```c
+void ZigZagTraversal(struct BinaryTreeNode*root){
+    struct BinaryTreeNode*temp;
+    int leftToRight=1;
+    if(root==NULL) return;
+    struct Stack*currentLevel=CreateStack(),*nextLevel=CreateStack();
+    Push(currentLevel,root);
+    while(!isEmptyStack(currentLevel)){
+        temp = Pop(currentLevel);
+        if(leftToRight){
+            if(temp->left) Push(nextLevel,temp->left);
+            if(temp->right) Push(nextLevel,temp->right);
+        }else{
+            if(temp->right) Push(nextLevel,temp->right);
+            if(temp->left) Push(nextLevel,temp->right);
+        }
+        if(isEmptyStack(currentLevel)){
+            leftToRight=1-leftToRight;
+            swap(currentLevel,nextLevel);
+        }
+    }
+}
+```
+
+### Q31. Give an algorithm for finding the vertical sum of a binary tree. For example, The tree has 5 vertical lines
+
+![alt text](image-13.png)
+
+We can do an inorder traversal and hash the column. We can VerticalSumInBinaryTree(root,0) which means the root is at column 0. While doing the traversal, hash the column and increase its value by root->data.
+
+```c
+void VerticalSumInBinaryTree(struct BinaryTreeNode*root,int column){
+    if(root==NULL) return;
+    VerticalSumInBinaryTree(root->left,column-1);
+    Hash[column]+=root->data;
+    VerticalSumInBinaryTree(root->right,column+1);
+}
+```
+
+### Q32. How many different binary trees are possible with n nodes?
+
+For example, consider a tree with 3 nodes, it will have maximum combination of 5 different trees.
+
+In general, if there are n nodes, there exists `2^n - n` different trees.
+
+### Q33. Given a tree with a special property where leaves are represented with 'L' and internal node with 'T'. Also, assume that each node has either 0 or 2 children. Given preorder traversal of this construct the tree
+
+![alt text](image-14.png)
+
+First, we should see how preorder traversal is arranged. Pre-order traversal means first put root node, then pre-order traversal of left subtree and then pre-order traversal of right subtree. In normal scenario, it's not possible to dectect where left subtree ends and right subtree starts using only preorder. Since every node has either 2 children or no child, we can surely say that if a node exists then its sibling also exists. So every time we are computing a subtree, we need to compute its sibling subtree as well.
+
+Secondly, whenever we get 'L' in the input string, that is a leaf and we can stop for a particular subtree at that point. After this 'L' in the input string, that is a leaf and we can stop for a particular subtree at that point. After this 'L' node, its sibling starts. If 'L' node is right child of its parent, then we need to go up in the hierachy to find next subtree to compute. Keeping above invariant in mind, we can easily determine when a subtree ends and next start. It means that we can give any start node to our method and it can easily compelte the subtree it generates going outside of its nodes. We just need to take care of passing correct start nodes to different sub-trees.
+
+```c
+struct BinaryTreeNode*BuildTreeFromPreOrder(char*A,int*i){
+    struct BinaryTreeNode*newNode=(struct BinaryTreeNode*)malloc(sizeof(struct BinaryTreeNode));
+    newNode->data=A[*i];
+    newNode->left=newNode->right=NULL;
+    if(A==NULL){
+        free(newNode);
+        return NULL;
+    }
+    if(A[*i]=='L') return newNode;
+    *i=*i=1;
+    newNode->left=BuildTreeFromPreOrder(A,i);
+    *i=*i+1;
+    newNode->right=BuildTreeFromPreOrder(A,i);
+    return newNode;
+}
+```
+
+#### Make this yourself.
+
+### Q34. Given a binary tree with three pointers (left,right & nextSibling), give an algorithm for filling the nextSibling pointers assuming theny are NULL initially
+
+```c
+struct BinaryTreeNode{
+    struct BinaryTreeNode*left;
+    struct BinaryTreeNode*right;
+    struct BinaryTreeNode*nextSibling;
+}
+
+int fillNextSiblings(struct BinaryTreeNode*root){
+    struct BinaryTreeNode*temp;
+    struct Queue*Q;
+    if(root==NULL) return 0;
+    Q=CreateQueue();
+    EnQueue(Q,root);
+    EnQueue(Q,NULL);
+    while(!isEmptyQueue(Q)){
+        temp=DeQueue(Q)
+        if(temp==NULL){
+            if(!isEmptyQueue(Q)) EnQueue(Q,NULL);
+        }else{
+            temp->nextSibling=QueueFront(Q);
+            if(root->left) EnQueue(Q,temp->left);
+            if(root->right) EnQueue(Q,temp->right);
+        }
+    }
+}
+```
+
+#### Need to understand.
+
+### Q35. Do Q34 with some other way.
+
+The trick is to re-use the populated nextSibling pointers. As mentioned earlier, we just need one more step for it to work. Before we passed the left and right to the recursion function itself, we connect the rigth childs nextSibling to the current nodes nextSibling left child. In order for this to work, the current node nextSibing pointer must be populated, which is true in this case.
+
+```c
+void fillNextSiblings(struct BinaryTreeNode*root){
+    if(root==NULL) return;
+    if(root->left) root->left->nextSibling=root->right;
+    if(root->right) root->right->nextSibling = (root->nextSibling) ? root->nextSibling->left : NULL;
+    fillNextSiblings(root->left);
+    fillnextSiblings(root->right);
+}
+```
+
+### Q36. Given a tree, give an algorithm for finding the sum of all the elements of the tree.
+
+The solution is similar to what we have done for simple binary trees. That means, traverse the complete list and keep on adding the values. We can either use level order traversal or simple recursion.
+
+```c
+int findSum(struct TreeNode*root){
+    if(root==NULL) return 0;
+    return root->data + findSum(root->firstChild) + findSum(root->sibling);
+}
+```
+
+### Q37. For a 4-ary tree (each node can contain maximum of 4 children), what is the maximum possible height with 100 nodes? Assume height of a single node is 0.
+
+In 4-ary tree each node can contain 0 to 4 children and to get maximum height, we need to keep only one child for each parent. With 100 nodes the maximum possible height we can get is 99. If we have a restriction that at least one node is having 4 children, then we keep one node with 4 children and remaining all nodes with 1 child.
+
+### Q38. For a 4-ary tree, what is the minimum possible height with n nodes?
+
+Siimilar to above discussion, if we want to get minimum height, then we need to fill all nodes with maximum children. Now let's see the following table, which indicates the maximum number of nodes for a given heigt
+
+![alt text](image-17.png)
+
+### Q39. Given a parent array P, where P[i] indicates the parents of ith node in the tree. GIve an algorithm for finding the height or depth of the tree.
+
+### Q40. Given a node in the genric tree, give an algorithm for counting the number of siblings for that node.
+
+```c
+int siblingCount(struct TreeNode*current){
+    int count=0;
+    while(current){
+        count++;
+        current=current->nextSibling;
+    }
+    return current;
+}
+```
+
+### Q41. Given a node in the generic tree, give an algorithm for counting the number of children for that node.
+
+```c
+int childCount(struct TreeNode*current){
+    int count=0;
+    current=current->firstChild;
+    while(current){
+        count++;
+        current=current->nextSibling;
+    }
+    return count;
+}
+```
+
+### Q42. Given two trees how do we check whether the trees are isomorphic to each other or not?
+
+Two binary trees root1 and root2 are isomorphic if they have the same sturcutre. THe value of the nodes does not affect two trees are isomorphic or not.
+
+```c
+int isomorphic(BinaryTreeNode*root1,BinaryTreeNode*root2){
+    if(root1==NULL && root2==NULL) return 1;
+    if(root!==NULL || root2==NULL) return 0;
+    return (isomorphic(root1->left,root2->left) && isomorphic(root1->right,root2->right));
+}
+```
+
+### Q43. Given two trees how do we check whether they are quassi-isomorphic to each other or not?
+
+Two trees root1 and root2 are quassi-isomorphic if root1 can be transformed into root2 by swapping left and right child of some of the nodes of root1. The data in the nodes are not important in determining quassi-isomorphism, only the shape is important. 
+
+```c
+int quassiIso(struct BinaryTreeNode*root1,struct BinaryTreeNode*root2){
+    if(root1==NULL && root2==NULL) return 1;
+    if(root1==NULL || root2==NULL) return 0;
+    return (
+        (quassiIso(root1->left,root2->left) && quassiIso(root1->right,root2->right)) ||
+        (quassiIso(root1->left,root2->right) && quassiIso(root1->right,root2->left))
+    )
+}
+```
+
+### Q44. A full k-ary tree is a tree where each node has either 0 or k children. Given an array which contains the preorder traversal of full k-ary tree, give an algorithm for constructing the full k-ary tree.
+
+In k-ary tree, for a node at ith position its chilren will be at k*i+1 to k\*i+1. For example, the below is an example for full 3-ary tree
+
+![alt text](image-18.png)
+
