@@ -182,3 +182,88 @@ int FindHeightOfBinaryTree(struct BinaryTreeNode*root){
 
 **I have doubt in this**
 
+### Q12. Give an algorithm for finding the deepest node of the binary tree
+
+```c
+struct BinaryTreeNode*DeepestNodeInBinaryTree(struct BinaryTreeNode*root){
+    struct BinaryTreeNode*temp;
+    struct Queue*Q;
+    if(!root) return NULL;
+    Q=CreateQueue();
+    EnQueue(Q,root);
+    while(!isEmptyQueue(Q)){
+        temp=DeQueue(Q);
+        if(temp->left) EnQueue(Q,temp->left);
+        if(temp->right) EnQueue(Q,temp->right);
+    }
+    DeleteQueue(Q);
+    return temp;
+}
+```
+
+### Q13. GIve an algorithm for deleting an element from binary tree.
+
+```c
+struct BinaryTreeNode*delete(struct BinaryTreeNode*root,int data){
+    if(root==NULL) return;
+    if(root->left){
+        if(root->left->data==data){
+            root->left=NULL; // i dont know how free() works yet
+            return;
+        }else delete(root->left,data);
+    }
+    if(root->right){
+        if(root->right->data==data){
+            root->right=NULL;
+        }
+        else delete(root->right,data);
+    }
+}
+```
+
+### Q14. Give an algorithm for finding the number of leaves in binary tree without using recursion
+
+Use level traversal
+
+### Q15. Give an algorithm for finding the number of full nodes in the bniary tree without using recursion
+
+Use level traversal while checking `if(root->left)` and `if(root->right)`
+
+### Q16. Give an algorithm for finding the number of half nodes in the binary tree.
+
+Again use level traversal to check
+
+### Q17. Given two binary trees, return true if they are structurally identical
+
+- If both trees are NULL then return true
+- If both tree are not NULL, then compare data and recursively check left and right subtree strucutres.
+
+```c
+int isSame(struct BinaryTreeNode*root1,struct BinaryTreeNode*root2){
+    if(root1==NULL && root2==NULL) return 1;
+    if(root1==NULL || root2==NULL) return 0;
+    return(root1->data == root2->data && isSame(root1->left,root2->left) && isSame(root1->right,root2->right));
+}
+```
+
+### Q18. Give an algorithm for finding the diameter of the binary tree. THe diameter of a tree is the number of nodes on the longest path between two elaves in the tree.
+
+To find the diameter of a tree, first calculate the diameter of tree subtree and right subtree recursively. Among these two values, we need to send maximum along with current leve.
+
+```c
+int diameter(struct BinaryTreeNode*root,int *ptr){
+    int left,right;
+    if(root==NULL) return 0;
+    left=diameter(root->left,ptr);
+    right=diameter(root->right,ptr);
+    if(left+right>*ptr) *ptr=left+right;
+    return max(left,right)+1;
+    // What is *ptr there for?
+}
+```
+
+### Q19. Give an algorithm for finding the level which is having maximum sum in the binary tree
+
+The logic is very much similar to finding number of levels. The only change is, we need to keep tracks of sums as well.
+
+### Q20. Given a binary tree, print out all of its root-to-leaf paths.
