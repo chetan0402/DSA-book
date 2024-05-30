@@ -267,3 +267,125 @@ int diameter(struct BinaryTreeNode*root,int *ptr){
 The logic is very much similar to finding number of levels. The only change is, we need to keep tracks of sums as well.
 
 ### Q20. Given a binary tree, print out all of its root-to-leaf paths.
+
+```c
+void PrintPathRecur(struct BinaryTreeNode*root,int path[],int pathLen){
+    if(root==NULL) return;
+    path[pathLen]=root->data;
+    pathLen++;
+    if(root->left==NULL && root->right==NULL){
+        PrintArray(path,pathLen);
+    }else{
+        PrintPathRecur(root->left,path,pathLen);
+        PrintPathRecur(root->right,path,pathLen);
+    }
+}
+
+void PrintArray(int ints[],int len){
+    for(int i=0;i<len;i++){
+        printf("%d ",ints[i]);
+    }
+}
+```
+
+### Q21. Given an algorithm for checking the existence of path with given sum. That means, given a sum check whether there exists path from root to any of the nodes.
+
+```c
+int hasSum(struct BinaryTreeNode*root,int targetSum){
+    if(root==NULL) return 0;
+    targetSum-=root->data;
+    if(targetSum==0) return 1;
+    if(targetSum<0) return 0;
+    return (hasSum(root->left,targetSum) || hasSum(root->right,targetSum));
+}
+```
+
+### Q22. Give an algorithm for finding the sum of all elements in binary tree.
+
+Recursively
+
+### Q23. Do Q22 without recursion
+
+Do level order traversal
+
+### Q24. Give an algorithm for converting a tree to its mirrior. Mirror of a tree is another tree with left and right children of all non-leaf nodes interchanged
+
+![alt text](image-8.png)
+
+```c
+void mirrorTree(struct BinaryTreeNode*root){
+    if(root==NULL) return;
+    struct BinaryTreeNode*temp=root->left;
+    root->left = root->right;
+    root->right = temp;
+    mirrorTree(root->left);
+    mirrorTree(root->right);
+}
+```
+
+### Q25. Given two trees, give an algorithm for checking whether they are mirrors of each other.
+
+```c
+int mirrorCheck(struct BinaryTreeNode*root1,struct BinaryTreeNode*root2){
+    if(root1==NULL && root2==NULL) return 1;
+    if(root1==NULL || root2==NULL) return 0;
+    return ((root1->data == root2->data) && mirrorCheck(root1->left,root2->right) && mirroCheck(root1->right,root2->left));
+}
+```
+
+### Q26. Give an algorithm for finding LCA(Least common ancestor) of two nodes in a binary tree.
+
+```c
+struct BinaryTreeNode*LCA(struct BinaryTreeNode*root,struct BinaryTreeNode*a,struct BinaryTreeNode*b){
+    struct BinaryTreeNode*left,*right;
+    if(root == NULL) return root;
+    if(root == a || root == b) return root;
+    left=LCA(root->left,a,b);
+    right=LCA(root->right,a,b);
+    if(left && right) return root;
+    else return (left?left:right);
+}
+```
+
+#### Dont understand this one yet
+
+### Q27. Give an algorithm for constructing binary tree from given Inorder and Preorde traverals.
+
+Inorder sequence: D B E A F C
+Preorder sequence: A B D E C F
+
+In a preorder seq, leftmost element denotes the root of the tree. So we know 'A' is root for given seqs. by searching 'A' in inorder seq we can find out all on left side of 'A' which come under left subtree and element right of 'A' which come under right subtree. So we get the below struct
+
+![alt text](image-9.png)
+
+We recursively follow above steps and get the following tree.
+
+![alt text](image-10.png)
+
+Algorithm: BuildTree()
+
+- Select an element from preorder. increasement a preorder index variable to pick next element in next recursive call.
+- Create a new tree node with the data as selected element
+- Find the selected elemnts index ini inorder. Let the index be inindex
+- call buildbinarytree for elements before inindex and make the built tree as left subtree of newNode
+- same as above but for right subtree
+- return newNode
+
+```c
+struct BinaryTreeNode*BuildBinaryTree(int inOrder[],int preOrder[],int Start,int End){
+    static int preIndex=0;
+    struct BinaryTreeNode*newNode;
+    if(Start>End) return NULL;
+    newNode=(struct BinaryTreeNode*)malloc(sizeof(struct BinaryTreeNode));
+    if(newNode==NULL) return;
+    newNode->data=preOrder[preIndex]; // Get current node from preorder
+    preIndex++;
+    if(Start==End) return newNode; // if this node has no children then return
+    int inIndex=Search(inOrder,Start,End,newNode->data); // else find the index of thsi node in Inorder
+    newNode->left=BuildBinaryTree(inOrder,preOrder,Start,End-1);
+    newNode->right=BuildBinaryTree(inOrder,preOrder,Start+1,End);
+    return newNode;
+}
+```
+
+#### Don't understand yet.
