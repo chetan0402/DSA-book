@@ -618,3 +618,64 @@ In k-ary tree, for a node at ith position its chilren will be at k*i+1 to k\*i+1
 
 ![alt text](image-18.png)
 
+As we have seen, in preorder traversal first left subtree is processed then followed by root node and right subtree. Because of this, to construct a full k-ary, we just need to keep on creating the nodes without bothering about the previous constructed nodes. We can use this trick to build the tree recursively by using one global index. Declaration for k-ary tree can be given as:
+
+```c
+struct k-aryTreeNode{
+    char data;
+    struct k-aryTreeNode*child[];
+}
+int*Ind=0;
+struct k-aryTreeNode*buildK-aryTreeNode(char A[],int n,int k){
+    if(n<=0) return NULL;
+    struct k-aryTreeNode*newNode=(struct k-aryTreeNode*)malloc(sizeof(struct k-aryTreeNode));
+    if(newNode==NULL) return;
+    newNode->child=(struct k-aryTreeNode*)malloc(sizeof(struct k-aryTreeNode));
+    if(newNode->child==NULL) return;
+    newNode->data=A[Ind];
+    for(int i=0;i<k;i++){
+        if(k*Ind+i<n){
+            Ind++;
+            newNode->child[i] = buildK-aryTreeNode(A,n,k);
+        }else newNode->child[i]=NULL;
+    }
+    return newNode;
+}
+```
+
+### Q45. For a given binary tree (not threaded) how do we find the preorder successor?
+
+For solving this problem, we need to use an auxiliary stack S. On the first call, the paramter node is a pointer to the head of the tree, thereafter its value is NULL.. Since we are simply asking for the successor of the node we got last time we called the function. It is necessary that the contents of the stack S and the pointer P to the last node "visited" are preserved from one call of the function to the next, they are defined as static variables.
+
+```c
+struct BinaryTreeNode*preorderSuccessor(struct BinaryTreeNode*node){
+    static struct BinaryTreeNode*P;
+    static Stack *S=CreateStack();
+    if(node!=NULL) P=node;
+    if(P->left!=NULL){
+        Push(S,P);
+        P=P->left;
+    }else{
+        while(P->right=NULL) P=Pop(S);
+        P=P->right;
+    }
+    return P;+8
+}
+```
+
+### Q46. For a given binaryt ree (not threaded) how do we find the inorder successor?
+
+```c
+struct BinaryTreeNode*inorderSuccessor(struct BinaryTreeNode*node){
+    static struct BinaryTreeNode*P;
+    static Stack*S=CreateStack();
+    if(node!=NULL) P=node;
+    if(P->right==NULL) P=Pop(S);
+    else{
+        P=P->right;
+        while(P->left!=NULL) Push(S,P);
+        P=P->left;
+    }
+    return P;
+}
+```
