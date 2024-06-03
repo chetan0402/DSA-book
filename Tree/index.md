@@ -605,3 +605,116 @@ In binary search trees, all the left subtree elements should be less than root d
 - If we are searching for an element and if the left subtree roots data is left than the element we want to search then skip it. Same is the case with right subtree as well. Because of this binary search trees takes less time for search an element than regular binary trees. In order words, the binary search trees consider only either left or right subtree for searching an element but not both.
 
 ### Finding an element in binary search trees
+
+Find operation is straightforward in a BST. Start with the root and keep moving left or right using the BST property. If the data we are searching is same as nodes data then we return current node. If the data we are searching is less than nodes data then search left subtree of current node otherwise search in right subtree of current node. If the data is not present, we end up in a NULL link.
+
+```c
+struct BinarySearchTreeNode*find(struct BinarySearchTreeNode*root,int data){
+    if(root==NULL) return NULL;
+    if(data<root->data) return find(root->left,data);
+    else if(data>data->data) return find(root->right,data);
+    return root;
+}
+```
+
+Time complexity: O(n) in worst case
+Space complexity: O(n)
+
+*Non recursive* version of the above algorithm can be given as:
+
+```c
+struct BinarySearchTreeNode*find(struct BinarySearchTreeNode*root,int data){
+    if(root==NULL) return NULL;
+    while(root){
+        if(data==root->data) return root;
+        else if(data>root->data) root=root->right;
+        else root=root->left;
+    }
+    return NULL;
+}
+```
+
+### Finding minimum element in binary search tree
+
+in BSTs, the minimum element is the left most node which does not has left child. In the below BST, the minimum element is 4.
+
+```c
+struct BinarySearchTreeNode*findMin(struct BinarySearchTreeNode*root){
+    if(root==NULL) return NULL;
+    if(root->left==NULL) return root;
+    return findMin(root->left);
+}
+```
+
+Non recursive version of the above algorithm can be given as:
+
+```c
+struct BinarySearchTreeNode*findMin(struct BinarySearchTreeNode*root){
+    if(root==NULL) return NULL;
+    while(root->left!=NULL) root=root->left;
+    return root;
+}
+```
+
+### Finding maximum element in binary search tree
+
+Replace left to right, same as minimum elemnet
+
+### where is Inorder predecessor and successor?
+
+Where is the inorder predecessor and successor of a node X in a binary search tree assuming all keys are distinct?
+
+If X has two children then its inorder predecessor is the maximum value in its left subtree and its inorder successor the minimum value in its right subtree.
+
+If it does not have a left child a nodes inorder predecessor is its first left ancestor.
+
+### Inserting an element from binary search tree
+
+To insert data into binary search tree, first we need to find the location for the element. We can find the location of insertion by following the same mechanism as that of find operation. While finding the location if the data is already there then we can simply neglect and come out. Otherwise, insert data at the last location on the path traversed. As an example let us consider the following tree. The dooted node indicates the element (5) to be inserted. To insert 5, traverse the tree as using find function. At node with key 4, we need to go right, but there is no subtree, so 5 is not in the tree, and this is the correct location for insertion.
+
+```c
+struct BinarySearchTreeNode*insert(struct BinarySearchTreeNode*root,int data){
+    if(root==NULL){
+        root=(struct BinarySearchTreeNode*)malloc(sizeof(struct BinarySearchTreeNode));
+        if(root==NULL) return;
+        root->data=data;
+        root->left=root->right=NULL;
+    }else{
+        if(data<root->data) root->left=insert(root->left,data);
+        else if(data>root->data) root->right=insert(root->right,data);
+    }
+    return root;
+}
+```
+
+In the above code, after inserting an element in subtrees the tree is returned to its parent. As a result, the complete tree will get updated.
+
+### Deleting an element from binary search tree
+
+The delete operation is little complicated than other operations. This is because the element to be deleted may not be the leaf node. In this operation also, first we need to find the location of the element which we want to delete. once we have found the node to be deleted, consider the following cases:
+
+- If the element to be deleted is a leaf node: return NULL to its parent. That means make the correspodning child pointer NULL. In the below tree to delete 5, set NULL to its parent node 2. ![alt text](image-35.png)
+- If the element to be deleted has one child: In this case we just need to send the current nodes child to its parent. In the below tree, to delete 4,4 left subtree is set to its pointer node 2. ![alt text](image-36.png)
+- If the element to be deleted has both children: The general strategy is to replace the ky of this node with the largest element of the left subtree and recursively delete that node. The largest node in the left subtree cannot have a right child, the second delete is an easy one. As an example, let us consider the following tree. In the below tree, to delete 8, it is the right child or root. The key value is 8. It is replaced with the largest key in its left subtree (7), and then that node is deleted as before (second case). ![alt text](image-37.png)
+
+```c
+struct BinarySearchTreeNode*delete(struct BinarySearchTreeNode*root,int data){
+    struct BinarySearchTreeNode*temp;
+    if(root==NULL) return;
+    if(data<root->element) root->left=delete(root->left,data);
+    else if(data>root->element) root->right=delete(root->left,data);
+    else{
+        if(root->left && root->right){
+            temp=FindMax(root->left);
+            root->data=temp->element;
+            root->left=delete(root->left,root->right);
+        }else{
+            temp=root;
+            if(root->left==NULL) root=root->right;
+            if(root->right==NULL) root=root->left;
+            free(temp);
+        }
+    }
+    return root;
+}
+```
