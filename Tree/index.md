@@ -739,3 +739,149 @@ A binary tree is said to be an AVL tree, if:
 - For an node X, the height of left subtree of X and height of right subtree of X differ by at most 1.
 
 ### Min/Max number of nodes in AVL trees
+
+For simplicity let us assume that the height of an AVL tree is h and N(h) indicates the number of nodes in AVL tree with height h. To get minimum number of nodes with height h, we should fill the tree with as minimum nodes as possible. That means if we fill the left subtree with height h-1 then we should fill the right subtree with height h-2. As a result, the minimum number of nodes with height h is:
+
+N(h) = N(h-1) + N(h-2) + 1
+
+In the above equation:
+
+- N(h-1) indicates the minimum number of nodes with height h-1
+- N(h-2) indicates the minimum number of nodes with height h-2
+- In the above expression, '1' indicates the current node.
+
+We can give N(h-1) either for left subtree or right subtree. Solving the above recurrence gives:
+
+![alt text](image-41.png)
+
+Where n is the number of nodes in AVL tree. Also, the above derivation says that the maximum height in AVL trees is O(logn). Similarly, to get maximum number of nodes, we need to fill both left and right subtrees with height h-1. As a result, we get
+
+N(h)=N(h-1)+N(h-1)+1=2N(h-1)+1
+
+The above expression defines the case of full binary tree. Solving the recurrence we get.
+
+![alt text](image-42.png)
+
+In both the cases, AVL tree property is encuring that the height of an AVL tree with n nodes is O(logn)
+
+### AVL Tree declaration
+
+Since AVL tree is a BST, the declaration of AVL is similar to that of BST.
+
+```c
+struct AVLTreeNode{
+    struct AVLTreeNode*left;
+    int data;
+    struct AVLTreeNode*right;
+    int height;
+}
+```
+
+### Finding height of an AVL tree
+
+```c
+int height(struct AVLTreeNode*root){
+    if(root==NULL) return -1;
+    else return root->height;
+}
+```
+
+### Rotations
+
+When the tree structure changes, we need to modify the tree to restore the AVL tree property. This can be done using single rotations or double rotations. Since an insertion/deletion involves adding/deleting a single node, this can only increase/decrease the height of some subtree by 1. So, if the AVL tree property is violated at a node X, it means that the heights of left(X) and right(X) differ by exactly 2. This is because, if we balance the AVL tree every time, then at any point, the difference in heights of left(X) and right(X) differ by exactly 2. Rotations is the technique used for restoring the AVL tree property. That means, we need to apply the rotations for the node X.
+
+**Observation**: One important observation is that, after an insertion, only nodes that are on the path from the insertion point to the root might have their balances altered because only those nodes have their subtrees altered. To restore the AVL tree property, we start at the isnertion point and keep going to root of the tree. While moving to root, we need to consider the first node whichever is not satisfying the AVL property. From that node onwards every node on the path to root will have the issue. Also, if we fix the issue for that first node, then all other nodes on the path to root will auotmatically satisfy the AVL tree property. That means we always need to care for the first node whichever is not satisfying the AVL property on the path from insertion point to root and fix it.
+
+### Types of violations
+
+Let us assume the node that must be rebalanced is X. Since any node has at most two children, and a height imbalance requires that X's two subtrees' heights differ by two. We can easily observe that a violation might occur in four cases:
+
+1. An insertion into the left subtree of the left child of X.
+2. An insertion into the right subtree of the left child of X.
+3. An insertion into the left subtree of the right child of X.
+4. An insertion into the right subtree of the right child of X.
+
+Case 1 and 4 are symmetic and easily solved with single rotations. Similarly, cases 2 and 3 are also symmetric and can be solved with double rotations
+
+### Single rotations
+
+**Left Left Rotation (LL Rotation) [Case - 1]**: In the below case, at node X, the AVL tree property is not satisfying. As discussed earlier, rotation does not have to be done at the root of a tree. In general, we start at the node inserted and travel up the tree, updating the balance information at every node on the path.
+
+![alt text](image-43.png)
+
+For example, in above figure, after the insertion of 7 in the original AVL tree on the left, node 9 becomes unbalanced. So, we do a single left-left rotation at 9. As a result we get the tree of the right.
+
+```c
+struct AVLTreeNode*singleRotLeft(struct AVLTreeNode*X){
+    struct AVLTreeNode*W=X->left;
+    X->left=W->right;
+    W->right=X;
+    X->height=max(Height(X->left),Height(X->right))+1;
+    W->height=max(Height(W->left),X->height)+1;
+    return W;
+}
+```
+
+**Right Right Rotation(RR Rotation) [Case - 4]**: In this case, the node X is not satisfying the AVL tree property
+
+![alt text](image-44.png)
+
+```c
+struct AVLTreeNode*singleRotRight(struct AVLTreeNode*w){
+    struct AVLTreeNode*x=w->right;
+    w->right=x->left;
+    x->left=w;
+    w->height=max(Height(w->right),Height(w->left))+1;
+    x->height=max(Height(x->right),w->right)+1;
+    return x;
+}
+```
+
+### Double Rotations
+
+**Left Right Rotation (LR Rotation) [Case - 2]**: For case-2 and case-3 single rotation does not fix the problem. We need to perform two rotation.
+
+![alt text](image-45.png)
+
+```c
+struct AVLTreeNode*doubleRotLeft(struct AVLTreeNode*z){
+    z->left=singleRotRight(z->left);
+    return singleRotLeft(z);
+}
+```
+
+**Right Left Rotation (RL Rotation) [Case - 3]**: As similar to case-2, we need to perform two rotations for fixing this scenario.
+
+![alt text](image-46.png)
+
+### Insertion into an AVL tree
+
+Insertion in AVL tree is very much similar to BST insertion. After inserting the element, we just need to check whether there is any height imbalance. If there is any imbalance, call the appropriate rotaiton functions.
+
+```c
+struct AVLTreeNode*insert(struct AVLTreeNode*root,struct AVLTreeNode*parent,int data){
+    if(root==NULL){
+        root=(struct AVLTreeNode*)malloc(sizeof(struct AVLTreeNode));
+        if(root==NULL) return;
+        root->data=data;
+        root->height=0;
+        root->left=root->right=NULL;
+        return root;
+    }
+    if(data<root->data){
+        root->left=insert(root->left,root,data);
+        if((Height(root->left)-Height(root->right))==2){
+            if(data<root->left->data) root=singleRotLeft(root);
+            else root=doubleRotLeft(root);
+        }
+    }else if(data>root->data){
+        root->right=insert(root->right,root,data);
+        if((Height(root->right)-Height(root->left))==2){
+            if(data<root->right->data) root=singleRotRight(root);
+            else root=doubleRotRight(root);
+        }
+    }
+    root->height=max(Height(root->left),Height(root->right))+1;
+    return root;
+}
+```

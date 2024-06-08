@@ -977,3 +977,46 @@ Strategy: consider that each value could be the root. Recursively find the size 
 ```c
 // Answer given in book is wrong.
 ```
+
+### Q71. Given a height h, give an algorithm for generating the HB(0).
+
+As we have discussed, HB(0) is nothing but generating full binary tree. In full binary tree the number of nodes with height h are: 2^(h+1) - 1 (let us assume that the height of a tree with one node is 0). As a result the nodes can be numbered as: 1 to 2^(h+1) - 1.
+
+```c
+struct BinarySearchTreeNode*buildHB0(int h){
+    struct BinarySearchTreeNode*temp;
+    if(h==0) return NULL;
+    temp=(struct BinarySearchTreeNode*)malloc(sizeof(struct BinarySearchTreeNode));
+    temp->left=buildHB0(h-1);
+    temp->data=count++; // Assume count is a global variable
+    temp->right=builHB0(h-1);
+    return temp;
+}
+```
+
+### Q72. Is there any alternative way of solving problem-71?
+
+Yes, we can solve following Merge sort logic. That means, isntead of working with height, we can take the range. With this approach we do not need any global counter to be maintined
+
+```c
+struct BinarySearchTreeNode*buildHB0(int l,int r){
+    struct BinarySearchTreeNode*temp;
+    int mid = l+(r-l)/2;
+    if(l>r) return NULL;
+    temp=(struct BinarySearchTreeNode*)malloc(sizeof(struct BinarySearchTreeNode));
+    temp->data=mid;
+    temp->left=buildHB0(l,mid-1);
+    temp->right=buildHB0(mid+1,r);
+    return temp;
+}
+```
+
+### Q73. Construct minimal AVL trees of height 0,1,2,3,4,5. What is the number of nodes in a minimal AVL tree of height?
+
+Let N(h) be the number of nodes in a minimal AVL tree with height h.
+
+![alt text](image-47.png)
+
+### Q74. Refer book PG-212
+
+### Q75. Given a binary search tree check whether the tree is an AVL tree or not?
