@@ -718,3 +718,24 @@ struct BinarySearchTreeNode*delete(struct BinarySearchTreeNode*root,int data){
     return root;
 }
 ```
+
+## Balanced Binary Search Trees
+
+In earlier sections we have seen different trees whose worst case compelxity is O(N), where n is the number of nodes in the tree. This happens when the trees are skew trees. In this section we will try to reduce this worst case complexity to O(logn) by imposing restrictions on the heights. In general, the height balanced trees are represented with HB(k) where k is the different between left subtree height and right subtree height. Sometimes k is called balance factor.
+
+### Complete Balanced Binary Search Trees
+
+In HB(k), if k=0, then we call such binary search trees as full balanced binary search trees. That means, in HB(0) binary search tree, the difference between left subtree height and right subtree height should be at most zero. This ensures that the tree is a full binary tree.
+
+## AVL (Adelson-Velskii and Landis) Trees
+
+In HB(k), if k=1 (if balance factor is one), such binary search tree is caleld an AVL tree. That means an AVl tree is a binary search tree with a balance condition: the difference between left subtree height and right subtree height is at most 1.
+
+### Properties of AVL Trees
+
+A binary tree is said to be an AVL tree, if:
+
+- It is a binary search tree, and
+- For an node X, the height of left subtree of X and height of right subtree of X differ by at most 1.
+
+### Min/Max number of nodes in AVL trees+

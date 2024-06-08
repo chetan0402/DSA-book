@@ -679,3 +679,301 @@ struct BinaryTreeNode*inorderSuccessor(struct BinaryTreeNode*node){
     return P;
 }
 ```
+
+### Q46. Given pointers to two nodes in a binary search tree, find lowest common ancestor (LCA). Assume that both values already exist in the tree.
+
+![alt text](image-38.png)
+
+The main idea of the solution is while traversing BST from root to bottom, the first node we encounter with value between alpha and beta is the least common ancestor of alpha and beta. So just traverse the BST in pre-order, if we find a node with value in between alpha and beta then that node is the LCA. If its value is greater than both alpha and beta then LCA lies on left side and the node and if its valuse is smaller than both alpha and beta then LCA lies on right side.
+
+```c
+struct BinarySearchTreeNode*findLCA(struct BinarySearchTreeNode*root,struct BinarySearchTreeNode*alpha,struct BinarySearchTreeNode*beta){
+    while(1){
+        if((alpha->data<root->data && beta->data>root->data) ||
+        (alpha->data>root->data && beta->data<root->data)) return data;
+        if(alpha->data<root->data) root=root->left;
+        else root=root->right;
+    }
+}
+```
+
+### Q47. Give an algorithm for finding the shortest path between two nodes in a BST.
+
+Its nothing but finding the LCA of two nodes in BST
+
+### Q48. Give an algorithm for counting the number of BSTs possible with n nodes.
+
+This is a DP problem and refer Dynamic Programming chapter for algorithm
+
+### Q49. Give an algorithm to check whether the given binary tree is a BST or not.
+
+Consider the following simple program. For each node, check if left node of it is smaller than the node and right node of it is greater than the node. This approach is wrong as this will return true for below binary tree. Checking only at current node is not enough.
+
+![alt text](image-39.png)
+
+```c
+int isBST(struct BinaryTreeNode*root){
+    if(root==NULL) return 1;
+    // false if left > root
+    if(root->left!=NULL && root->left->data>root->data) return 0;
+    // false if right < root
+    if(root->right!=NULL && root->right->data<root->data) return 0;
+    //false is, recursively, left or right
+    if(!isBST(root->left) || !isBST(root->right)) return 0;
+    return 1;
+}
+```
+
+### Q53. Give an algorithm for converting BST to circular DLL with space complexity O(1)
+
+Convert left and right subtrees to DLLs and maintain end of those lists. Then, adjust the pointers.
+
+```c
+struct BinarySearchTreeNode*bst2dll(struct BinarySearchTreeNode*root,struct BinarySearchTreeNode*Ltail){
+    struct BinarySearchTreeNode*left,*ltail,*right,*rtail;
+    if(root==NULL){
+        *ltail=NULL;
+        return NULL;
+    }
+    left=bst2dll(root->left,&ltail);
+    right=bst2dll(root->right,&rtail);
+    if(right==NULL) *ltail=root;
+    else{
+        rith->left=root;
+        *ltail=rtail;
+    }
+    if(left==NULL) return root;
+    else{
+        ltail->right=root;
+        return left;
+    }
+}
+```
+Time complexity: O(n)
+
+### Q54. For problem 53, is there any other way of solving?
+
+Yes. There is an alternative solution based on divde and conquer method which is quite neat.
+
+```c
+struct BinarySearchTreeNode*append(struct BinarySearchTreeNode*a,BinarySearchTreeNode*b){
+    struct BinarySearchTreeNode*aLast,*bLast;
+    if(a==NULL) return b;
+    if(b==NULL) return a;
+    aLast=a->left;
+    bLast=b->left;
+    aLast->right=b;
+    b->left=aLast;
+    bLast->right=a;
+    a->left=bLast;
+    return a;
+}
+struct BinarySearchTreeNode*TreeToList(struct BinarySearchTreeNode*root){
+    struct BinarySearchTreeNode*aList,*bList;
+    if(root==NULL) return NULL;
+    aList=TreeToList(root->left);
+    bList=TreeToList(root->right);
+    root->left=root;
+    root->right=root;
+    aList=append(aList,root);
+    aList=append(aList,bList);
+    return aList;
+}
+```
+
+Time complexity: O(n)
+
+### Q55. Given a sorted doubly linked list, give an algorithm for converting it to balanced binary search tree.
+
+```c
+struct dllNode*dllToBalancedBST(struct dllNode*head){
+    struct dllNode*temp,*p,*q;
+    if(head==NULL || head->next==NULL) return head;
+    temp=findMiddleNode(head);
+    p=head;
+    while(p->next!=temp) p=p->next;
+    p->next=NULL;
+    q=temp->next;
+    temp->next=NULL;
+    temp->prev=dllToBalancedBST(head);
+    temp->next=dllToBalancedBST(q);
+    return temp;
+}
+```
+
+Time complexity: O(nlogn)
+
+### Q56. Given a sorted array, give an algorithm for converting the array to BST.
+
+If we have to choose an array element to be the root of a balanced BST, which element we should pick? The root of a balanced BST should be the middle element from the sorted array. We would pick the middle element from the sorted array in search iteration. We then create a node in the tree initialized with this element. After the element is chosen, what is left? Could you identify the sub-problems within the problem?
+
+There are two arrays left - the one on its left and the one on its right. These two arrays are the sub-problems of the original problem, since both of them are sorted. Furthermore, they are subtrees of the current node's left and right child.
+
+The code below creates a balanced BST from the sorted in O(n) time. Compare how similar the code is to a binary search algorithm. Both are using the divide and conquer methodology.
+
+```c
+struct BinaryTreeNode*buildBST(int A[],int left,int right){
+    struct BinaryTreeNode*newNode;
+    int mid;
+    if(left>right) return NULL;
+    newNode=(struct BinaryTreeNode*)malloc(sizeof(struct BinaryTreeNode));
+    if(newNode==NULL) return;
+    if(left==right){
+        newNode->data=A[left];
+        newNode->left=newNode->right=NULL;
+    }else{
+        mid=left-(right-left)/2;
+        newNode->data=A[mid];
+        newNode->left=BuildBST(A,left,mid-1);
+        newNode->right=BuildBST(A,mid+1,right);
+    }
+    return newNode;
+}
+```
+
+### Q57. Given a singly linked list where elements are sorted in ascending order, convert it to a height balanced BST.
+
+A naive way is to apply the problem-55 solution directly. In each recursive call, we would have to traverse half of the list's length to find the middle element. The run time complexity is clearly O(nlogn), where n is the total number of elements in the list. This is because each level of recursive call requires a total of n/2 traversal steps in the list, and there are a total of logn number of levels
+
+### Q58. For problem-57, can we improve the complexity?
+
+Hint: How about inserting nodes following the list's order? If we can achieve this, we no longer need to find the middle element. as we are able to traverse the list while inserting nodes to the tree.
+
+Solution: As usual, the best solution requires us to think from another perspective. In other words, we no longer create nodes in the tree using top-down approach. Create nodes bottom-up and assign them to its parents. The bottom-up approach enables us to access the list in its order while creating nodes.
+
+Isn;t the bottom-up approach neat? each time we are stucked with the top-down approach, give bottom-up a try. Althought bototm-up approach is not the most natural way we think, it is extremly helpful in some cases. However, we should prefer top-down instead of bottom-up in general, since the latter is more difficult to verify in correctness.
+
+Below is the code for converting a singly linked list to a balanced BST. Please note that the algorithm requires the list's length to be passed inas the function's paramters. The list's length could be found in O(n) time by traversing the time.
+
+```c
+struct BinaryTreeNode*sortedListToBST(struct ListNode*&list,int start,int end){
+    if(start>end) return NULL;
+    int mid=start+(end-start)/2;
+    struct BinaryTreeNode*leftChild=sortedListToBST(list,start,mid-1);
+    struct BinaryTreeNode*parent=(struct BinaryTreeNode*)malloc(sizeof(struct BinaryTreeNode));
+    if(parent==NULL) return;
+    parent->data=list->data;
+    parent->left=leftChild;
+    list=list->next;
+    parent->right=sortedListToBST(list,mid-1,end);
+    return parent;
+}
+struct BinaryTreeNode*sortedListToBST(struct ListNode*heat,int n){
+    return sortedListToBst(head,0,n-1);
+}
+```
+
+### Q59. Give an algorithm for finding the kth element in BST.
+
+The idea behind this solution is that, inorder traversal of BST produces sorted lists. While traversing the BST in inorder, keep track of the number of elements visited.
+
+```c
+struct BinarySearchTreeNode*kthSmallestInBST(struct BinarySearchTreeNode*root,int k,int*count){
+    if(root==NULL) return NULL:
+    struct BinarySearchTreeNode*left=kthSmallestInBST(root->left,k,count);
+    if(left) return left;
+    if(++count==k) return root;
+    return kthSmallestInBST(root->right,k,count);
+}
+```
+
+### Q60. Floor and ceiling: If a given key is less than the key at the root of a BST then floor of key (the largest key in the BST less than or equal to key) must be in the left subtree. If key is greater than the key at th eroot then floor of key could be in the right subtree, but only if there is a key smaller than or equal to key in the right subtree; if not (or if key is equal to the key at the root) then the key at the root is the floor of key. Finding the ceiling is similar with interchanging right and left. For example, if the sorted with input array is [1,2,8,10,10,12,19], then For x=0: floor doesn't exist in array, ceil=1;For x=1: floor=1,ceil=1;For x=5: floor=2,ceil=8;For x=20:floor=19, ceil doesn't exist in array
+
+The idea behind this solution is that, in order traversal of BST produces sorted lists. While traversing the BST in inorder, keep track of the values being visited. If the roots data is greater than the give value then return the previous value which we have maintained during traversal. If the roots data is equal to the given data then return root data.
+
+```c
+struct BinaryTreeNode*floorInBST(struct BinaryTreeNode*root,int data){
+    struct BinaryTreeNode*prev=NULL;
+    return FloorInBSTUtil(root,prev,data);
+}
+struct BinaryTreeNode*FloorInBSTUtil(struct BinaryTreeNode*root,struct BinaryTreeNode*prev,int data){
+    if(root==NULL) return NULL;
+    if(!FloorInBSTUtil(root->left,prev,data)) return 0;
+    if(root->data==data) return root;
+    if(root->data>data) prev=root;
+    return FloorInBSTUtil(root->right,prev,data);
+}
+struct BinaryTreeNode*ceilingInBSTUtil(struct BinaryTreeNode*root,struct BinaryTreeNode*prev,int data){
+    if(root==NULL) return NULL;
+    if(!CeilingInBSTUtil(root->right,prev,data)) return 0;
+    if(root->data==data) return root;
+    if(root->data<data) return perv;
+    prev=root;
+    return CeilingInBSTUtil(root->left,prev,data);
+}
+```
+
+### Q61. Give an algorithm for finding the union and intersetcion of BSTs. Assume parent pointers are available. Also, assume the length of two BSTs are m and n respectively.
+
+If parent pointers are available then the problem is same as mergin of two sorted lists. This is because if we call inorer successor each time we get the next highest element. Its just a matter of which InorderSuccessor to call.
+
+### Q62. For problem-61, what if parent pointers are not available?
+
+If parent pointers are not available then, one possibility is converting the BSTs to linked list and then merging.
+
+1. Convert both the BSTs into sorted doubly linked lists in O(n+m) time. This produces 2 sorted lists.
+2. Merge the two double linked lists into one and also maintain the count of total elements in O(n+m) time.
+3. Convert the sorted doubly linked list in height balanced tree in O(n+m) time.
+
+### Q63. For problem-61, is there any alternative way of solving the problem?
+
+Yes, using inorder traversal
+
+- Perform inorder traversal on one of the BST.
+- While performing the traversal store them in table (hash table).
+- After completion of the traversal of first BST, start traversal of the second BST and compare them with hash table contents.
+
+### Q64. Given a BST and two numbers K1 and K2, give an algorithm for printing all the element of BST in the range K1 and K2
+
+```c
+void rangePrinter(struct BinarySearchTreeNode*root,int K1,int K2){
+    if(root==NULL) return;
+    if(root->data>=K1) rangePrinter(root->left,K1,K2);
+    if(root->data>=K1 && root->data<=K2) printf("%d ",data->data);
+    if(root->data<=K2) rangePrinter(root->right,K1,K2);
+}
+```
+
+### Q65. For problem-64, is there any alternative way of solving the problem?
+
+We can use level order traversal: while adding the elements to queue check for the range.
+
+```c
+void RangeSearchLevelOrder(struct BinarySearchTreeNode*root,int K1,int K2){
+    struct BinarySearchTreeNode*temp;
+    struct Queue*Q=CreateQueue();
+    if(root==NULL) return;
+    Q=EnQueue(Q,root);
+    while(!isEmptyQueue(Q)){
+        temp=DeQueue(Q);
+        if(temp->data>=K1 && temp->data<=2) printf("%d ",root-.data);
+        if(temp->left && temp->data >= K1) EnQueue(Q,temp->left);
+        if(temp->right && temp->data <= K2) EnQueue(Q,temp->right);
+    }
+    DeleteQueue(Q);
+}
+```
+
+### Q66. For problem-64, can we still think of alternative way for solving the problem?
+
+First locate K1 with normal binary search and after that use InOrder successor until we encounter K2. For algorithm, refer problem section of threaded binary trees.
+
+### Q67. Given root of a binary search tree, trim the tree, so that all elements in the new tree returned are between the inputs A and B.
+
+it's just another way of asking the Problem-64
+
+### Q68. Given two BSTs, check whether the elemnets of them are same or not. For example: two BST's with data 10 5 20 15 30 and 10 20 15 30 5 should return ture and the dataset with 10 5 20 15 30 and 10 15 30 20 5 should return false.
+
+One simple way is performing a traversal on first ree and storing its data in hash table. As a second step perform traversal on second tree and check whether that data is already there in hash table or not. During the traversal of second tree if we find any mismatch return false.
+
+### Q69. For problem-68, can we reduce the time complexity?
+
+Instead of performing the traversals one after the other, we can perform in-order traversal of both the trees in parallel. Since the in-order traversal gives the sorted list, we can check whether both the trees are generating the same sequences or not.
+
+### Q70. For the key values 1...n, how many structurally unique BST's are possible that store those keys.
+
+Strategy: consider that each value could be the root. Recursively find the size of the left and right subtrees.
+
+```c
+// Answer given in book is wrong.
+```
