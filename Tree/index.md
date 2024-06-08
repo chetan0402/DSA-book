@@ -738,4 +738,4 @@ A binary tree is said to be an AVL tree, if:
 - It is a binary search tree, and
 - For an node X, the height of left subtree of X and height of right subtree of X differ by at most 1.
 
-### Min/Max number of nodes in AVL trees+
+### Min/Max number of nodes in AVL trees
