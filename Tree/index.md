@@ -885,3 +885,67 @@ struct AVLTreeNode*insert(struct AVLTreeNode*root,struct AVLTreeNode*parent,int 
     return root;
 }
 ```
+
+## Other variations in Trees
+
+In this section, let us enumerate the other possible representations of trees. In the earlier sections,we have seen AVL trees which is a binary search tree (BST) with balancing property. Now, let us see few more balanced binary search tree: Red-Black trees and Splay Trees
+
+### Red-Black trees
+
+In red-black trees each node is associated with extra attribute: the color, which is either red or black. To get logarithmic complexity we impose the following restrictions.
+
+**Defination** A red-black tree is a binary search tree that satisfies the following properties:
+- Root property: the root is black
+- External proerty: every leaf is black
+- Internal property: the children of a red node are black
+- Depth proerty: all the leaves have the same black
+
+As simmilar to AVL trees, if the Red-black tree becomes imbalanced then we perform rotations to reinforce the balancing proerty. With red-black trees, we can perform the following operations in O(logn) in worst case, where n is the number of nodes in the tree.
+
+- Insertion,Deletion
+- Finding predecessor,successor
+- Finding minimum,maximum
+
+### Splay Trees
+
+Splay-trees are BSTs with self-adjusting property. Another interesting property of splay-trees is: starting with empty tree, any sequence of K operations with maximum of n nodes takes O(klogn) time complexity in worst case.
+
+Splay trees are easier to perform and also ensures faster access to recently accessed items. As similar to AVL and Red-Black trees, at any point if the splay tree becomes imbalanced then we perform rotations to reinforce the balancing property.
+
+Splay-trees cannot guarantee the O(logn) complexity in worst case. But it gives amortized O(logn) complexity. Even though individual operations can be expensive, any sequence of operations gets the complexity of logirthmic behavior. one operation may take more time but the subsequenct operations may not take worst case complexity.
+
+### Augmented Trees
+
+In earlier sections, we have seen the problems like finding Kth - smallest element in the tree and many other similar problems. For all those problems the worst complexity is O(n), where n is the number of nodes in the tree. To perform such operations in O(logn) augmented trees are useful. IN these trees, extra information is added to each node and that extra data depends on the problem we are trying to solve. For example, to find Kth - smallest in binary search tree, let us see how augmented trees solves the problem. Let us assume that we are using Red-Black trees as balanced BST and augment the size information in the nodes data. For a given node X in Red-Black tree with a field size(X) equal to number of nodes in the subtree and can be calculated as: `size(X) = size(X->left) + size(X->right) + 1;`
+
+![alt text](image-49.png)
+
+```c
+struct BinarySearchTreeNode*kthSmallest(struct BinarySearchTreeNode*X,int k){
+    int r=size(x->left)+1;
+    if(k==r) return x;
+    if(k<r) return kthSmallest(x->left,k);
+    if(k>r) return kthSmallest(x->right,k-r);
+}
+```
+
+Time complexity: O(logn)
+Space complexity: O(logn)
+
+### Internal Trees
+
+Interval trees are also binary search trees and stores itnerval information in th enodes structure. That means, we maintain a set of n intervals such that one of the intervals containing a query point Q can be found efficiently. Interval trees are used for performing range queries efficiently.
+
+**Example**: Given a set of intervals: S={[2-5],[6-7],[6-10],[8-9],[12-15],[15-23],[25-30]}. A query with Q=9 returns [6,10] or [8,9]. A query with Q=23 returns [15,23]
+
+![alt text](image-50.png)
+
+**Construction of interval trees**: Let us assume that we are given a set S of n intervals (also called segments). THese n intervals will have 2n endpoints. Now, let us see how to construct the interval tree.
+
+**Algorithm**: Recursively build tree on interval set S as follow:
+- Sort the 2n endpoints
+- Let Xmid be the median point
+
+![alt text](image-51.png)
+
+Time complexity for building interval trees: O(nlogn). Since we are choosing the median, internval trees will be approximately balanced. This ensures that, we split the set of end points up in half each time. The depth of the tree is O(logn). To simplify the search process, generally Xmid is stored with each node.

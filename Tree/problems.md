@@ -1020,3 +1020,50 @@ Let N(h) be the number of nodes in a minimal AVL tree with height h.
 ### Q74. Refer book PG-212
 
 ### Q75. Given a binary search tree check whether the tree is an AVL tree or not?
+
+Let us assume that isAVL is the function which cheks whether the given binary search tree is an AVL tree or not. isAVL return -1 if the tree is not an AVL tree. During the checks each node sends height of it to their parent.
+
+```c
+int isAVL(struct BinarySearchTreeNode*root){
+    int left,right;
+    if(root==NULL) return 0;
+    left = isAVL(root->left);
+    if(left == -1) return left;
+    right = isAVL(root->right);
+    if(right == -1) return right;
+    if(abs(left-right)) return -1;
+    return max(left,right)+1;
+}
+```
+
+### Q76. Given a height h, give an algorithm to generate an AVL tree with min number of nodes.
+
+To get minimum number of nodes, fill one level with h-1 and other with h-2.
+
+```c
+struct AVLTreeNode*generateAVLTree(int b){
+    struct AVLTreeNode*temp;
+    if(h==0) return NULL;
+    temp=(struct AVLTreeNode*)malloc(sizeof(struct AVLTreeNode));
+    temp->left=generateAVLTree(h-1);
+    temp->data=count++; //assume count is a global variable
+    temp->right=generateAVLTree(h-2);
+    temp->height=temp->left->height+1;
+    return temp;
+}
+```
+
+### Q77. Given an AVL tree with n integers items and two integers a and b, where a and b can be any integers with a<=b. Implement an algorithm to count the number of nodes in the range [a,b]
+
+![alt text](image-48.png)
+
+The idea is to make use of recusive property of binary search tree. There are tree cases to consider, whether the current node is in range [a,b], on the left side of the range, or on the right side of the range. Only subtrees that possibly contain the nodes will be processed under each of tree cases.
+
+```c
+int rangeCount(struct AVLTreeNode*root,int a,int b){
+    if(root==NULL) return 0;
+    else if(root->data>b) return rangeCount(root->left,a,b);
+    else if(root->data<a) return rangeCount(root->right,a,b);
+    else if(root->data>=a && root->data<=b) return rangeCount(root->left,a,b) + rangeCount(root->right,a,b) +1;
+}
+```
