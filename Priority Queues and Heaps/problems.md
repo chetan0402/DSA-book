@@ -85,4 +85,101 @@ Start from the root of the heap. If the value of the root is smaller than k then
 
 The complexity of this algorithm is O(n), where n is the total number of nodes in the heap. This bound takes place in the worst case, where the value of every node in the heap will be smaller than k, so the function has to call each node of the heap.
 
-### Q12.
+### Q12. Give an algorithm for merging two binary max-heaps. Let us assume that the size of the first heap is m+n and the size of the second heap is n.
+
+One simple way of solving this problem is:
+- Assume that the elements of the first array (with size m+n) are at the beginning. That means, first m cells are filled and remaining n cells are empty.
+- Without changing the first heap, just append the second heap and heapify the arrays.
+- Since the total number of elements in the new array is m+n, each heapify operation takes O(log(m+n))
+
+The complexity of this algorithm is : O((m+n)log(m+n))
+
+### Q13. Can we improve the complexity of problem-12?
+
+Instead of heapifying all the elements of the m+n array, we can use the technique of "building heap with an array of elements". We can start with non-leaf nodes and heapify them. The algorithm can be given as:
+
+- Assume that the elements of the first array (with size m+n) are at the beginning. That means, first m cells are filled and the remaining n cells are empty.
+- Without changing the first heap, just append the second heap.
+- Now, find the first non-leaf node and start heapifying from that element.
+
+### Q14. Is there an efficient algorithm for merging 2 max-heaps (stored as an array)?
+
+The alternative solution for this problem depends on what type of heap it is. If it's a standard heap where every node has up to two children and which gets filled up so that the leaves are on a maximum of two different rows, we cannot get better than O(n) for the merge.
+
+There is an O(logm x logn) algorithm for merging two binary heaps with sizes m and n. For m=n.
+
+For better merging performance, we can use another variant of binary heap like a Fibonacci-Heap which can merge in O(1) on average (amortized)
+
+### Q15. Give an algirhtm for finding kth smallest element in min-heap.
+
+One simple solution to this problem is: perform deletion k times from min-heap
+
+```c
+int kthSmallest(Heap*h){
+    for(int i=0;i<k;i++){
+        deleteMin(h);
+    }
+    return deleteMin(h);
+}
+```
+
+Time complexity: O(klogn)
+
+### Q16. For problem-15, can we improve the time complexity?
+
+Assume that the original min-heap is called HOrig and the auxiliary min-heap is named HAux. Initially, the element at the top of HOrig, the minimum one, is inserted into HAux. Here we don't do the operation of deleteMin with HOrig.
+
+```c
+Heap HOrig;
+Heap HAux;
+int findKthLargest(int k){
+    int heapElement;
+    int count=1;
+    HAux.insert(HOrig.Min());
+    while(true){
+        heapElement=HAux.deleteMin();
+        if(++count==k) return heapElement;
+        else{
+            HAux.insert(heapElement.leftChild());
+            HAux.insert(heapElement.rightChild());
+        }
+    }
+}
+```
+
+Every while-loop iteration gives the kth smallest element and we need k loops to get the kth smallest elements. Because the size of the auxiliary heap is awlays less than k, every while-loop iteration the size of auxiliary heap increases by one, and original heap HOrig has no operation during the finding, the running time is O(klogk).
+
+Note: the above algorithm is useful if the k value is too small compared to n. If the k value is approximately equal to n, then we can simply sort the array and return kth smallest element from the sorted array. This gives O(n) solution.
+
+### Q17. Find k max elements from max heap.
+
+One simple solution to this problem is: build max-heap and perform deletion k times.
+
+O(klogn)
+
+### Q18. For problem-17, is there any alternative solution?
+
+We can use the problem-16 solution. At the end, the auxiliary heap contains the k-largest elements. Without deleting the elements we should keep on adding elements to HAux.
+
+### Q19. How do we implement a stack using heap?
+
+To implement a stack using a priority queue(min heap), let us assume that we are using one extra integer variable c. Also, assume that c is initialized equal to any known value. The implementation of the stack ADT is given below. Here c is used as the priority while inserting/deleting the element from PQ.
+
+```c
+void push(int element){
+    PQ.insert(c,element);
+    c--;
+}
+int pop() return PQ.deleteMin();
+int top() return PQ.min();
+int size() return PQ.size();
+int isEmpty() return PQ.isEmpty();
+```
+
+We could use the negative of the current system time instead of c.
+
+### Q20. How do we implement Queue using heap?
+
+To implement a queue using a priority queue (min heap), as similar to stacks simulation, let us assume that we are using one extra integer variable, c. Also, assume that c is initialized equal to any know value. The implementaiton of the queue ADT is given below.
+
+Same as Q19 but instead c increases.
