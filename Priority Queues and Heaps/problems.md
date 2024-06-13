@@ -183,3 +183,98 @@ We could use the negative of the current system time instead of c.
 To implement a queue using a priority queue (min heap), as similar to stacks simulation, let us assume that we are using one extra integer variable, c. Also, assume that c is initialized equal to any know value. The implementaiton of the queue ADT is given below.
 
 Same as Q19 but instead c increases.
+
+### Q21. Given a big file containing billions of numbers, how can you find the 10 maximum numbers from that file?
+
+Always remember that when you need to find max n elements, the best data structure to use is priority queues.
+
+One solution for this problem is to divide the data is sets of 1000 elements and make a heap of them, and they take 10 elements from each heap one by one. Finally heap sort all the sets of 10 elements and take the top 10 among those. But the problem is this approach is where to store 10 elements from each heap. That may require a large amount of memory as we have billions of numbers.
+
+Reusing the top 10 elements in subsequent element can solve this problem. That means take the first block of 1000 elements and subsequenct blocks of 990 element each. Initially, Heapsort the first set of 1000 numbers, take max 10 elements, and mix them with 990 elements of 2nd set. Again, Heapsort these 1000 numbers, take 10 max elements, and mix them with 990 element of the 3rd set. Repeat till the last set of 990 element and take max 10 element from the final heap. These 10 elements will be your answer.
+
+O(n)
+
+### Q22. Merge k sorted lists with total n element: We are given k sorted lists with total n inputs in all the lists. Give an algorithm to merge them into one single sorted list.
+
+Since there are k equal size lists with a total of n element, the size of each list is n/k. One simple way of solving this problem is:
+
+- Take the first list and merge it with the second list. Since the size of each list is n/k, this step produces a sorted list with size 2n/k. THis is similar to merge sort logic.
+- Continue this process untill all the lists are merged to one list.
+
+O(nk)
+
+### Q23. For problem-22, can we improve the time complexity?
+
+1. Divide the lists into pairs and merge them. That means, first take two lists at a time and merge them so that the total elements parsed for all lists is O(n). This operation gives k/2 lists.
+2. Repeat step-1 until the number of lists becomes one.
+
+Time complexity: Step-1 executes logk times and each operation parses all n elements in all the lists for making k/2 lists. For example, if we have 8 lists, then the first pass would make 4 lists by parsing all n elements. The second pass would make 2 lists by again parsing n elemnets and the third pass would give 1 list by again parsing n element. As a result the total time complexity is O(nlogn).
+
+### Q24. For problem-23, can we improve the space complexity?
+
+1. Build the max-heap with all the first elements from each list in O(k).
+2. In each step, extract the maximum element of the heap and add it at the end of the output.
+3. Add the next element from hte list of the one extracted. That means we need to select the next element of the list which contains the extracted element of the previous step.
+4. Repeat step-2 and step-3 until all the elements are completed from all the lists.
+
+Time complexity: O(nlogk)
+Space complexity: O(k)
+
+### Q25. Given 1 arrays A and B each with n elements. Give an algorithm for finding largest n pairs (A[i],B[j]).
+
+- Heapifiy A and B. This steps takes O(n).
+- Then keep on deleting the element from both the heaps. Each step takes O(logn)
+
+Total time complexity: O(nlogn)
+
+### Q26. Min-Max heap: Give an algorithm that supports min and max in O(1) time insert, delete min and delete max in O(logn) time. That means, design a data structure which supports the following operations:
+
+![alt text](image-14.png)
+
+This solution can be solved using two heaps. Let us say two heaps are: H_min and H_max. Also, assume that elements in both the arrays have mutual pointers. That means, an element in H_min will have a pointer to the same elemnet in H_max and an element in H_max will have a pointer to the same element in H_min.
+
+![alt text](image-15.png)
+
+### Q27. Dynamic median finding. Design a heap data structure that supports finding the median.
+
+In a set of n elements, median is the middle element, such that the number of element lesser than the median is equal to number of elements larger than the median. If n is odd we can find the median by sorting the set and taking the middle element. if n is even, the median is usually defined as the average of the two middle elements. This algorithm works even when some of the elemnets in the list are equal. For example, the median of the multiset {1,1,2,3,5} is 2, and the median of the multiset {1,1,2,3,5,8} is 2.5.
+
+"Median heaps" are the avriant of that give access to the median element. A median heap can be implemented usign two heaps, each contianing half the elemnts. One is a max-heap, containing the smallest elements; the other is a min-heap, containing the largest elmenets. The size of the max-heap may be equal to the size of min-heap, if the total number of elements is dven. In thsi case, the median is the average of the maximum elemnt of the max-heap and the minimum element of the min-heap. If there is an odd number of elemnet, the max-heap will contain one more elemne tthan the min-heap. The median in this caes is simply the maximum element of the max-heap.
+
+### Q28. maximum sum in sliding window: Given array A[] with sliding window of size w which is moving from the very left of the array to the very right. Assumet that we can only see the w numbers in the window. Each time the sliding window moves rightwards by one position.
+
+Brute force solution is,every time the iwndow is moved we can search search for a total of w elements in the window.
+
+### Q29. For problem-28, can we reduce the complexity?
+
+Yes we can use heap data sturcutre. This reduces the time complexity to O(nlogw). Insert operation takes O(logw) time, where w is the size of the heap. However, getting the maximum value is cheap; it merely takes constant time as the maximum value is awlays kept in the roo tof the heap. As the window slides to the rgiht, some elements in the heap might not be valid anymore. How should we remove them? We would need to be somewhat careful here. Since we only remove elements that are out of the window's range, we would need to keep track of the element's indices too.
+
+
+### Q30. For problem-29 can we further reduce the complexity?
+
+Yes the double-ended queue is the perfect data sturcture for this problem. It supports insertion/deletion from the front and back. The trick is to find a way such that the largest element in the window would always appear in the front of the queue. how would you maintin this requirement as you push and pop element in and out of the queue?
+
+Besides, you will notice that there are some redundant elements in the queue that we shouldn't even consider. For example, if the element queue has the element: [10 5 3], and a new element in the window has the element 11. Now, we could have emptied the queue without considering elements 10,5 and 3 and insert only element 11 into the queue.
+
+Typically, most people try to maintain the queue size the same as the window's size. Try to break away from this though and think out of the box. Removing redundant elements and storing only elements that need ot be considered in the queue is the key to achieving the efficient O(n) solution below. This is ebcause each element in the list is being inserted and removed at most once.
+
+
+```c
+void maxSlidingWindow(int A[],int n,int w,int B[]){
+    struct DoubleEndQueue*Q=CreateDoubleEndQueue();
+    for(int i=0;i<w;i++){
+        while(!isEmptyQueue(Q) && A[i]>=A[QBack(Q)]) PopBack(Q);
+        PushBack(Q,i);
+    }
+    for(int i=w;i<n;i++){
+        B[i-w]=A[QFront(Q)];
+        while(!isEmptyQueue(Q) && A[i]>= A[QBack(Q)]) PopBack(Q);
+        while(!isEmptyQueue(Q) && QFront(Q)<= i-w) PopFront(Q);
+        PushBack(Q,i);
+    }
+    B[n-w]=A[QFront(Q)];
+}
+```
+
+### 31. A priority queue is a list of items in which each item has associated with it a priority. Items are withdrawn from a priority queue in order of their priorities starting with the highest priority item first. If the maximum priority item is required, then a heap is constructed such than priority of every node is greater than the priority of its children. Design such a heap where the item with the middle priority is withdrawn first. If there are n items in the heap, then the number of items with the priority smaller than the middle priority is n/2 if n is odd, else ???.
+
