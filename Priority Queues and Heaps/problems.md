@@ -276,5 +276,89 @@ void maxSlidingWindow(int A[],int n,int w,int B[]){
 }
 ```
 
-### 31. A priority queue is a list of items in which each item has associated with it a priority. Items are withdrawn from a priority queue in order of their priorities starting with the highest priority item first. If the maximum priority item is required, then a heap is constructed such than priority of every node is greater than the priority of its children. Design such a heap where the item with the middle priority is withdrawn first. If there are n items in the heap, then the number of items with the priority smaller than the middle priority is n/2 if n is odd, else ???.
+### Q31. A priority queue is a list of items in which each item has associated with it a priority. Items are withdrawn from a priority queue in order of their priorities starting with the highest priority item first. If the maximum priority item is required, then a heap is constructed such than priority of every node is greater than the priority of its children. Design such a heap where the item with the middle priority is withdrawn first. If there are n items in the heap, then the number of items with the priority smaller than the middle priority is n/2 if n is odd, else ???.
 
+We can use one min heap and one max heap such that root of the min heap is larger than the root of the max heap. The size of the min heap should be equal or one less than the size of the max heap. So the middle element is always the root of the max heap.
+
+For the insert operation, if the new item is less than the root of max heap, then insert it into the max heap; else insert it into the min heap. After the withdraw or insert operation, if the size of heaps are not as specified above than transfer the root element of the max heap to min heap or vice-versa.
+
+### Q32. Given two heaps, how do you merge (union) them?
+
+Binary heap supports various operations quickly: find-min,insert,decrease-key. If we have two min-heaps, H1 and H2, there is no efficient way to combine them into a single min-heap.
+
+For solving this problem efficiently, we can use mergeable heaps. Mergeable heaps support efficient union operation. It is a data structure that supports the following operations:
+
+- create an empty heap
+- insert an item x with key K into a heap H
+- return item with min key
+- return and remove
+- merge heap H1 and H2
+
+Example of mergeable heaps are:
+
+- Binomial Heaps
+- Fibonacci Heaps
+
+Both heaps also supports:
+
+- assign item Y with a smaller key K
+- remove item X
+
+**Binomial Heaps**: Unlike binary heap which consists of a single tree, a binomial heap consist of a small set of compoenent trees and no need to rebuild everything when union preformed. Each component tree is in a special format, called a binomial tree.
+
+A binomial tree of order k, denoted by B_k is defined recursively as follows:
+
+- B_0 is a tree with a single node.
+- For k greater than equal to 1, K_k is formed by joining two B_k-1 such that the root of one tree becomes the leftmost child of the root of the other
+
+![alt text](image-16.png)
+
+Fibonacci heaps: Fibonacci heap is another example of mergeable heap. It has no good worst-case gaurantee for any operation (except insert/create-heap). Fibonacci Heaps have excellent amortized cost to perform each operation. Like binomial heap, fibonacci heap consist of a set of min=heap ordered compoenents tree. However, unlike binomial heap, it has
+
+- No limit on number of trees, and
+- No limit on height of tree
+
+Also, find-min,delete-min,union,decrease-key,delete all have worst-case O(n) running time. However, in the amortized sence, each operation performs very quickly.
+
+![alt text](image-17.png)
+
+### Q33. Median in an infinite series of integers
+
+Median is the middle number in a a sorted list of numbers. If we have even number of elements, median is the average of two middle numbers in a sorted list of numbers.
+
+We can solve this problem efficiently by using 2 heaps: One Maxheap and one MinHeap.
+
+1. MaxHeap contains the smallest half of the received integers
+2. MinHeap contains the largest half of the received integers
+
+The integers in maxHeap are always less than or equal to the integers in minHeap. Also, the number of elements in maxHeap is either equal to or 1 more than the number of elements in the minHeap.
+
+In the stream if we get 2n elements, maxHeap and minHeap will both contain equal number of elements. Otherwise, if we have received 2n+1 elements, maxHeap will contain n+1 and minHeap n.
+
+Let us find the median: if we have 2n+1 elements, the median of received elements will be the largest element in the maxHeap. Otherwise, the median of received elements will be the average of largest element in the maxHeap and smallest element in the minHeap. This can be calculated in O(1)
+
+Inserting an element into heap cna be done in O(logn). Note that, any heap containing n+1 elements might need one delete operation as well.
+
+![alt text](image-18.png)
+
+### Q34. Suppose the elemnts 7,2,10 and 4 are inserted, in that order, into the valid 3-ary max heap found in the above question. Which are of the following is the sequence of items in the array representing the resultant heap?
+
+A) 10,7,9,8,3,1,5,2,6,4
+B) 10,9,8,7,6,5,4,3,2,1
+C) 10,9,4,5,7,6,8,2,1,3
+D) 10,8,6,9,7,2,3,4,1,5
+
+Ref PG 405
+
+### Q35. A compelte binary min-heap is made by including each integer in [1,1023] exactly once. The depth of a node in the heap is the length of the path from the root of heap to that node. Thus, the root is at depth 0. THe maximum depth at which integer 9 can appear is.
+
+As shown in the figure below, for a given number i, we can fix the element i at ith level and arrange the numbers 1 to i-1 to the levels above. Since the root is at depth zero, the maximum depth of the ith element in a min-heap is i-1. Hence, the maximum depth at which integer 9 can appear is 8.
+
+![alt text](image-19.png)
+
+### Q36. A d-ary heap is like a binary heap, but instead of 2 children, nodes have d children, nodes have d children. How would you represent a d-ary heap with n elements in an array? What are the expressions for determining the parent of a given element, parent(i) and a jth child of a given elemnt, child(i,j), where 1 smaller than equal to j smaller than equal to d?
+
+The following expression determine the parent and jth child of element i:
+
+Parent(i) = (i+d-2)/d
+Child(i,j) = (i-1)d+j+1
