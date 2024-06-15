@@ -172,3 +172,51 @@ Note: There is no change in FIND operation implementaiton
 
 ![alt text](image-5.png)
 
+As in UNION by size, in this method we store negative of height of the tree (that means, if the height of the tree is 3 then we store -3 in the parent array for the root element). We assume the height of a tree with one element set is 1. For the previous example, the new representation will look like:
+
+![alt text](image-6.png)
+
+**UNION by height**
+
+```c
+void UNIONByHeight(int S[],int size,int root1,int root2){
+    if(FIND(S,size,root1)==FIND(S,size,root2) && FIND(S,size,root1)!=-1) return;
+    if(S[root2]<S[root1]) S[root1]=root2;
+    else if(S[root2]==S[root1]){
+        S[root1]--;
+        S[root2]=root1;
+    }
+}
+```
+
+Note: for FIND operation there is no change in the implementaiton
+
+## Comparing UNION by size and UNION by height
+
+With UNION by size, the depth of any node is never more than logn. This is because a node is initially at depth 0. When its depth increases as a result of a UNION, it is placed in a tree that is at least twice as large as before. That means its depth can be increased at most logn times. This means that the running time for a FIND operation is O(logn), and a sequence of m operations takes O(mlogn).
+
+Similarly with UNION by height,if we take the UNION of two trees of the same height, the height of the UNION is one larger than the common height, and otherwise equal to the max of the two heights. This will keep the height of tree of n nodes from growing post O(logn). A sequence of m UNIONs and FINDs can then still cost O(mlogn).
+
+## Path compression
+
+Find operation traverse a list of nodes on the way to the root. We can make later FIND operations efficient by making each of these vertices point directly to the root. This process is called path compression. For example, in the FIND(X) operation, we travel from X to the root of the tree. The effect of path compression is that every node on the path from X to the root has its parent changed to root.
+
+![alt text](image-7.png)
+
+With path compression the only change to the FIND function is that S[X] is made equal to the value returned by FIND. That means, after the root of the set is found recursively,X is made to point directly to it. This happen recursively to every node on the path to the root.
+
+## Find with path compression
+
+```c
+int FIND(int S[],int size,int X){
+    if(!(X>=0 && X<size)) return;
+    if(S[X]<=0) return X;
+    else return(S[X]=FIND(S,S[x]));
+}
+```
+
+Note: Path compression is compatible with UNION by size but not with UNION by height as there is no efficient way to change the height of the tree.
+
+## Summary
+
+![alt text](image-8.png)
