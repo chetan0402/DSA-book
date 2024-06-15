@@ -56,3 +56,179 @@ As in other ADTs, to manipulate graphs we need to represent them in some useful 
 - Adjacency list
 - Adjacency set
 
+## Adjacency Matrix
+### Graph Declaration for Adjacency Matrix
+
+First, let us look at the componenets of the graph data structure. To represent graphs, we need the number of vertices, the number of edges and also their interconnections. So, the graph can be declared as:
+
+```c
+struct graph{
+  int V;
+  int E;
+  int **adj; // Since we need two dimensional matrix
+}
+```
+
+### Description
+
+In this method, we use a matrix with size V x V. The values of matrix are boolean. Let us assume the matrix is Adj. The value Adj[u,v] is set to 1 if there is an edge from vertex u to vertex v and 0 otherwise.
+
+In the matrix, each edge is represented by two bits for undirected graphs. That means, an edge from u to v is represented by 1 value in both Adj[u,v] and Adj[u,v]?. To save time, we can process only half of their symmetric matrix. Also, we can assume that there is an "edge" from each vertex to itself. So, Adj[u,v] is set to 1 for all vertices.
+
+If the graph is a directed graph then we need to mark only one entry in the adjacency matrix. As an example, consider the directed graph below.
+
+![alt text](image-2.png)
+
+The adjacency matrix for this graph can be given as:
+
+![alt text](image-3.png)
+
+Now,let us concentrate oon the implementation. To read a graph, one way is to first read the vertex names and then read pairs of vertex names (edges). The code below reads an undirected graph.
+
+```c
+struct Graph*adjMatrixOfGraph(){
+  int i,u,v;
+  struct Graph*G=(struct Graph*)malloc(sizeof(struct Graph));
+  if(G==NULL) return;
+  scanf("Number of vertices: %d,Number of edges:%d",&G->V,&G->E);
+  G->Adj=malloc(sizeof(G->V * G->V));
+  for(u=0;u<G->V;u++) for(v=0;v<G->V;v++) G->Adj[u][v]=0;
+  for(i=0;i<G->E;i++){
+    scanf("Reading Edge: %d %d",&u,&v);
+    G->Adj[u][v]=1;
+    G->Adj[v][u]=1;
+  }
+  return G;
+}
+```
+
+The adjacency matrix representation is good if the graphs are dense. The matrix requires O(V^2) bits of storage and O(V^2) time for initialization.If the number of edges is proportional to V^2,then there is no problem because V^2 steps are required to read the edges. If the graph is sparse, the initialization of the matrix dominates the running time of the algorithm as it takes O(V^2).
+
+## Adjacency List
+### Graph Declaration for Adjacency List
+
+In this representation all the vertices connected to a vertex v are listed on an adjacency list for that vertex v. This can be easily implemented with linked lists. That means, for each vertex v we use a linked list and list nodes represents the connections between v and other vertices to which v has an edge.
+
+The total number of linked lists is equal to the number of vertices in the graph. The graph ADT can be declared as:
+
+```c
+struct Graph{
+  int V;
+  int E;
+  int *Adj; //head pointers to linked list
+}
+```
+
+### Description
+
+Considering the same example as that of the adjacency matrix, the adjacency list representation can be given as:
+
+![alt text](image-4.png)
+
+Since vertex A has an edge for B and D, we have added them in the adjacency list for A. The same is the case with other vertices as well.
+
+```c
+struct ListNode{
+  int vertexNumber;
+  struct ListNode*next;
+}
+struct Graph*adjListOfGraph{
+  int i,x,y;
+  struct ListNode*temp;
+  struct Graph*G=(struct Graph*)malloc(sizeof(struct Graph));
+  if(G==NULL) return;
+  scanf("Number of the vertics: %d, Number of edges: %d",&G->V,&G->E);
+  G->Adj=malloc(G->V * sizeof(struct ListNode));
+  for(i=0;i<G->V;i++){
+    G->Adj[i]=(struct ListNode*)malloc(sizeof(struct ListNode));
+    G->Adj[i]->vertexNumber=i;
+    G->Adj[i]->next=G->Adj[i];
+  }
+  for(i=0;i<E;i++){
+    scanf("Reading Edge: %d %d",&x,&y);
+    temp=(struct ListNode*)malloc(sizeof(struct ListNode));
+    temp->vertexNUmber=y;
+    temp->next=G->Adj[x];
+    G->Adj[x]->next=temp;
+    temp=(struct ListNode*)malloc(sizeof(struct ListNode));
+    temp->vertexNumber=y;
+    temp->next=G->Adj[y];
+    G->Adj[y]->next=temp;
+  }
+  return G;
+}
+```
+
+For this representation, the order of edges in the input is important. This is because they determine the order of the vertices on the adjacency lists. The same graph can be represented in many different ways in an adjacency list. the order in which edges appear on the adjacency list affects the order in which edges are processed by algorithms.
+
+### Disadvantages of Ajacency Lists
+
+Using adjacency list representation we cannot perform some operations efficiently. As an example. consider the case of deleting a node. IN adjacency list representation, it is not enough if we simply delete a node from the list representaiton, if we delete a node from the adjacency list then that is enough. For each node on the adjacency list of that node specifies another vertex. We ened to search other nodes linked list also for deleting it. This problem can be solved by linking the two list nodes that correspond to a particular edge and making the adjacency lists doubly linked. But all these extra links are risky to process.
+
+## Adjacency Set
+
+It is very much similar to adjacency list but instead of using Linked lists, disjoint sets are used. For more details refer to disjoint set chapter.
+
+### Comparison of Graph Representations
+
+Directed and undirected graphs are represented with the same structures. For directed graphs, everything is the same, except that each edge is represented just once. An edge from x to y is represented by a 1 value in Adj[x][y] in the adjacency matrix, or by adding y on x's adjacency list. For weighted graphs, everything is the same, except fill the adjacency matrix with weights instead of boolean values.
+
+![alt text](image-5.png)
+
+## Graph Traversals
+
+To solve problems on graphs, we need a mechanism for traversing the graphs. Graph traversal algorithms are also called graph search algorithms. Like tree traversal algorithms, graph search algorithms can be thought of as starting at some source vertex in a graph and "searching" the graph by going through the edges and marking the vertices. Now, we will disucess two such algorithms for traversing the graphs.
+- Depth First Search
+- Breadth First Search
+
+### Depth First Search [DFS]
+
+DFS algorithm works in a manner similar to preorder traversal of the trees. Like preorder traversal, internally this algorithms also uses stack.
+
+Let us consider the following example. Suppose a person is trapped inside a maze. To come out from that maze, the person visits each path and each intersection. Let us say the person uses two colors of paint to mark the intersections already passed. When discovering a new intersection, it is marked grey, and he continues to go deeper.
+
+After reaching a "dead end" the person knows that there is no more unexplored path from the grey intersection, which now is completed, and he marks it with black. This "dead end" is either an intersection which has already been marked grey or black, or simply a path that does not lead to an intersection.
+
+The intersections of the maze are the vertices and the paths between the intersections are the edges of the graph. The process of returning from the "dead end" is called backtracking. we are trying to go away from the starting vertex into the graph as deep as posisble, until we have to backtrack to the proceding grey vertex. In DFS algorithm, we encounter the folowing types of edges.
+
+- Tree edge: encounter new vertex
+- Back edge: from descendent to ancestor
+- Forward edge: from ancestor to descendent
+- Cross edge: between a tree or subtrees.
+
+For most algorithms boolean classification, unvisited/visited is enough. That means, for some problems we need to use three colors, btu for our discussion two colors are enough.
+
+false -> vertex is unvisited
+true -> vertex is visited
+
+Initially all vertices are marked unvisited (false). The DFS algorithm start at a vertex u in the graph. By starting at vertex u it considers the edges from u to other vertices. If the edge leads to an already visited vertex, then backtrack to current vertex u. If an edge leads to an unvisited vertex, then go to that vertex and start processing from that vertex. That means the new vertex becomes thec rurent vertex. Follow this process untill we reach the dead-end. At this point start backtracking.
+
+The process terminates when backtracking leads back to the start vertex. The algorithm based on this mechanism is given below: assume visited[] is a global array.
+
+```c
+int visited[G->V];
+void DFS(struct Graph*G,int u){
+  visited[u]=1;
+  for(int v=0;v<G->V;v++){
+    for each unvisited adjacent node v of u{
+      DFS(G,v);
+    }
+  }
+}
+void DFSTraversal(struct Graph*G){
+  for(int i=0;i<G->V;i++) visited[i]=0;
+  for(int i=0;i<G->V;i++) if(!visited[i]) DFS(G,i);
+}
+```
+
+As an example, consider the following graph. We can see that sometimes an edge leads to an already discovered vertex. These edges are called back edges, and the other edges are called tree edges because deleting the back edges from the graph generates a tree.
+
+The final generated tree is caleld the DFS tree and the other in which the vertices are processed is called DFS numbers of the vertices. In the graph below, the gray color indicates that the vertex is visited. We need to see when the visited tbale is updated.
+
+![alt text](image-6.png)
+![alt text](image-7.png)
+![alt text](image-8.png)
+
+From the above diagrams, it can be seen that DFS traversal creates a tree and we call such tree a DFS tree. The above algorithm works even if the given graph has conencted componenets.
+
+The time complexity of DFS is O(V+E), if we use adjacency lists for representing the graphs. This is ebcause we are starting at a vertex and processing the adjacent nodes only if they are not visited. SImilarly, if an adjacency matrix is used for a graph represnetation, then all edges adjacent to a vertex can't be found efficiently, and this gives O(V^2) complexity.
