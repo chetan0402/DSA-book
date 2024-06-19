@@ -372,7 +372,7 @@ Let s=C. The distance from C to C is 0. Initially, distances to all other nodes 
 
 ![alt text](image-15.png)
 
-### Algorithm
+#### Algorithm
 
 ```c
 void unweightedShortestPath(struct Graph*G,int s){
@@ -408,12 +408,12 @@ Before going to code let us understand how the algorithm works. As in unweighted
 
 After the algorithm finishs the distance table will have the shortest distance from source s to each other vertex v. To simplify the understanding of Dijkstra's algorithm, let us assume that the given vertices are maintained in two sets. Initially the first set contains only the source element and the second set contains all the remaining elements. After the kth iteration, the first set contains k vertices which are closest to the soruce. These k vertices are the ones for which we have already computed the shortest distances from source.
 
-### Notes on Dijksta's algorithm
+#### Notes on Dijksta's algorithm
 - It uses greedy method: Always pick the next closest vertex to the source.
 - It uses priority queue to store unvisited vertices by distance from s.
 - It does not work with negative weights.
 
-### Difference between unweighted shortest path and dijkstra's algorithm
+#### Difference between unweighted shortest path and dijkstra's algorithm
 
 1. To represent weights in the adjacency list, each vertex contains the weights of the edges
 2. Instead of ordinary queue we use priority queue and the vertex with the smallest distance is selected for processing.
@@ -459,3 +459,166 @@ initially the distance table is:
 After the first step, from vertex A, we can reach B and C. So in the distacen table we update the reachability of B and C with their costs and same is shown below.
 
 ![alt text](image-19.png)
+
+Now, let us select the minimum distance among all. The minimum distance vertex is C. That means, we have to reach other vertices from these two vertices (A and C). For example, B can be reached from A and also from C. In this case we have to select the one which gives the lowest cost. Since reaching B through C is giving the minimum cost (1+2), we update the distance table for vertex B with cost 3 and the vertex from which we got this cost as C.
+
+![alt text](image-20.png)
+
+The only vertex remaining is E. To reach E, we have to see all the paths through which we can reach E and select the one which gives the minimum cost. We can see that if we use B as the intermediate vertex through C we get the minimum cost.
+
+![alt text](image-21.png)
+
+The final minimum cost tree which Dijkstra's algorithm generates is:
+
+![alt text](image-22.png)
+
+#### Performance
+
+In Dijkstra's algorithm, the efficiency depends on the number of deleteMins (V deleteMins) and updates for priority queues (E updates) that are used. If a standard binary heap is used then the compelxity is O(ElogV).
+
+The term ElogV comes from E updates (each update takes logV) for the standard heap. If the set used is an array then complexity is O(E+V^2)
+
+#### Disadvantages of Dijkstra's algorithm
+
+- As discussed above, the major disadvantage of the algorithm is that it does a blind search, thereby wasting time and necessary resources.
+- Another disadvantage is that it cannot handle negative edges. This leads to acyclic graphs and most often cannot obtain the right shortest path.
+
+#### Relatives of Dijkstra's algorithm
+
+- The Bellman-Ford algorithm computes single-source shortest paths in a weighted digraph. It uses the same concept as that of Dijkstra's algorithm that can handle negative edges as well. It has more running time than Dijkstra's algorithm
+- Prime's algorithm finds a minimum spanning tree for a connect weighted graph. It implies that a subset of edges that form a tree where teh ttoal weight of all the edges in the tree is minimized.
+
+### Bellman-Ford algorithm
+
+If the graph has negative edge costs, then Dijkstra's algorithm does not work. The problem is that once a vertex u is declared known, it is possible that from some other, unknown vertex v there is a path back to u that is very negative. In such a case taking a path from s to v back to u is better than going from s to u without using v. A combination of Dijkstra's algorithm and unweighted algorithms will solve the problem. Initialize the queue with s. Then, at each stage we DeQueue a vertex v. We find all vertices W adjacent to v such that,
+
+`distance to v + weight (v,w) < old distance to w`
+
+We update w old distance and path, and place w on a queue if it is not already there. A bit can be set for each vertex to indicate presence in the queue. We repeat the process until the queue is empty.
+
+```c
+void bellmanFordAlgo(struct Graph*G,int s){
+  struct Queue*Q=createQueue();
+  int v,w;
+  EnQueue(Q,s);
+  distnace[s]=0;
+  while(!isEmptyQueue(Q)){
+    v=DeQueue(Q);
+    for all adjacent vertices w of v{
+      computer new distance d=distance[v]+weight[v][w];
+      if(old distance to w>new distance d){
+        distance[v]=distance to v+weigh[v][w];
+        path[w]=v;
+        if(w is there in queue) EnQueue(Q,w);
+      }
+    }
+  }
+}
+```
+
+This algorithm works if there are no negative-cost cycles. Each vertex can DeQueue at most |V| times, so the running time is O(|E|*|V|) if adjacency lists are used.
+
+### Overview of shortest path algorithms
+
+- Shortest path in unweighted graph [Modified BFS] => `O(|E|+|V|)`
+- Shortest path in weighted graph [Dijkstra's] => `O(|E|log|V|)`
+- Shortest path in weight graph with negative edges [Bellman - Ford] => `O(|E|*|V|)`
+- Shortest path in weighted acyclic graph => `O(|E|+|V|)`
+
+## Minimal spanning tree
+
+The spanning tree of a graph is a subgraph that contains all the vertices and is also a tree. A graph may have many spanning trees. As an example, consider a graph with 4 vertices as shown below. Let us assume that the corners of the graph are vertices.
+
+![alt text](image-23.png)
+
+For this simple graph, we can multiple spanning trees as shown below.
+
+![alt text](image-24.png)
+
+The algorithm we will discuss now is minimum spanning tree in an undirected graph. We assume that the given graphs are weighted graphs. If the graphs are unweighted graphs then we can still use the weighted graph algorithms by treating all weights as equal. A minimum spanning tree of an undirected graph G is a tree formed from graph edges that connect all the vertices of G with minimum total cost (weights). A minimum spanning tree exists only if the graph is connceted. THere are two famous algorithms for this problem:
+- Prim's algorithm
+- Kruskal's algorithm
+
+### Prim's algorithm
+
+Prim's algorithm is almost the same as Dijkstra's algorithm. As in Dijkstra's algorithm, in Prim's algorithm we keep the values distance and paths in the distance table. The only exception is that since the definition of distance is different, the updating statement also changes a little. The update statement is similar than before.
+
+```c
+void prims(struct Graph*G,int s){
+  struct PriorityQueue*PQ=createPQ();
+  int v,w;
+  EnQueue(PQ,s);
+  distance[s]=0;
+  while(!isEmptyQueue(PQ)){
+    v=deleteMin(PQ);
+    for all adjacent vertices w of v{
+      compute new distance d= distance[v]+weight[v][w];
+      if(distance[w]==-1){
+        distance[w]=weight[v][w];
+        insert w in the priority queue with priority d
+        path[w]=v;
+      }
+      if(distance[w]>new distance d){
+        distance[w]=weight[v][w];
+        udpate priority of vertex w to be d;
+        path[w]=v;
+      }
+    }
+  }
+}
+```
+
+The entire implementation of this algorithm is identical to that of dijkstra's algorithm. The running is O(V^2) without heaps [goods for dense graphs], and O(ElogV) using binary heaps [good for sparse graphs].
+
+### Kruskal's algorithm
+
+The algorithm starts with V different trees. While constructing the minimum spanning tree, every time Krushkal's algorithm selects an edge that has minimum weight and then adds that edge if it doesn't create a cycle. So, initially there are |V| single-node trees in the forest. Adding an edge merges two trees into one. When the algorithm is completed, there will be only one tree, and that is the minimum spanning tree. There are two ways of implementing krushkal's algorithm:
+- By using Disjoint sets: Using UNION and FIND operations
+- By using priority queue: Maintains weights in priority queue
+
+The appropriate data structure is the UNION/FIND algorithm. Two vertices belong to the same set if and only if they are connected in the current spanning forest. Each vertex is initially in its own set. If u and v are in the same set, the edge is rejected because it forms a cycle. Otherwise, the edge is accepted, and a UNION is performed on the two sets containing u and v. As an example, consider the following graph.
+
+![alt text](image-25.png)
+
+Now let us perform Krushkal's algorithm on this graph. We always select the edge which has minimum weight.
+
+![alt text](image-26.png)
+
+From the above graph, the edges which have minimum weight are: AD and BE. From these two we can select one of them and let us assume that we select AD.
+
+![alt text](image-27.png)
+
+DF is the next edge that has the lowest cost (6)
+
+![alt text](image-28.png)
+
+BE now has the lowest cost and we sleect it (dotted lines indicate selected edges)
+
+![alt text](image-29.png)
+
+Next, AC and CE have the low cost of 7 and we select AC
+
+![alt text](image-30.png)
+
+Then we selcet CE as its cost is 7 and it does not form a cycle
+
+![alt text](image-31.png)
+
+The next low cost edges are CB and EF. But if we select CB, then it forms a cycle. So we discard it. This is also the case with EF. So we should not select those two. And the next low cost is 9 (BD and EG). Selecting BD forms a cycle so we discard it. Adding EG will not form a cycle and therefore with this edge we complete all vertices of the graph.
+
+```c
+void kruskal(struct Grpah*G){
+  S=phi; // At the end S will contains the edges of minimum spanning trees
+  for(int v=0;v<G->V;v++) MakeSet(v);
+  sort edges of E by increasing weights w;
+  for each edge (u,v) in E{
+    if(FIND(u) not equal to FIND(V)){
+      S=UNION(S,{u,v});
+      UNION(u,v);
+    }
+  }
+  return S;
+}
+```
+
+The worst-case running time of this algorithm is O(ELogE), which is dominated by the heap operations. That means, since we are consructing the heap with E edges, we need O(ElogE) time to do that.
