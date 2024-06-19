@@ -232,3 +232,98 @@ The final generated tree is caleld the DFS tree and the other in which the verti
 From the above diagrams, it can be seen that DFS traversal creates a tree and we call such tree a DFS tree. The above algorithm works even if the given graph has conencted componenets.
 
 The time complexity of DFS is O(V+E), if we use adjacency lists for representing the graphs. This is ebcause we are starting at a vertex and processing the adjacent nodes only if they are not visited. SImilarly, if an adjacency matrix is used for a graph represnetation, then all edges adjacent to a vertex can't be found efficiently, and this gives O(V^2) complexity.
+
+### Applications of DFS
+
+- Topological sorting
+- Finding connected components
+- Finding articulation points of the graph
+- finding strongly connected componenets
+- Solving puzzles such as mazes
+
+### Breath First Search [BFS]
+
+The BSF algorithm works similar to leve-order traversal of the trees. Like level-order traversal, BFS also uses queues. In fact, level-order traversal got inspired from BFS. BFS works level by leve. Initially, BFS starts at a given vertex, which is at level 0. In the first stage it visits all vertices at level 1. In the second stage, it visits all vertices at the second level. These new vertices are the ones which are adjacent to level 1 vertices.
+
+BFS continues this process until all the levels of the graph are completed. Generaly queue data structure is used for storing the vertices of a level.
+
+As similar to DFS, assume that intially all vertices are marked unvisited (false). Vertices that have been processed and removed from the queue are marked visited (true). We use a queue to represent the visited set as it will keep the vertices in the order of when they were first visited. The implementation for the above discussion can be given as:
+
+```c
+void BFS(struct Graph*G,int u){
+  int v;
+  struct Queue*Q=createQueue();
+  EnQueue(Q,u);
+  while(!isEmptyQueue(Q)){
+    u = DeQueue(Q);
+    Process u;
+    Visited[s]=1;
+    if(!visited[v] && G->adj[u][v])
+    for each unvisited adjacent node v of u{
+      EnQueue(Q,u);
+    }
+  }
+}
+void BFSTraversal(struct Graph*G){
+  for(int i=0;i<G->V;i++) visited[i]=0;
+  for(int i=0;i<G->V;i++) if(!visited[i]) BFS(G,i);
+}
+```
+
+As an example, let us consider the same graph as that of the DFS example. The BFS traversal be shown as:
+
+![alt text](image-9.png)
+
+![alt text](image-10.png)
+
+Time complexity of BFS is O(V+E) if we use adjacency lists for representing the graphs, and O(V^2) foro adjacency matrix representation.
+
+### Application of BFS
+
+- Finding all connnect compoennets in a graph
+- Finding all nodes within one connected componenets
+- Finding the shortest path between two nodes
+- Testing a graph for bipartiteness
+
+### Comparing DFS and BFS
+
+Comparing BFS and DFS, the big advantage of DFS is that it has much lower memory requirements than BFS because it's not required to store all the child pointers at each level. Depending on the data and what we are looking for, either DFS and BFS can be advantageous. For example, in a family tree if we are looking for somone who;s still alive and if we assume the person would be at bottom of the tree, then DFS is a better choice. BFS would take a very long time to reach that last leve.
+
+The DFS algorithm finds the goal faster. Now if we were looking for a family membry who died a very long time ago, then that person would be closer to the top of the tree. In this case, BFS finds faster than DFS. So, the advantages of either vary depending of the data and what we are looking for.
+
+DFS is related to preorder traversal of a tree. Like preorder traversal, DFS visits each node bfeore its children. THe BFS algorithm works similar to leve-order traversal of the tree.
+
+If someone asks whether DFS is better of DFS is better, the answer depends on the type of problem that we are trying to solve. BFS visits each level one at time, and if we know the solution we are searching for is at a low depth, then BFS is good. DFS is a better choice if the solution is at maximum depth. The below table shows the differences betweeen DFS and BFS in terms of their application.
+
+![alt text](image-11.png)
+
+## Topological Sort
+
+Topological sort is an ordering of vertices in a directed acyclic graph [DAG] in which each node comes before all nodes to which it has outgoing edges. As an example, consider the course prerequisite structure at universities. A directed edge (v,w) indicates that course v must be compelted before course w. Topological ordering for this example is the sequence which does not voilate the prerequiste requirement. every DAG may have one or more topological orderings. Topological sort is not possible if the graph has a cycle, since for two vertices v and w on thec ycle, v preceds w and w preceds v.
+
+Topological sort has an interseting property. All pairs of consecutive vertices in the sorted order are connected by edges; then these edges form a directed Hamiltonian path in the DAG. If a hamiltonian path exists, the topological sort order is unique. If a topological sort does not form a hamiltonian path, DAG can have two or more topological orderings. In the graphbelow: 7,5,3,11,82,9,10 and 3,5,7,8,11,2,9,10 are both topological orderings.
+
+![alt text](image-12.png)
+
+Initially, indegree is computed for all vertices ,starting with the vertices which are having indegree 0. That means consider the vertices which do not have any prerequisite. To keep track of vertices which indegree zero we can use a queue.
+
+All vertices of indegree 0 are placed on queue. While the queue is not empty, a vertex v is removed, and all edges adjacent to v have their indegrees decreamented. A vertex is put on the queue as soon as its indegree falls to 0. The topological ordering is the order in which the vertices DeQueue.
+
+The time complexity of this algorithm is O(|E|+|V|) if adjacency lists are used.
+
+```c
+void TopologicalSort(struct Graph*G){
+  struct Queue*Q=createQueue();
+  int counter=0;
+  int v,w;
+  for(v=0;v<G->V;v++) if(indegree[v]==0) EnQueue(Q,v);
+  while(!isEmptyQueue(Q)){
+    v=DeQueue(Q);
+    topologicalOrder[v]=++counter;
+    for each w adjacent to v
+      if(--indegree[w]==0) EnQueue(Q,w);
+  }
+  if(counter!=G->V) printf("grpah has cycle");
+  deleteQueue(Q);
+}
+```
