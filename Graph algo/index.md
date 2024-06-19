@@ -397,3 +397,65 @@ void unweightedShortestPath(struct Graph*G,int s){
 Runnting time: O(|E|+|V|), if adjacency lists are used. In for loop, we are checking the outgoing edges for a given vertex and the sum of all examined edges in the while loop is equal to the number of edges which gives O(|E|).
 
 if we use matrix representation the complexity is O(V^2), because we need to reach an entire row in the matrix of length |V| in order to find the adjacenct verties for a given vertex.
+
+### Shortest path in weighted graph [Dijkstra's]
+
+A famous solution for the shortest path problem was developed by Dijkstra. Dijkstra's algorithm is a generalization of the BFS algorith. The regular BFS algorithm cannot solve the shortest path problem as it cannot guarantee that the vertex at the front of the queue is the vertex closest to source s.
+
+Before going to code let us understand how the algorithm works. As in unweighted shortest path algorithm, here too we use the distance tbale. The algoithm works by keeping the shortest distance of vertex v from the source in the distance table. The value distance[v] holds the distance from s to v. The shortest distance of the source to itself is zero. The distance table for all other vertices is set to -1 to indicate that those vertices are not alrleady processed.
+
+![alt text](image-16.png)
+
+After the algorithm finishs the distance table will have the shortest distance from source s to each other vertex v. To simplify the understanding of Dijkstra's algorithm, let us assume that the given vertices are maintained in two sets. Initially the first set contains only the source element and the second set contains all the remaining elements. After the kth iteration, the first set contains k vertices which are closest to the soruce. These k vertices are the ones for which we have already computed the shortest distances from source.
+
+### Notes on Dijksta's algorithm
+- It uses greedy method: Always pick the next closest vertex to the source.
+- It uses priority queue to store unvisited vertices by distance from s.
+- It does not work with negative weights.
+
+### Difference between unweighted shortest path and dijkstra's algorithm
+
+1. To represent weights in the adjacency list, each vertex contains the weights of the edges
+2. Instead of ordinary queue we use priority queue and the vertex with the smallest distance is selected for processing.
+3. The distance to a vertex is calculated by the sum of the weights of the edges on the path from the source to that vertex
+4. We update the distances in case the newly computed distance is smaller than the old distance which we have already computed.
+
+```c
+void dijkstra(struct Graph*G,int s){
+  struct PriorityQueue*PQ=createPQ();
+  int v,w;
+  EnQueue(PQ,s);
+  for(int i=0;i<G->V;i++) distance[i]=-1;
+  distance[s]=0;
+  while(!isEmptyQueue(PQ)){
+    v=deleteMin(PQ);
+    for all adjacent vertices w of v{
+      computer new distance d=distance[v]+weight[v][w];
+      if(distance[w]==-1){
+        distance[w]=new distance d;
+        insert w in the priority queue with priority d;
+        path[w]=v;
+      }
+      if(distnace[w]>new distance d){
+        distance[w]=new distance d;
+        update priority of vertex w to be d;
+        path[w]=v;
+      }
+    }
+  }
+}
+```
+
+The above algorithm can be better understood through an example, which will explain each step that is taken and how distance is calculated. The weighted graph below has 5 vertices from A-E.
+
+The value between the two vertices is known as the edge cost between two vertices. For example the edge cost between A and C is 1. Dijkstra's algorithm can be used to find the shortest path from source A to the remaining vertices in the graph.
+
+![alt text](image-17.png)
+
+initially the distance table is:
+
+![alt text](image-18.png)
+
+After the first step, from vertex A, we can reach B and C. So in the distacen table we update the reachability of B and C with their costs and same is shown below.
+
+![alt text](image-19.png)
