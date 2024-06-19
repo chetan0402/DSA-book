@@ -327,3 +327,73 @@ void TopologicalSort(struct Graph*G){
   deleteQueue(Q);
 }
 ```
+
+Total running time of topological sort is O(V+E)
+Note: THe topological sorting problem can be solved with DFS. Refer to the problems section for the algorithm
+
+### Applications of topological sorting
+- Representing course prerequisites
+- Detecting deadlocks
+- Pipeline of computing jobs
+- Checking for symbolic link loop
+- Evaluatning formulae in spreadsheet
+
+## Shortest path algorithms
+
+Let us consider the other important problem of a graph. Given a graph G=(V,E) and a distinguished vertex s,we need to find the shortest path from s to every other vertex in G. There are variations in the shortest path algorithms which depends on the type of the input graph and are given below.
+
+### Variations of shortest path algorithms
+- Shortest path in unweighted graph
+- Shortest path in weighed graph
+- Shortest path in weighted graph with negative edges
+
+### Applications of shortest path algorithms
+- Finding fastest way to go from one place to another
+- Finding cheapest way to fly/send data from one city to another
+
+### Shortest path in weighted graph
+
+Let s be the input vertex from which we want to find the shortest path to all other vertices. Unweighted graph is a special case of the weighted shortest-path problem, with all edges a weight of 1. The algorithm is similar to BFS and we need to use the following data structures:
+
+- A distance table with three columns (each row corresponds to a vertex):
+  - Distance from source vertex
+  - Path - contains the name of the vertex through which we get the shortes distance.
+- A queue is used to implement breath-first search. It contains vertices whose distance from the source node has computed and their adjacent vertices are to be examined.
+
+As an example, consider the following graph and its adjacency list representation
+
+![alt text](image-13.png)
+
+The adjacency list for this grpah is:
+
+![alt text](image-14.png)
+
+Let s=C. The distance from C to C is 0. Initially, distances to all other nodes are not computed, and we initialize the second column in the distance table for all vertices with -1 as below.
+
+![alt text](image-15.png)
+
+### Algorithm
+
+```c
+void unweightedShortestPath(struct Graph*G,int s){
+  struct Queue*Q=createQueue();
+  int v,w;
+  EnQueue(Q,s);
+  for(int i=0;i<G-V;i++) distance[i]=-1;
+  distance[s]=0;
+  while(!isEmptyQueue(Q)){
+    v=DeQueue(Q);
+    for each w adjacent to v
+      if(distance[w]==-1){
+        distance[w]=distance[v]+1;
+        path[w]=v;
+        EnQueue(Q,w);
+      }
+  }
+  deleteQueue(Q);
+}
+```
+
+Runnting time: O(|E|+|V|), if adjacency lists are used. In for loop, we are checking the outgoing edges for a given vertex and the sum of all examined edges in the while loop is equal to the number of edges which gives O(|E|).
+
+if we use matrix representation the complexity is O(V^2), because we need to reach an entire row in the matrix of length |V| in order to find the adjacenct verties for a given vertex.
