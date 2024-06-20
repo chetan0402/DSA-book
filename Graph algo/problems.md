@@ -131,3 +131,36 @@ void cutVertices(int u){
     }
 }
 ```
+
+### Q15. Let g be a connected graph of order n. What is the maximum number of cut-verices that G can contain?
+
+n-2. As an example, consider the following graph. In the graph below, except for the vertices 1 and n, all the remaining vertices are cut vertices. This is because removing 1 and n vertices does not split into two. This is a case where we can get teh maximum number of cut vertices.
+
+![alt text](image-37.png)
+
+### Q16. DFS Application: Cut bridges or cut edges
+
+Let g be a connected graph. An edge uv in G is called a bridge of G is G-uv is disonnected.
+
+As an example, consider the following graph.
+
+![alt text](image-38.png)
+
+In the above graph if we remove the edge uv then the graph splits into two compoenents. For this grpah, uv is a bridge. The discussion we had for cut vertices holds good for bridges also. The only change is, instead of printing the vertex, we give the edge. The main observaitn is that an ed ge(u,v) cannot be a bridge if it is a prat of a cycle If (u,v) is not part of a cycle, then it is a bridge
+
+We can detect cycles in DFS by the rpesence of back edges, (u,v) is a bridge if and only if none of v and v's children has a back edge to u or any of u's ancestors. To detcet whether any of v's children has a back edge to u's parent, we can use a similar idea as above to see what is the smallest dfsnum reachable from the subtree rooted at v.
+
+```c
+int dfsnum[256],num=0,low[256];
+void bridges(struct Graph*G,int u){
+    low[u]=dfsnum[u]=num++;
+    for(int v=0;G->V;++v){
+        if(G->adjMatrix[u][v] && dfsnum[v]==-1){
+            cutVertices(v);
+            if(low[v]>dfsnum(u))
+                print (uv) as bridge
+            low[u]=min(low[u],low[v]);
+        }else low[u]=min(low[u]dfsnum[v]);
+    }
+}
+```
