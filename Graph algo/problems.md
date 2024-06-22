@@ -164,3 +164,90 @@ void bridges(struct Graph*G,int u){
     }
 }
 ```
+
+### Q17. DFS Application: Discuess Euler Circuits
+
+Before discussin this problem let us see the terminology:
+- Eulerian tour - a path that contains all edges without repetition
+- Eulerian circuit - a path that contains all edges without repeition and starts and ends in the same vertex
+- Eulerian graph - a graph that contains an Eulerian circuit
+- Even vertex: a vertex that has an even number of incident edges
+- Odd vertex: a vertex that has an odd number of incident edges.
+
+Euler circuit: For a given graph we have to reconstruct the circuits using a pen, drawing each line exactly once. We should not lift the pen from the paper while drawing. That means, we must find a path in the grpah that visits every edge exactly once and this problem is called an Euler path or Euler circuit problem. This puzzle has a ismple solution based on DFS.
+
+An Euler circuit exists if and only if the grpah is connected and the number of neighbors of each vertex is even. Strat with any node, select any untraversed outoging edge, and follow it. Repeat until there are no more reminaing unselected outgoing edges. For example, consider the fololwing graph: A legal Eular circuit of this graph is 0 1 3 4 1 2 3 4 2 0.
+
+![alt text](image-39.png)
+
+If we start at vertex 0, we can select the edge to vertex 1, then select the edge to vertex 2, then select the edge to vertex 0. THere are now no remianing unchosen edges from vertex 0:
+
+![alt text](image-40.png)
+
+We now have a circuit 0,1,2,0 that does not traverse every edge. So, we pick some other vertex that is on that circuit, say vertex 1. We then do another depth first search of the remaining edges. Say we choose the edge to node 3, then 4, then 1. Again we are stuck. There are no more unchosen edges from node 1. We now splice this path 1,3,4,1 into the old path 0,1,2,0 to get: 0,1,3,4,1,2,0. The unchosen edges now look like this:
+
+![alt text](image-41.png)
+
+We can pick yet another vertex to start another DFS. if we pick vertex 2, and splice the path 2,3,5,4,2, then we get the first circuit 0,1,3,4,1,2,3,5,4,2,0
+
+A similar problem is to find a simple cycle in an undirected grpah that visits every vertex. This is known as Hamiltonian cycle problem. Althought it seems almost identical to the euler circuit problem, no efficient algorithm for it is known.
+
+**Notes:**
+- A connected undirected graph is Eulerian if and only if every graph vertex has an even degree, or exactly two vertices with an odd degree.
+- A directed graph is Eulerian if it is strongly connected and every vertex has an equal in and out degree
+
+**Application:** A postman has to visit a set of streets in order to deliver mails and packages. He needs to find a path that starts and ends at the post-office, and that through each street (edge) exactly once. This way the postman will deliver mails and packages to all the necessary streets, and at the same time will spend minimum time/effort on the road.
+
+### Q18. DFS Application: Finding strongly connected compoenents.
+
+This is another application of DFS. In a directed graph, two verties u and v are strongly connected if and only if there exists a path from u to v and there exists a path from v to u.
+
+The strong connectedness is an equivalence relation.
+
+- A vertex is strongly connected with itself
+- If a veretx u is strongly connected to a vertex v,then v is strongly connected to u
+- If a vertex u is strongly connected to a vertex v, and v is strongly connected to a vertex x then u is strongly connected to x.
+
+What this says is,for a given directed graph we can divide it into strongly connected compoennets. This problem can be solved by performing two depth-first searchs. With two DFS searches we can test whether a given directed graph is strongly connected or not. We can also produce the subsets of vertices that are strongly connected.
+
+**Algorithm**
+- Perform DFS on given graph G.
+- Number vertices of given graph G according to a post-order traversal of depth-frist spanning forest.
+- Construct graph G_r by reversing all edges in G.
+- Perform DFS on G_r: Always start a new DFS at the highest-numbered vertex
+- Each tree in the resulting depth-furst spanning forst corresponds to a strongly-connected compoenents.
+
+**What this algorithm works?**
+Let us consider two vertices, v and w. if they are in the same strongly connected compoenent, then there are paths from v to W and from w to v in the original graph G, and hence also in G_r. If two vertices v and w are not in the same depth-first spanning tree of G_r, clearly they cannot be in the same strongly connected compoenents. As an example, consider the graph shown below on the left. Let us assume this graph is G.
+
+![alt text](image-42.png)
+
+Now, as per the algorithm, performing DFS on this G graph gives the following diagram. The dotted line from C to A indicates a back edge.
+
+Now, performing post order traversal on this tree gives: D,C,B and A.
+
+![alt text](image-43.png)
+
+Now reverse the given graph G and call it G_r and at the same time assign postorder numbers to the vertices. The reversed graph G_r will look like:
+
+![alt text](image-44.png)
+
+The last step is performing DFS on this reversed graph G_r. While doing DFS, we need to consider the vertex which has the lasgest DFS number. So, first we start at A and with DFS we go to C and then B. At B, we cannot move further. This says that {A,B,C} is a strongly connected componenet. Now the only reminaing element is D and we end our second DFS at D. So the connected compoenents are: {A,B,C} and {D}
+
+![alt text](image-45.png)
+
+The implementation based on this discussion can be shown as:
+
+![alt text](image-46.png)
+
+### Q19. Count the number of connected components of graph G which is represented in the adjacent matrix
+
+This problem can be solved with one extra counter in DFS.
+
+![alt text](image-47.png)
+
+Time complexity: Same as that of DFS and it depends on miplementation. With adjacency matrix the complexity is O(|E|+|V|) and with adjacency matrix the complexity is O(|V|^2)?
+
+### Q20. Can we solve the Q19, using BFS?
+
+![alt text](image-48.png)
