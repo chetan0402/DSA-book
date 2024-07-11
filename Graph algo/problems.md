@@ -354,3 +354,35 @@ If we observe the above graph there are three stages with 2 vertices. In the ear
 ### Q27. Unique topological ordering: Design an algorithm to determine whether a directed graph has a unique topological ordering
 
 A directed graph has a unique topological ordering if and only if there is a directed edge between each pair of consecutive vertices in the topological order. This can also be defined as: a directed graph has a unique topological ordering if and only if it has Hamiltonian path. If the digraph has multiple topological orderins, then a second topological order can be obtained by swapping a pair of consecutive vertices.
+
+### Q28. Let us consider the prerequisites for courses at IITB. Suppose that all prerequisites are mandatory, every course is offered every semester, and there is no limit to the number of courses we can take in one semester. We would like to know the minimum number of semesters required to complete the major. Describe the data structure we would use to represent this problem, and outline a linaer time algorithm for solving it.
+
+Use a directed acyclic graph (DAG). The vertices represent course and the edges represent the prerequisite relation between courses at IITB. It is a DAG, because the prerequisite relation has no cycles.
+
+The number of semesters required to complete the major is one more than the longest path in the dag. THis can be calculated on the DFS tree recursively in linear time. The longest path out of the vertex x is 0 if x has outdegree 0, otherwise it is 1+max {longest path out of y|(x,y) is an edge of G}
+
+### Q29. At a university let's say IITB, there is a list of courses along with their prerequisites. That means, two lists are given: <br> A-Courses list <br> B-prerequisites: B contains couples (x,y) where x,y are subset of A indicating that source x can't be taken before course y.
+
+Let us consider a student who wants to take only one course in a semester. Desgin a schedule for this student.
+
+A = {C-lang, DS, OD, CO, Algorithms, Design patterns, Programming}
+B = {(C-lang,CO),(OS,CO),(DS,algirhtms),(Design patterns,Programming)}. One possible schedule could be:
+
+Semester 1: DS
+Semester 2: algorithms
+Semester 3: C-lang
+Semester 4: OS
+Semester 5: CO
+Semester 6: Design patterns
+Semester 7: Programming
+
+The solution to this problem is exactly the same as that of topological sort. Assume that the course names are integers in the range [1..n], n is known. The relations between the courses will be represented by a directed graph G=(V,E), where V are teh set of cousres and if course i is prerequisite of course j, E will contain the edge (i,j). Let us assume that the graph will be represented as an adjacency list.
+
+First, let's observe antoher algorithm to topologically sort a DAG in O(|V|+|E|).
+- First in-degree of all the vertices - O(|V|+|E|)
+- Repeat:
+  - Find a vertex v with in-degree=0 - O(|V|)
+  - Output v and remove it from G, along with its edges- O(|V|)
+  - Reduce the in-degree of each node u such as (v,u) was an edge in G and keep a list of vertices with in-degree=0- O(degree(v))
+  - Repeat the process untill all the vertices are removed
+
