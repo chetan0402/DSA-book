@@ -251,3 +251,106 @@ Time complexity: Same as that of DFS and it depends on miplementation. With adja
 ### Q20. Can we solve the Q19, using BFS?
 
 ![alt text](image-48.png)
+
+### Q21. Let us assume that G(V,E) is an undirected graph. Give an algorithm for finding a spanning tree which takes O(|E|) time complexity.
+
+The test for a cycle can be donein constant time, by marking vertices that have been added to the set S. An edge will introduce a cycle, if both its vertices have already been marked.
+
+**Algorithm:**
+```c
+S={};
+for each edge e subset of E{
+    if(adding e to S doesnt form a cycle){
+        add e to S;
+        mark e;
+    }
+}
+```
+
+### Q22. Is there any other way of solving?
+
+Yes. We can run BFS and find the BFS tree for teh graph. Then start at the root element and keep moving to the next levels and at the same time we have to consider the nodes in the next level only once. That means, if we have a node with multiple input edges then we should consider only one of them; otherwise they will form a cycle.
+
+### Q23. Detecting a cycle in an undirected graph
+
+An undirected graph is acyclic if and only if a DFS yiels no back edges, edges (u,v) where v has already been discovered and is an ancestor of u.
+- Execute DFS on the graph
+- If there is a back edge - the graph has a cycle
+
+If the graph does not contain a cycle, then |E|<|V| and DFS cost O(|V|). If the graph contains a cycle, then a back edge is discovered after 2|V| steps at most.
+
+### Q24. Detecting a cycle in DAG
+
+![alt text](image-49.png)
+
+Cycle detection on a graph is different than on a tree. This is because in a graph, a node can have multiple parents. In a tree, the algorithm for detecting a cycle is to do a depth first search, marking nodes as they are encountered. If a previously marked node is seen again, then a cycle exists. This won't work on a graph. Let us consider the graph shown in the figure below. If we use a tree cycle detection algorithm, then it will report the wrong result. That means that this graph has a cycle in it. but the given graph does not have a cycle in it. This is because node 3 will be seen twice in a DFS starting at node 1.
+
+The cycle detection algorithm for trees can easily be modified to work for graphs. The key is that in a DFS of an acyclic graph, a node whose descendants have all been visited can be seen again without implying a cycle. But, if a node is seen for the second time before all its descendants have been visited, then there must be a cycle. Can you see why this is? Suppose there is a cycle containing node A. this means that A must be reachable from one of its descendants. So when the DFS is visiting that descendant, it will see A again, before it has finished visiting all of A's descendants. So there is a cycle, in order to detect cycles. we can modify the depth first search.
+
+```c
+int detectCycle(struct Graph*G){
+    for(int i=0;i<G->V;i++){
+        visited[s]=0;
+        predecessor[i]=0;
+    }
+    for(int i=0;i<G->V;i++){
+        if(!visited[i] && hasCycle(G,i)) return 1;
+    }
+    return false;
+}
+
+int hasCycle(struct Graph*G,int u){
+    visited[u]=1;
+    for(int i=0;i<G->V;i++){
+        if(G->adj[s][i]){
+            if(predecessor[i]!=u && visited[i]) return 1;
+            else{
+                predecessor[i]=u;
+                return hasCycle(G,i);
+            }
+        }
+    }
+    return 0;
+}
+```
+
+### Q25. Given a directed acyclic graph, give an algirthm for finding its depth.
+
+If it is an undirected graph, we can nuse the simple unweighted shortest path algirthm. We just need to return the highest number among all distances. For directed acyclic graph, we can solve by following the similar approach which we used for finding the depth in trees. In trees, we hav esolved this problem using level order traversal.
+
+```c
+int depthInDAG(struct Graph*G){
+    struct Queue*Q;
+    int counter;
+    int v,w;
+    Q=createQueue();
+    counter=0;
+    for(v=0;v<G->V;v++)
+        if(indegree[v]==0)
+            EnQueue(Q,v);
+    EnQueue(Q,'$');
+    while(!isEmptyQueue(Q)){
+        v=DeQueue(Q);
+        if(v=='$'){
+            counter++;
+            if(!isEmptyQueue(Q))
+                EnQueue(Q,'$');
+        }
+        for each w adjacent to v
+            if(--indegree[w]==0)
+                EnQueue(Q,w);
+    }
+    deleteQueue(Q);
+    return counter;
+}
+```
+
+### Q26. How many topological sorts of the following dag are there?
+
+![alt text](image-50.png)
+
+If we observe the above graph there are three stages with 2 vertices. In the early discussion of this chapter, we saw that topological sort picks the elements with zero indegree at any point of time. At each of the two vertices stages, we can first process either the top vertex or the bottom vertex. As a result, at each of these stages we have two possibilities. So the total number of possibilities is the multiplication of possibilities at each stage and that is, 2x2x2=8.
+
+### Q27. Unique topological ordering: Design an algorithm to determine whether a directed graph has a unique topological ordering
+
+A directed graph has a unique topological ordering if and only if there is a directed edge between each pair of consecutive vertices in the topological order. This can also be defined as: a directed graph has a unique topological ordering if and only if it has Hamiltonian path. If the digraph has multiple topological orderins, then a second topological order can be obtained by swapping a pair of consecutive vertices.
