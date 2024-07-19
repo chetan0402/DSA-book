@@ -386,3 +386,96 @@ First, let's observe antoher algorithm to topologically sort a DAG in O(|V|+|E|)
   - Reduce the in-degree of each node u such as (v,u) was an edge in G and keep a list of vertices with in-degree=0- O(degree(v))
   - Repeat the process untill all the vertices are removed
 
+### Q30. In Q29, a student wants to take all the courses in A, in the minimal number of semesters. That means the student is ready to take any number of courses in a semester. Design a schedule for this scenario. One possible schedule is: Semester 1: C-lang, OS, Design patterns | Semester 2: Data Structures, CO, Programming | Semester 3: Algorithms
+
+A variation of the above topological sort algorithm with a slight change: In each semester, instead of taking one subject, take all the subjects with zero indegree. That means, execute the algorithm on all the nodes with degree 0 
+
+### Q31. LCA of a DAG: Given a DAG and two vertices v and w, find the lowest common ancestor (LCA) of v and w. The LCA of v and w is an ancestor of v and w that has no descendants that are also no descendants that are also anccestors of v and w.
+
+Define the height of a vertex v in a DAG to be the length of the longest path from root to v. Among the vertices that are ancestors of both v and w, the one with the greater height is an LCA of v and w.
+
+### Q32. Shortest ancestral path: Given a DAG and two vertices v and w, find the shortest ancestral path between v and w. An ancestral path between v and w is a common ancestor x along with a shortest path from v to x and a shrotest path from w to x. The shortest ancestral path is the ancestral path whose total length is minimized.
+
+Run BFS two times. First run from v and second time from w. Find a DAG where the shortest ancestral path goes to a common ancestor x that is not an LCA.
+
+### Q33. Let us assume that we have to graphs G_1 and G_2. How do we check whether they are isomorphic or not?
+
+There are many ways of representing the same graph. As an example, consider the following simple graph. It can be seen that all the representations below have the same number of vertices and the same number of edges.
+
+![alt text](image-51.png)
+
+Graphs G_1 = {V_1,E_1} and G_2 = {V_2,E_2} are isomorphic if
+1) There is a one-to-one correspondence from V_1 to V_2 and
+2) There is a one-to-one correspondence from E_1 to E_2 that map each edge of G_1 to G_2
+
+Now, for the given graphs how do we check whether they are isomorphic or not?
+
+In general, it is not a simple task to prove that two graphs are isomorphic. For that reason we must consider some properties of isomorphic graphs. That means those properties must be satisified if the grpahs are isomorphic. If the given graph does not satisfy these properties then we say they are not isomorphic graphs.
+
+*Property*: Two graphs are isomorphic if and only if for some ordering of their vertices their adjacency matrices are equal.
+
+Based on the above property we decide whether the given graphs are isomorphic or not. I order to cehck the property, we need to do some matrix transformation operations.
+
+### Q34. How many simple undirected non-isomorphic graphs are there with n vertices?
+
+We will try to answer this question in two steps. First, we count all labeled graphs. Assume all the representations below are labeled with {1,2,3} as vertices. The set of all such graphs for n=3 are:
+
+![alt text](image-52.png)
+
+There are only two choices for each edge: it either exists or it does not. Therefore, since the maximum number of edges is nC2 (and since the maximum number of edges in an undirected graph with n verties is nC2), the total number of undirected labeled grpahs is 2^(nC2).
+
+### Q35. Hamiltonian path in DAGs: Given a DAG, design a linear time algorithm to determine whether there is a path that visits each vertex exactly once.
+
+The Hamiltonian path problem is an NP-complete problem. To solve this problem, we will try to give the approximation algorithm (which solves the problem. but it may not always produce the optimal solution)
+
+Let us consider the topological sort algorithm for solving this problem. Topological sort has an interesting property: that if all pairs of consecutive vertices in the sorted order are connected by edges, then these edges form a directed Hamiltonian path in the DAG. If a Hamiltonian path exists, the topological sort order is unique. Also, if a topological sort does not form hamiltonian path, the DAG will have two or more topological orderings.
+
+*Approximation Algorithm*: Compute a topological sort and check if there is an edge between each consecutive pair of vertices in the topological order.
+
+In an unweighted graph, find a path from s to t that visits each vertex exactly once. The basic solution based on backtracking is, we start at s and try all of its neighbors recursively, making sure we never visit the same vertex twice. The algorithm based on this implemntation can be given as:
+
+```c
+bool seenTable[32];
+void HamiltonianPath(struct Graph*G,int u){
+    if(u==t) /*Check that we have seen all vertices.*/
+    else{
+        for(int v=0;v<n;v++)
+            if(!seenTable[v] && G->Adj[u][v]){
+                seenTable[v]=true;
+                HamiltonianPath(v);
+                seenTable[v]=false;
+            }
+    }
+}
+```
+
+Note that if we have a partial path from s to u, then we don't care about the order in which we visited these vertices so as to figure out which vertex to visit next. All that we need to know is the set of vertices we have seen and which vertex we are at right now. There are 2^n possible sets of vertices and n choices for u. In other words, there are 2^n possible seenTable[] arrays and n different parameters to HamiltonianPath(). What HamiltonianPath() does during any particular recursive call is completely determined by the seenTable[] array and the paramter u.
+
+### Q36. For a given graph G with n vertices how many trees we can consturct?
+
+There is a simple formula for this problem and it is named after Arthur Cayley. For a given graph with n labeled vertices the formula for finding numbers of trees on in n^(n-2). Below, the number of trees with different n values is shown.
+
+![alt text](image-53.png)
+
+### Q37. For a given graph G with n vertices how many spanning trees can we construct?
+
+The solution to this problem is the same as that of Q36. It is just another way of asking the same question. Because the number of edges in both regular tree and spanning tree are the same.
+
+### Q38. The Hamiltonian cycle problem: Is it possible to traverse each of the vertices of a graph exactly once, starting and ending at the same vertex?
+
+Since the Hamiltonian path problem is an NP-complete problem, The Hamiltonian cycle problem is an NP-complete problem. A Hamiltonian cycle is a cycle that traverses every vertex of a graph exactly once. There are no known conditions in which are both necessary and sufficient, but there are a few sufficient conditions.
+
+- For a graph to have hamiltonian cycle the degree of each vertex must be two or more
+- The Petersen graph does not have a hamiltonian cycle and the graph is given below.
+
+![alt text](image-54.png)
+
+- In general, the more edges a graph has, the more likely it is to have a Hamiltonian cycle.
+- Let g be a simple graph with n>=3 vertices. If every vertex has a degree of at least n/2, then G has a Hamiltonian cycle.
+- The best known algorithm for finding a Hamiltonian cycle has an exponential worst-case complexity.
+
+### Q39. What is the difference between Dijkstra's and Prim's algorithm?
+
+Dijkstra's algorithm is almost identical to that of Prim's. The algorithm begins at a specific vertex and extends outward within the graph until all vertices have been reached. The only distinction is that Prim's algorithm stores a minimum cost edge where Dijkstra's algorithm stores the total cost from a source vertex to the current vertex. More simply, Dijsktra's algorithm stores a summation of minimum cost edges where Prim's algorithm stores at most one minimum cost edge.
+
+### Q40. Reversing Graph: Give an algorithm that returns the reverse of the directed graph (each edge from v to w is replaced by an edge from w to v.)
