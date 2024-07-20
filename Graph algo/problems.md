@@ -529,3 +529,43 @@ Therefore, an alternating path always increases the matchign by one.
 **Personnel Problem**: You are the boss of a company. The company has M workers and N jobs. Each worker is qualified to do some jobs, but not others. How will you assign jobs to each worker?
 
 These two cases are just anotehr way of asking about bipartite graphs, and the solution is the same as that of Q42
+
+### Q44. How many edges will be there in complete bipartite graph K_m,n?
+
+m * n. This is because each vertex in the first set can connect all vertices in the second set.
+
+### Q45. A graph is called a regular graph if it has no loops and multiple edges where each vertex has the same number of neighbors; i.e., every vertex has the same degree. now if K_m,n is a regular graph, what is the relation between m and n?
+
+Since each vertex should have the same degree, the relation should be m=n.
+
+### Q46. What is the maximum number of edges in the maximum matching of a bipartite graph with n vertices?
+
+From the definition of matching, we should not have edges with common vertices. So in a bipartite graph, each vertex can connect to only one vertex. Since we divide the total vertices into two sets, we can get the maximum number of edges if we divide them in half. Finally the answer is n/2.
+
+### Q47. Discuss Planar Graphs. Planar graph: Is it possible to draw the edges of a graph in such a way that the edges do not cross?
+
+A graph G is said to be planar if it can be draw in the plane in such a way that no two edges meet each other except at a vertex to which they are incident. Any such drawing is called plane drawing of G. As an example consider the below graph:
+
+![alt text](image-59.png)
+
+This graph we can easily convert to a planar graph as below (withotu any crossed edges).
+
+![alt text](image-60.png)
+
+How do we decide whether a given graph is planar or not?
+
+The solution to this problem is not simple, but researchers have found some interesting properties that we can use to decide whether the given graph is a plnar graph or not.
+
+**Properties of Planar graphs**
+- If a graph G is a connected planar simple graph with V vertices, where V=3 and E edges, then E=3V-6
+- K_5 is non-planar. [K_5 stands for complete graph with 5 vertices].
+- If a graph G is a connected planar simple graph with V vertices and E edges, and no triangles, then E=2V-4.
+- K_3,3 is non-planar. [K_3,3 stands for bipartite graph with 3 vertices on one side and the other 3 vertices on the other side. K_3,3 contains 6 vertices].
+- If a graph G is a connected planar simple graph, then G contains at least one vertex of 5 degrees or les.
+- A graph is planar if and only if it does not contian a subgraph that has K_5 and K_3,3 as a contraction.
+- If a graph G contains a nonplanar graph as a subgraph, then G is non-planar.
+- If a graph G is a planar graph, then every subgraph of G is planar.
+- For any connected planar graph G=(V,E), the following formula should hold: V+F-E=2, where F stands for the number of faces.
+- For any planar graph G=(V,E) with K compoennets, the following formula holds: V+F-E=1+K
+
+In order to test the planarity of a given graph, we use these properties and decide whether it is a planar graph or not. note that all the above properties are only the necessary conditions but not sufficient.
