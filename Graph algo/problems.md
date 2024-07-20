@@ -479,3 +479,53 @@ Since the Hamiltonian path problem is an NP-complete problem, The Hamiltonian cy
 Dijkstra's algorithm is almost identical to that of Prim's. The algorithm begins at a specific vertex and extends outward within the graph until all vertices have been reached. The only distinction is that Prim's algorithm stores a minimum cost edge where Dijkstra's algorithm stores the total cost from a source vertex to the current vertex. More simply, Dijsktra's algorithm stores a summation of minimum cost edges where Prim's algorithm stores at most one minimum cost edge.
 
 ### Q40. Reversing Graph: Give an algorithm that returns the reverse of the directed graph (each edge from v to w is replaced by an edge from w to v.)
+
+In graph theory, the reverse (also called transpose) of a directed graph G is another directed graph on the same set of vertices with all the edges reversed. That means, if G contains an edge (u,v) then the reverse of G contains an edge (v,u) and vice versa.
+
+![alt text](image-55.png)
+
+### Q41. Travelling Sales Person Problem: Find the shortest path in a graph that visits each vertex at least once, starting and ending at the same vertex?
+
+The traveling salesman problem is related to finding a hamiltonian cycle. Given a weighted graph G, we want to find the shortest cycle that visits all the vertices.
+
+**Approximation algorithm**: This algorithm does not solve the problem but gives a solution which is within a factor 2 of optimal (in the worst-case).
+
+1) Find a Minimal Spanning tree.
+2) Do a DFS of the MST.
+
+### Q42. Discuss Dipartite matchings?
+
+In Bipartile graphs, we divide the graphs in to two disjoint sets and each edge connects a vertex from one set to a vertex in another subset.
+
+A simple graph G = (V,E) is called a bipartite graph if its vertices can be divided into two disjoint sets V = V_1 union V_2, such that every edge has the form e = (a,b) where a subset V_1 and b subset V_2. One important condition is that no vertices both in V_1 or both in V_2 are connected.
+
+![alt text](image-56.png)
+
+**Properties of Bipartite Graphs**
+
+- A graph is called bipartite if and only if the given graph does not have an odd length cycle.
+- A complete bipartite graph K_m,n is a bipartite graph that has each vertex from one set adjacent to each vertex from another set. ![alt text](image-57.png)
+- A subset of edges M subset E is a matching if no two edges have a common vertex. As an example, matching sets of edges are represented with dotted edges. In the graphs, the dotted edges represent the alternative matchign for the given graph. ![alt text](image-58.png)
+- A matching M is perfect if it matches all vertices. We must have V_1 = V_2 in order to have perfect matching.
+- An alternating path is a path whose edges alternate between matched and unmatched edges. If we find an alternating path, then we can improve the matching. This is because an alternating path consists of matched and unmatched edges. The number of unmatched edges exceeds the number of matched edges by one.
+
+Therefore, an alternating path always increases the matchign by one.
+
+**The next question is, how do we find a perfect matching?** Based on the above theory and defination, we can find the perfect matching with the following approximation algorithm.
+
+**Matching Algorithm (Hungarian algorithm)**
+
+1) start at unmatched vertex.
+2) Find an alternating path.
+3) If it exists, change matching edges to no matching edges and conversely. if it does not exist, choose another unmatched vertex.
+4) If the number of edges equals V/2, stop. Otherwise proceed to step 1 and repeat, as long as all vertices have been examined without finding any alternating paths.
+
+**Time complexity of the matching algo**: The number of iterations is in O(v). THe complexity of findign an alternatinv path using BFS is O(E). Therefore, O(VE)
+
+### Q43. Marriage and Personnel Problem?
+
+**Marriage Problem**: There are X men and Y women who desire to get married. Participants indicate who among the opposite sex could be a potential spouse for them. Every women can be married to at most one man, and every man to at most one women. How can we marry everybody to someone they like?
+
+**Personnel Problem**: You are the boss of a company. The company has M workers and N jobs. Each worker is qualified to do some jobs, but not others. How will you assign jobs to each worker?
+
+These two cases are just anotehr way of asking about bipartite graphs, and the solution is the same as that of Q42
