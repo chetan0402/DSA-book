@@ -569,3 +569,75 @@ The solution to this problem is not simple, but researchers have found some inte
 - For any planar graph G=(V,E) with K compoennets, the following formula holds: V+F-E=1+K
 
 In order to test the planarity of a given graph, we use these properties and decide whether it is a planar graph or not. note that all the above properties are only the necessary conditions but not sufficient.
+
+### Q48. How many faces does K_2,3 have?
+
+From the above discussion, we know that V+F-E=2, and from an earlier problem we know that E=m*n=2*3=6 and V=m+n=5. Therefore, 5+F-6=2 => F=3.
+
+### Q49. Discuss Graph Coloring
+
+A k-coloring of a graph G is an assignment of one color to each vertex of G such that no more than k colors are used and no two adjacent vertices receive the same color. A graph is called k-colorable if and only if it has a k-coloring
+
+**Applications of Graph Coloring**: The graph coloring problem has many applications such as scheduling, register allocation in compilers, frequecy assignment in mobile radios, etc.
+
+**Clique**: A clique in a graph G is the maximum complete subgraph and is denoted by omega(G).
+
+**Chromatic number**: The chromatic number of a graph G is the smallest number k such that G is k-colorable, and it is denoted by X(G).
+
+The lower bound for X(G) is omega(G), and that means omega(G)<=X(G).
+
+**Properties of Chromatic number**: Let G be a graph with n vertices and G' is its complement. Then,
+- X(G)<=Delta(G)+1, where Delta(G) is the maximum degree of G.
+- X(G)omega(G') >= n
+- X(G) + omega(G')<=n+1
+- X(G) + (G') <=n+1
+
+**K-colorability problem**:Given a graph G=(V,E) and a positive integer k<=V. Check whether G is k-colorable?
+
+This problem is NP-complete.
+
+**Graph coloring algorithm**: As discussed earlier, this problem in NP-Complete. So we do not have a polynomial time algorithm to determine X(G). Let us consider the following approximation (no efficient) algorithm.
+
+- Consider a graph G with two non-adjacent vertices a and b. The connection G_1 is obtained by joining the two non-adjacent vertices a and b with an edge. The contraction G_2 is obtained by shrinking {a,b} into a single vertex c(a,b) and by joining it to each neighbor in G of vertex a and of vertex b.
+- A coloring of G in which a and b have the samem color yields a coloring of G_1. A coloring of G in which a and b have different color yields a coloring of G_2.
+- Repeat the operations of connection and contraction in each graph generated, until the resultign graphs are all cliques. if the smallest resulting clique is a K-clique, then (G)=K
+
+**Important notes on Graph coloring**
+- Any simple planar grpah G can be colored with 6 colors.
+- Every simple planar graph can be colored with less than or equal to 5 colors.
+
+### Q50. What is the four coloring problem?
+
+A graph can be constructed from any map. The regions of the map are represented by the vertices of the graph, and two vertices are joined by an edge if the regions corresponding to the vertices are adjacent. The resulting graph is planar. That means it can be drawn in the plane without any edges crossing.
+
+The Four color problem is whether the vertices of a planar graph can be colored with at most four colors so that no two adjacent vertices use the same color.
+
+### Q51. When an adjacency-matrix representation is used, most graph algorithms require time O(V^2). Show that determining whether a directed graph, represented in an adjacency-matrix that contains a sink can be done in time O(V). A sink is a vertex with in-degree |V|-1 and out-degree 0 (Only one can exist in a graph).
+
+A vertex i is a sink if and only if M[i,j] = 0 for all j and M[j,i]=1 for all j≠1. For any pair of vertices i and j: ![alt text](image-61.png)
+
+**Algorithm**:
+- Start at i=1,j=1
+- if M[i,j]=0 -> i wins, j++
+- if M[i,j]=1 -> j wins, i++
+- Proceed with this process until j=n or i=n+1
+- if i==n+1, the graph does not contain a sink
+- Otherwise, check row i-it should be all zeros; check column i-it should be all but M[i,i] ones; - if so, t is a sink.
+
+Time complexity: O(V), because at most 2|V| cells in the matrix are examined.
+
+### Q52. What is the worst-case memory usage of DFS?
+
+if occurs when the O(V), which happens if the graph is actually a list. So the algorithm is memory efficient on graphs with small diameter.
+
+### Q53. Does DFS find the shortest path from start node to some node w?
+
+No. In DFS it is not complusory to select the smallest weight edge.
+
+### Q54. True or False: Dijkstra's algorithm does not compute the "all pairs" shortest paths in a directed graph with positive edge weights because, running the algorithm a single time, starting from some single vertex x, it will compute only the min distance from x to y for all nodes y in the graph.
+
+True
+
+### Q55. True of False: Prim's and Kruskal's algorithms may compute different minimum spanning trees when run on the same grpah.
+
+True
