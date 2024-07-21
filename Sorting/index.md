@@ -276,3 +276,75 @@ The best case in shell sort is when the array is already sorted in the right ord
 
 Merge sort is an example of divide and conquer strategy.
 
+### Important Notes
+
+- Merging is the process of combining two sorted files to make one bigger sorted file.
+- Selection is the process of dividing a file into two parts: k smallest elemnets and n-k largest elements.
+- Selection and merging are opposite operations
+  - Selection splits a list into two lists
+  - Merging joins two files to make one file
+- Merge sort is Quick sort's complement
+- Merge sort accesses the data in a sequential manner
+- This algortihm is used for sorting a linked list
+- merge sort is insensitive to the intial order of its input
+- In Quick sort most of the work is done before the recursive calls. Quick sort starts with the largest subfile and finishes with the small ones and as a result it needs stack. Moreover, this algorithm is not stable. Merge sort divides the list into two parts; then each part is conquered individually. Merge sort starts with the smallest subfiles and finishes with the largest one. As a result it doesn't need stack. This algorithm is stable.
+
+### Implementation
+
+```c
+void MergeSort(int A[],int temp[],int left,int right){
+    int mid;
+    if(right>left){
+        mid = (right+left)/2;
+        MergeSort(A,temp,left,mid);
+        MergeSort(A,temp,mid+1,right);
+        Merge(A,temp,left,mid+1,right);
+    }
+}
+
+void Merge(int A[],int temp[],int left,int mid,int right){
+    int i,left_end,size,temp_pos;
+    left_end=mid-1;
+    temp_pos=left;
+    size=right-left+1;
+    while(left<=left_end && mid<=right){
+        if(A[left]<=A[mid]){
+            temp[temp_pos]=A[left];
+            temp_pos++;
+            left++;
+        }else{
+            temp[temp_pos]=A[mid];
+            temp_pos++;
+            mid++;
+        }
+    }
+    while(left<=end_left){
+        temp[temp_pos]=A[left];
+        left++;
+        temp_pos++;
+    }
+    while(mid<=right){
+        temp[temp_pos]=A[mid];
+        mid++;
+        temp_pos++;
+    }
+    for(i=0;i<=size;i++){
+        A[right]=temp[right];
+        right--;
+    }
+}
+```
+
+### Analysis
+
+In merge sort the input list is divided into two parts and these are solved recursively. After solving the sub problems, they are merged by scanning the resultant sub problems, Let us assume T(n) is the complexity of Merge Sort with n elemnets. THe recurrence for the merge sort can be defined as:
+
+![alt text](image-3.png)
+
+### Performance
+
+- Wrost case complexity: O(nlogn)
+- Best case complexity: O(nlogn)
+- Average case complexity: O(nlogn)
+- Worst case space complexity: O(n)
+
