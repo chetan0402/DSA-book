@@ -91,3 +91,188 @@ This modified version improves the best case of bubble sort to O(n).
 - Best case complexity: O(n)
 - Wrost case space complexity: O(1)
 
+## Selection Sort
+
+Selection sort is an in-place sorting algorithm. Selection sort works well for small files. It is used for sorting the files with very large values and small keys. This is because selesction is made based on keys and swaps are made only when required.
+
+### Advantages
+
+- Easy to implement
+- In-plane sort
+
+### Disadvantages
+
+- Doesn't scale well: O(n^2)
+
+### Algorithm
+
+1. Find the minimum value in the list
+2. Swap it with the value in the current position
+3. Repeat this process for all the elements until the entire array is sorted
+
+The algorithm is called selection sort since it repeatdly selects the smallest element.
+
+### Implementation
+
+```c
+void Selection(int A[],int n){
+    int i,j,min,temp;
+    for(i=0;i<n-1;i++){
+        min=i;
+        for(j=i+1;;j<n;j++){
+            if(A[j]<A[min]) min=j;
+        }
+        swap(A[min],A[i]);
+    }
+}
+```
+
+### Performance
+
+- Worst case complexity: O(n^2)
+- Best case complexity: O(n^2)
+- Average case complexity: O(n^2)
+- Worst case space complexity: O(1)
+
+## Insertion Sort
+
+Insertion sort is a simple and efficient comparison sort. In this algorithm, each iteration removes an element from the input data and inserts it into the correct position in the list being sorted. The choice of the element being removed from the input is random and this process is repeated until all input elements have gone through.
+
+### Advantages
+
+- Simple implementation
+- Efficient for small data
+- Adaptive: if the input list is presorted then insertions sort takes O(n+d), where d is the number of inversions
+- Practicall more efficient than selection and bubble sorts, even though all of them have O(n^2) worst case complexity
+- Stable: Maintains relative order of input data if the keys are same
+- In-place: It requies only a constant amount O(1) of additional memory space
+- Online: Insertion sort can sort the list as it receives it.
+
+### Algorithm
+
+Every repetition of insertion sort removes an element from the input data, and inserts it into the correct position in the already-sorted list until no input elements remain. Sorting is typically done in-place. The resulting array after k iterations has the property where the first k+1 entries are sorted.
+
+![alt text](image.png)
+
+Each element greater than x is copied to the right as it is compared against x.
+
+### Implementation
+
+```c
+void InsertionSort(int A[],int n){
+    int i,j,v;
+    for(i=1;i<=n-1;i++){
+        v=A[i];
+        j=i;
+        while(A[j-1]>v && j>=1){
+            A[j]=A[j-1];
+            j--;
+        }
+        A[j]=v;
+    }
+}
+```
+
+### Example
+
+Given an array: 6 8 1 4 5 3 7 2 and the goal is to put them in ascending order.
+
+**6** 8 1 4 5 3 7 2
+**6 8** 1 4 5 3 7 2
+**1 6 8** 4 5 3 7 2
+**1 4 6 8** 5 3 7 2
+**1 4 5 6 8** 3 7 2
+**1 3 4 5 6 8** 7 2
+**1 3 4 5 6 7 8** 2
+**1 2 3 4 5 6 7 8**
+
+### Analysis
+
+#### Worst case analysis
+
+Worst case ocfurs when for every i the inner loop has to move all the elemnts, that takes Θ(i-1) time.
+
+![alt text](image-1.png)
+
+#### Average case analysis
+
+For the average case, the inner loop will insert A[i] in the middle. This takes Θ(i/2) time.
+
+![alt text](image-2.png)
+
+### Performance
+
+If every element is greater than or equal to every element to its left, the running time of insertion sort is O(n). This situation occurs if the array starts out already sorted, and so an already-sorted array is the best case of insertion sort.
+
+- Worst case complexity: O(n^2)
+- Best case complexity: O(n)
+- Average case complexity: O(n^2)
+- Worst case space complexity: O(n^2)
+
+### Comparions to Other sorting algorithms
+
+Insertion sort is one of the elementary sorting algorithms with O(n^2) worst-case time. Insertion sort is used when the data is nearly sorted or when the input size if small. For these reasons and due to its stability, insertion sort is used as the recursive base case for higher overhead divide and conqurt sorting algorithms, such as merge sort or quick sort.
+
+**Notes:**
+
+- Bubble sort takes n^2 /2 comparisons and n^2 /2 swaps (inversions) in both average case and in worst case.
+- Selection sort takes n^2 /2 comparisons and n swaps.
+- Insertion sort takes n^2 /4 comparisons and n^2 /8 swaps in average case and in the worst case they are double.
+- Insertion sort is almost linear for pratially sorted input.
+- Selection sort is best suits for elemnets with bigger values and small keys.
+
+## Shell Sort
+
+Shell Sort was invented by Donald Shell. THis sorting algorithm is a generalization of insertion sort. Insertion sort work efficienty on input that is already almost sorted. Shell sort is also known as n-gap insertion sort. instead of comparing only the adjacent pair, shell sort makes several passes and uses various gaps between adjacent elements (ending with the gap of 1 or classiacal insrtion sort).
+
+In insertion sort, comparisons are made between the adjacent elements. At most 1 inversion is eliminated for each comarpison done with insertion sort. The variation used in shell sort is to avoid comapring adjacent elements until the last step of the algorithm. So, the last step of shell sort is effectively the insertion sort algorithm. it improves insertion sort by allowing the comparison and exchange of elemnets that are far away. This is the first algorithm which got less than quadratic complexity among comparison sort algorithms.
+
+Shell sort is actually a simple extension for insertion sort. The primary difference is its capability for exchanging elements that are far apart, making it considerably fast for elemnets to get to where they should be. For example, if the smallest element happens to be at the end of an array, with insertion sort it will require the full array of steps to put this element at the beginning of the array. However, with shell sort, this element can jump more than one step a time and reach the proper destination in fewer exchanges.
+
+The basic idea in shell sort is to exchange every hth element in the array. now this can be confusion so we'll talk more about this, h determines how far apart element exchange can happens, say for example take h as 13, the first element is exchanged with the 14th element if necessary. The second element with the 15th, and so no. Now if we take has 1, it is exactly the same as a regular insertion sort.
+
+Shell sort works by starting with big enough h so as to allow eligible element exchanges that are far apart. once a sort is complete with a particular h, the array can be said as h-sorted. The next step is to reduce h by a certain sequence, and again perform another complete h-sort. Once h is 1 and h-sorted, the array is completely sorted. notice that the last sequence for h is 1 so the alst sort is awlays an insertion sort, except by this time the array is already well-formed and easier to sort.
+
+Shell sort uses a sequence h1,h2,...,ht called the incremenet sequence. Any incremenet sequence is fine as long as h1=1, and some choices are better than others. Shell sort makes multiple passes through the input list and sorts a number of euqally sized sets using the insertion sort. Shell sort improves the efficiency of insertion sort by quickly shifting values to their destination.
+
+### Implemention
+
+```c
+void ShellSort(int A[],int array_size){
+    int i,j,h,v;
+    for(h=1;h=array_size/9;h=3*h+1);
+    for(;h>0;h=h/3){
+        for(i=h+1;i=array_size;i+=1){
+            v=A[i];
+            j=i;
+            while(j>h && A[j-h]>v){
+                A[j]=A[j-h];
+                j-=h;
+            }
+            A[j]=v;
+        }
+    }
+}
+```
+
+note that when h==1, the algorithm ameks a pass over the entire list, comparing adjacenct elemnets, but doing every few element exchanges. For h==1, shell sort works just like insertion sort, except the number of inversions that have to be eliminated is grearly reduced by the previous steps of the algortihms with h>1.
+
+### Analysis
+
+Shell sort is efficiency for medium size lists. For bigger lists, the algorithm is not the best choice. It is the fastest of all O(n^2) sorting algorithms.
+
+The disadvantages of Shell sort is that it is a complex algorithm and not nearly as efficient as the merge, heap and quick sorts. Shell sort is significantly slower than the merge,heap and quick sorts, but is a relatively simple algorithm, which makes it a good choice for sorting lists of less than 5000 items unless speed is important. It is also a good choice for repetitive sorting of smallest lists.
+
+The best case in shell sort is when the array is already sorted in the right order. The number of comparisons is less. The running time of Shell sort depends on the choice of incerment esquence.
+
+### Performce
+
+- Worst case complexity depends on gap sequence: O(nlog^(2)n)
+- Best case complexity: O(n)
+- Average case complexity depends on gap sequence
+- Worst case space complexity: O(n)
+
+## Merge sort
+
+Merge sort is an example of divide and conquer strategy.
+
