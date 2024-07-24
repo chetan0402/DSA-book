@@ -480,7 +480,16 @@ void CountingSort(int A[],int B[],int k){
 }
 ```
 
-Total Complexity: O(K) + O(n) + O(K) + O(n) = O(n) if K =O(n). Space Complexity: O(n) if K =O(n).
+Total Complexity: O(K) + O(n) + O(K) + O(n) = O(n) if K=O(n). Space Complexity: O(n) if K=O(n).
 
 Note: Counting works well if K =O(n). Otherwise, the complexity will be greater.
 
+## Bucket Sort
+
+Like counting sort, Bucket sort also imposes restrictions on the input to improve the performance. In other words, Bucket sort works well if the input is drawn from fixed set. BUcket sort is the generalization of counting sort. For example, assume that all the input elements from {0,1,...K-1}, i.e. the set of integers in the interval [0,K-1]. THat means, K is the number of distant ekements in the input. BUcket sort uses K counters. The ith counter keeps track of the number of occurrences of the ith element. Bucket sort with two buckets is effectively a version of quick sort with two buckets.
+
+For bucket sort, the hash function that is used to partition the elements need to be very good and must produce ordered hash:; if i < k then hash(i) <  hash(k). Second, the elements to be sorted must be uniformly distributed.
+
+The aforementioned aside, bucket sort is actually very good considering that counting sort is reasonably speaking its upper bound. And counting sort is very fast. The particular distinction for bucket sort is that it uses a hash function to partition the keys of the input array, so that multiple keys may hash to the same bucket. Hence each bucket must effectively be a growable list; similar to radix sort.
+
+In below code insertion sort is used to sort each bucket. This is to inculcate that the bucket sort algorithm does not specify which sorting technique to use on the buckets. A programmer may choose to continously use bucket sort on each bucket until the collection is sorted. Whichever sorting method is used on the, bucket sort still tends towards O(n).
