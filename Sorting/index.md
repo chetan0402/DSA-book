@@ -348,3 +348,139 @@ In merge sort the input list is divided into two parts and these are solved recu
 - Average case complexity: O(nlogn)
 - Worst case space complexity: O(n)
 
+## Heap Sort
+
+Heapsort is a comparison-based sorting algorithm and is part of the selection sort family. Althought somewhat slower in practice on mast machines than a good implementation of Quick sort, it has the advantage of a more favorable worst-case O(nlogn) runtime. heapsort is an in-place algorithm but is not a stable sort.
+
+### Performance
+
+- Worst case performance: O(nlogn)
+- Best case performance: O(nlogn)
+- Average case performance: O(nlogn)
+- Worst case space complexity: O(n) total, O(1) auxiliary
+
+## Quicksort
+
+Quick sort is an example of a divide and conquer algorithmir technique. It is also called partition exchange sort. It suses ercursive calls for sorting the elements, and it is one of the famous algorithms among camparison-based sorting algorithms.
+
+Divide: The array A[low ...high] is partitioned into two non-empty sub arrays A[low ...q] and A[q+1... high], such that each element of A[low... high] is less than or equal to each element of A[q+1 ... high]. The index q is computed as part of this partitioning procedure.
+
+Conquer: The two sub arrays A[low ... q] and A[q+1 ... high] are sorted by recursive calls to quick sort.
+
+### Algorithm
+
+The recursive algorithm consists of four steps:
+1) If there are one or no elements in the array to be sorted, return.
+2) Pick an element in the array to serve as the "pivot" point.
+3) Split the array into two parts - one with elements larger than the pivot and the other with elements smaller than the pivot.
+4) Recursively repeat the algorithm for both halves of the original array.
+
+### Implementation
+
+```c
+void quicksort(int A[],int low,int high){
+    int pivot;
+    if(high>low){
+        pivot=Partition(A,low,high);
+        quicksort(A,low,pivot-1);
+        quicksort(A,pivot+1,high);
+    }
+}
+int Partition(int A,int low,int high){
+    int left,right,pivot_item=A[low];
+    left=low;
+    right=high;
+    while(left<right){
+        while(A[left]<=pivot_item) left++;
+        while(A[right]>pivot_item) right--;
+        if(left<right) swap(A,left,right);
+    }
+    A[low]=A[right];
+    A[right]=pivot_item;
+    return right;
+}
+```
+
+### Analysis
+
+Let us assume that T(n) be the complexity of Quick sort and also assume that all elemnets are distinct. Recurrence for T(n) depends on two sub problem sizes which depend on partition element. If pivot is ith smallest element than exactly (i-1) items will be in left part and (n-i) in right part. Let us call it as i-split. Since each element has equal probability of selecting it as pivot the probability of selecting ith element is 1/n;
+
+**Best case**: Each partition splits array in halves and gives
+
+T(n)=2T(n/2)+O(n) = O(nlogn)
+
+**Worst case**: Each partition gives unbalanced splits and we get
+
+T(n) = T(n-1) +  O(n) = O(n^2)
+
+The worst-case occurs when the list is already sorted and last element chosen as pivot.
+
+**Average case**: In the average case of quick sort, we do not know where the split happens. For this reason, we take all possible values of split locations, add all their complexities and divide with n to get the average case complexity.
+
+![alt text](image-4.png)
+![alt text](image-5.png)
+![alt text](image-6.png)
+![alt text](image-7.png)
+![alt text](image-8.png)
+
+### Performance
+
+- Worst case complexity: O(n^2)
+- Best case complexity: O(nlogn)
+- Average case complexity: O(nlogn)
+- Worst case space complexity: O(1)
+
+### Randomized quick sort
+
+In average-case behavior of quick sort, we assume that all permutation of the input numbers are equally likely. However, we cannot always expect it to hold. WE can add randomization to an algorithm in order to reduce the proabability of getting worst case in quick sort.
+
+There are two ways of adding randomization in quick sort: either by randomly placing the input data in the array or by randomly choosing an element in the input data for pivot. THe second choice is easier to analyze and implement. The change will only be done at the partition algorithm.
+
+In normal quick sort, pivot element was always the leftmost element in the list to be sorted. Instead of always using A[low] as pivot, we will use a randomly chosen element from the subarray in the randomized version of quick sort. It is done by exchanging element A[low] with an element chosen at random from A. This ensures that the pivot element is equally likely to be any of the high-low+1 elements in the subarray.
+
+Since the pivot element is randomly chosen, we can expect the split of the input array to be reasonbly well balanced on average. This can help in preventing the worst-case behavior of quick sort which occurs in unbalanced partitioning. Even though the randomized version improves the worst case complexity, its worst case complexity is still O(n^2). One way to improve Randomized - Quick sort is to choose the pivot for partitioing more carefully than by picking random elemnet from the array. One common approach is to choose the pivot as the median of a set of 3 elements randomly selected from the array.
+
+## Tree Sort
+
+Tree sort uses a binary search tree. It involves scanning each element of the input and placing it into its proper position in a binary search tree. This has two phases:
+- First phase is creating a binary search tree using the given array elements.
+- Second phase is traversing the given binary search tree in inorder, thus resulting in a sorted array.
+
+### Performance
+
+The average number of comparisons for this method is O(nlogn). But in worst case, the number of comparisons is reduced by O(n^2), a case which arises when the sort tree is skew tree.
+
+## Comparison of sorting algorithms
+
+![alt text](image-9.png)
+
+## Linear sorting algorithms
+
+In earlier sections, we have seen many examples of comparison-based sorting algorithms. Among them, the best comparison-based sorting has the complexity O(nlogn). In this section, we will discuss other types of algorithms: Linear sorting algorithms. To improve the time complexity of sorting these algorithms, we make some assumptions about the input. A few examples of Linear sorting algorithms are:
+- Counting sort
+- Bucket sort
+- Radix sort
+
+## Counting sort
+
+Counting sort is not a comparison sort algorithm and gives O(n) complexity for sorting. To achieve O(n) complexity, counting sort assumes that each of the elements is an integer in the range 1 to K, for some integer K. When if O(n), the counting sort runs in O(n) time. The basic idea of counting sort is to determine, for each input element X, the number of elements less than X. This information can be used to place it directly into its correct position. For example, if 10 elements are less than X, then X belongs to position 11 in the output.
+
+In the code below, A[0 ... n-1] is the input array with length n. In couting sort we need two more arrays: let us assuem array B[0 .. n-1] contains the sorted output and the array C[0 ... k-1] provides temporary storage.
+
+```c
+void CountingSort(int A[],int B[],int k){
+    int C[k],i,j;
+    for(i=0;i<k;i++) C[i]=0;
+    for(j=0;j<n;j++) C[A[j]] = C[A[j]] + 1;
+    for(i=1;i<k;i++) C[i]=C[i]+C[i-1];
+    for(j=n-1;j>=0;j--){
+        B[C[A[j]]]=A[j];
+        C[A[j]]=C[A[j]]-1;
+    }
+}
+```
+
+Total Complexity: O(K) + O(n) + O(K) + O(n) = O(n) if K =O(n). Space Complexity: O(n) if K =O(n).
+
+Note: Counting works well if K =O(n). Otherwise, the complexity will be greater.
+
