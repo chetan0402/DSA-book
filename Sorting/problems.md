@@ -197,3 +197,33 @@ printf("Number:%d,count:%d",number,count);
 Time complexity: O(nlogn)
 
 ### Q19. Is there any other way of solving Q18?
+
+Using binary tree. Create a binary tree with an extra field count which indicates the number of times an element appeared in the input. Let us say we have created a binary search tree. Now, do the in-order traversal of the tree. The in-order traversal of BST produces the sorted list. While doing the in-order traversal keep track of the maximum element.
+
+Time complexity: O(2n)
+
+### Q20. Is there yet another way of solving Q18?
+
+Using hash table. For each element for the given array we use a counter, and for each occurrence of the element we increment the corresponding counter. At the end we can just return the element which has the maximum counter.
+
+Time complexity: O(n). Space complexity: O(n)
+
+### Q21. Given a 2GB file with one string per line, which sorting algorithm would we use to sort the file and why?
+
+When we have a size limit of 2GB, it means that we cannot bring all the data into main memory.
+
+How much memeory do we have avaiable? Let's assume we have X MB of memory available. Divide the file into K chunks, where X*K ~ 2GB.
+- Bring each chunk into memory and sort the lines as usual
+- Save the lines back to the file
+- Now bring the next chunk into memory and sort
+- Once we are done, merge them one by one; in the case of one set finishing, bring more data from the particular chunk.
+
+The above algorithm is also known as external sort. Step 3-4 is known as K-way merge. The idea behind going for an external sort is the size of data. Since the data is huge and we can't bring it to the memory, we need to go for a disk-based sorting algorithm.
+
+### Q22. Nearly sorted: Given an array of n elements, each which is at most K positions from its target position. device an algorithm that sorts in O(nlogK) time.
+
+Divide the elements into n/K groups of size K, and sort each peice in O(KlogK) time, let's say using mergesort. This preserves the property that no element is more than K elements out of position. Now, merge each block of K elements with the block to its left.
+
+### Q23. Is there any other way of solving Q22?
+
+Insert the first K elemnets into a binary heap. Insert the next element from the array into the heap, and delete the minimum element fromt he heap. Repeat.
