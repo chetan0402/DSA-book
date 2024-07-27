@@ -227,3 +227,64 @@ Divide the elements into n/K groups of size K, and sort each peice in O(KlogK) t
 ### Q23. Is there any other way of solving Q22?
 
 Insert the first K elemnets into a binary heap. Insert the next element from the array into the heap, and delete the minimum element fromt he heap. Repeat.
+
+### Q24. Merging K sorted lists: GIven K sorted lists with a total of n elements, give an O(nlogK) algorithm to produce a sorted list of all n elements.
+
+Simple algorithm for merging K sorted lists: Consider groups each having n/K elements. Take the first list and merge it with the second list using a linear-time algorithm for mergin two sorted lists, such as the merging algorithm used in merge sort. Then, merge the resulting lsit of 2n/K elements with the third list, and then merge the resulting list of 3n/K elements with the fourth list. Repeat this until we end up with a single sorted list of all n elements.
+
+Time complexity:  In each iteration we are merging K elements.
+
+![alt text](image-11.png)
+
+### Q25. Can we imporve the time complexity of Q24?
+
+One method is to repeatdely pair up the lists and then merge each pair. This method can also be seen as a tail componenet of the execution merge sort, where the analysis is clear. THis is called touranment method. The maximum depth of the tournament method is logK and in each iteration we are scanning all the n elements.
+
+Time complexity: O(nlogK)
+
+### Q26. Is there any other way of solving Q24?
+
+The other method is to use a rain priority queue for the minimum elements of each of the if lists. At each step, we output the extracted minimum of priority queue, determine from which of the K lists it came, and insert the next element from that list into the priority queue. Since we are using priority queue, that maximum depth of priorirty queue is logK.
+
+Time complexity: O(nlogK)
+
+### Q27. Which sorting method is better the linked lists?
+
+Merge sort is a better choice. At first appearance, merge sort may not be a good selection since the middle node required to subdivide the given list into two sub-lists of equal length. We can easily solve this problem by moving the nodes alternatively to two lists. Then, sorting these two lists recursively and merging the results into a single list will sort the given one.
+
+```c
+typedef struct ListNode{
+    int data;
+    struct ListNode*next;
+}
+
+struct ListNode*linkedListMergeSort(struct ListNode*first){
+    struct ListNode*list1HEAD=NULL;
+    struct ListNode*list1TAIL=NULL;
+    struct ListNode*list2HEAD=NULL;
+    struct ListNode*list2TAIL=NULL;
+    if(first==NULL || first->next==NULL) return first;
+    while(first!=NULL){
+        append(first,list1HEAD,list1TAIL);
+        if(first!=NULL) append(first,list2HEAD,list2TAIL);
+    }
+    list1HEAD=linkedListMergeSort(list1HEAD);
+    list2HEAD=linkedListMergeSort(list2HEAD);
+    return merge(list1HEAD,list2HEAD);
+}
+```
+
+append() appends the first argument to the tail of a singly linked list whose head and tail are defined by the second and third arguments.
+
+all external sorting algorithms can be used for sorting linked lists since each involved file can be considered as a linekd list that can only be accessed sequentially. We can sort a doubly linked list using its next fields as if it was a singly linked one and reconstruct the prev fields after sorting with an additional scan.
+
+### Q28. Can we implement linkedlist lists sorting with quick sort?
+
+The original quick sort cannot be used for sorting singly linked lists. This is because we cannot move backward in singly linked lists. But we can modify the original quick sort and make it work for singly linked lists.
+
+Let us consider the following modified quick sort implementation. The first node of the input list is considered a pivot and is moved to equal. The value of each node is comapred with the pivot and moved to less if the nodes value is smaller than the pivot. THen, less and larger are sorted recursively. Finally, joining less, equal and larger into a single list yields a sorted one.
+
+append() appens the first argument to the tail of a singly linked list whose head and tail are defined by the second and third arguemnts. On return, the first will be modified so that it points to the next node of the list. Join() appens the list whose head and tail are defined by the third and fourht arguments to the list whose head and tail are defined by the first and second arguemtns. For simplicity, the first and fourth arguments become the head and tail of the resulting list.
+
+![alt text](image-12.png)
+
