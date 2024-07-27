@@ -493,3 +493,65 @@ For bucket sort, the hash function that is used to partition the elements need t
 The aforementioned aside, bucket sort is actually very good considering that counting sort is reasonably speaking its upper bound. And counting sort is very fast. The particular distinction for bucket sort is that it uses a hash function to partition the keys of the input array, so that multiple keys may hash to the same bucket. Hence each bucket must effectively be a growable list; similar to radix sort.
 
 In below code insertion sort is used to sort each bucket. This is to inculcate that the bucket sort algorithm does not specify which sorting technique to use on the buckets. A programmer may choose to continously use bucket sort on each bucket until the collection is sorted. Whichever sorting method is used on the, bucket sort still tends towards O(n).
+
+```c
+#define BUCKETS 10
+void BucketSort(int A[],int array_size){
+    int i,j,k;
+    int buckets[BUCKETS];
+    for(j=0;j<BUCKETS;j++) buckets[j]=0;
+    for(i=0;i<array_size;i++) ++buckets[A[i]];
+    for(i=0,j=0;j<BUCKETS;j++)
+        for(k=buckets[j];k>0;--k)
+            A[i++]=j;
+}
+```
+
+Time complexity: O(n). Space complexity: O(n)
+
+## Radix Sort
+
+Similar to counting sort and bucket sort, this sorting algorithm also assumes some kind of information about the input elements. Suppose that the input values to be sorted are from base d. That means all numbers are d-digit numbers.
+
+In Radix sort, first sort the elements based on the last digit [the least significant digit.] These results are again sorted by second digit [the next to least significant digit]. Continue this process for all digits until we reach the most significant digits. Use some stable sort to sort them by last digit. The stable sort them by the second least significant digit, then by the third, etc. If we use counting sort as the stable sort, the total time is O(nd) ~ O(n).
+
+**Algorithm**:
+1) Take the least significant digit of each element.
+2) Sort the list of elements based on that digit, but keep the order of elements with the same digit
+3) Repeat the sort with each more significant digit.
+
+The speed of radix sort depends on the inner basic operations. If the operations are not efficient enough, Radix sort can be slower than other algorithms such as quick sort and merge sort. These operations include the insert and delete functions of the sub-lists and the process of isolating the digit we want. If the numbers  are not of equal length then a test is needed to check for additional digits that need sorting. This can be one of the slowest parts of radix sort and also one of the hardest to make efficient.
+
+Since radix sort depends on the digits or letters, it is less flexible than other sorts. For every different type of data, radix sort needs to be rewritten, and if the sorting order changes, the sort needs to be rewritten again. In short, radix sort takes more time to write, and it is very difficult to write a general purpose radix sort that can handle all kinds of data.
+
+For many programs that need a fast sort, radix sort is a good choice, Still, there are faster sorts, which is one reasonw hy radis sort is not used as much as some other sorts.
+
+Time complexity: O(nd) ~ O(n), if d is small,
+
+## Topological sort
+
+Refer to graph algorithms chapter.
+
+## External sorting
+
+External sorting is a generic term for a class of sorting algorithms that can handle massive amounts of data. These external sorting algorithms are useful when the files are too big and cannot fit into main memory.
+
+As with internal sorting algorithms, there are a number of algorithms for external sorting. One such is External Mergesort. In practice, these external sorting algorithms are being supplemented by internal sorts.
+
+### Simepl external mergesort
+
+A number of records from each tape are read into main memory, sorted using an internal sort, and then output to the tape. For the sake of clarity, let us assume that 900 megabytes of data needs to be sorted using only 100 megabytes of RAM.
+
+1) Read 100MB of the data into main memory and sort by some conventional method
+2) Write the sorted data to disk
+3) Repeat steps 1 and 2 untill all of the data is sorted in chunks of 100 MB. NOw we need to merge them into one simple sorted output file.
+4) Read the first 10MB of each sorted chunk in main memory and allocate the remaining 10MB for output buffer.
+5) Perform a 9-way Mergesort and store the result in the output buffer. If the output buffer is full, write it to the ifnal sorted file. If any of the 9 input buffers get empty, fill it with the next 10MB of its associated 100MB sorted chunk; or if there is no more data in the sorted chunk, mark it as exhausted and do not use it for merging.
+
+![alt text](image-10.png)
+
+The above algorithm can be generalized by assuming that the amount of data to be sorted exceeds the available memory by a factor K. Then, K chunks of data need to be sorted and a K-way merge has to be completed.
+
+if X is the amount of main memory avaliable, there will be K input buffers and 1 output buffer of size X/(k+1) each. Depending on various factor better performance can be achieved if the output buffer is made larger.
+
+Complexity of the 2-way external merge sort: In each pass we reda+write each page in file. let us assume that there are n pages in file. That means we need roof(logn)+1 number of passes. The total cost is 2n(roof(logn)+1).
