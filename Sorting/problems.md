@@ -135,4 +135,65 @@ Lelt us assume that A is the array to be sorted. Also, let us say R and S have t
 
 **Bubble sort**: Yes. Elements change order only when a smaller record follows a large. Since S is not smaller than R it cannot precede it.
 
-**Selection sort**: No. It divides the array into sorted and unsorted portions and iteratively finds the minimum values
+**Selection sort**: No. It divides the array into sorted and unsorted portions and iteratively finds the minimum values in the unsorted position. After finding a minimum x, if the algorithm moves x into the sorted portion of the array by means of a swap, then the element swapped could be R which then could be moved behind S. This would invert the positions of R and S, so in general it is not stable. If swapping is avoided, it could be made stable but the cost in time would proabbly be very significant.
+
+**Merge sort**: Yes, in the case of records with equal keys, the record in the left subarray gets preference. Those are the records that came first in the unsorted array. As a result, tehy will precede later records with the same key.
+
+**Heap sort**: No, Suppose i=1 and R and S happen to be the two records with the largest keys in the input. The R will remain in location 1 after the array is heapified, and will be placed in location n in the first iteration of heapsort. Thus S will precede R in the output.
+
+**Quick sort**: No, The partitioning step can swap the location of records many times, and thus two records with equal keys could swap position in the final output.
+
+### Q13. Consider the same sorting algorithms as that of Q12. Which of them are in-place?
+
+**Bubble sort**: Yes, because only two integers are required.
+
+**Insertion sort**: Yes, since we need to store two integers and a record.
+
+**Selection sort**: Yes. This algorithm would likely need space for two integers and one record.
+
+**Merge sort**: No. Arrays need to perform the merge. (If the data is in the form of a linked list, the sorting can be done in-place, but this is a nontrivial modification.)
+
+**Heap sort**: Yes, since the heap and partilaly-sorted array occupy opposite ends of the input array.
+
+**Quick sort**: No, since it is recursive and stores O(logn) activation records on the stack. Modifying it to be non-recursive is feasible but nontrivial.
+
+### Q14. Among Quick sort,Insertion sort, Selection sort, and Heap sort algorithms, which one needs the minimum numbers of swaps?
+
+Selection sort - it needs n swaps only
+
+### Q15. What is the minimum number of comparisons required to determine if an integer appears more than n/2 times in a sorted array of n integers?
+
+Refer to searching chapter.
+
+### Q16. Sort an array of 0's,1's and 2's: Given an array A[] consisting of 0's, 1's and 2's, give an algorithm for sorting A[]. The algorithm should put all 0's first, then all 1's and all 2's last.
+
+Use counting sort. Since there are only three elemenets and the maximum value is 2, we need a temporary array with 3 elements.
+
+Time comexplity: O(n) . Space complexity: O(1)
+
+### Q17. Is there an other way of solving Q16?
+
+Using quick sort. Since we know there there are only 3 elements, 0,1 and 2 in the array, we can select 1 as a pivot element for quick sort. Quick sort finds the correct place for 1 by moving all 0's to the left of 1 and all 2's to the right of 1. For doing this it uses only one scan.
+
+Time complexity: O(n)
+
+### Q18. How do we find the number that appeared the maximum number of times in an array?
+
+One simple approach is to sort the given array and scan the sorted array. While scanning, keep track of the element that occur the maximum number of times.
+
+```c
+quicksort(A,n);
+int i,j,count=1,number=A[0],j=0;
+for(i=0;i<n;i++){
+    if(A[j]==A){
+        count++;
+        number=A[j];
+    }
+    j=i;
+}
+printf("Number:%d,count:%d",number,count);
+```
+
+Time complexity: O(nlogn)
+
+### Q19. Is there any other way of solving Q18?
