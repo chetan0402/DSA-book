@@ -350,3 +350,146 @@ Next, using the nut that matches B[i], perform a similar partition on array of b
 
 O(nlogn)
 
+**Alternative analysis**: We can solve this problem by making a small change to quick sort. Let us assume that we pick the last element as the pivot, say it is a nut. Compare the nut with only bolts as we walk down the array. This will parition the array for the bolts. Every bolt less than the parition nut will be on the left. And every bolt greater than the parition nut will be on the right.
+
+While traversing down the list, find the matching bolt for the parition nut. Now we do the partition again using the matching bolt. As a result, all the nuts less thant he matching bolt will be on the left side and all the nuts greater than the mathcing bolt will be on the right sode. Recursively call on the left and right arrays.
+
+The time complexity is O(nlogn)
+
+### Q37. Given a binary tree, can we print its elements in sorted order in O(n) time by performing an in-order tree traversal?
+
+Yes, if the tree is a binarys earch tree.
+
+### Q38. Given an array of elemnets, convert it into an array such that A < B > C < D > E < F and so on.
+
+Sort the array, then swap every adjacennt element to get the final result.
+
+![alt text](image-13.png)
+
+### Q39. Can we do Q38 with O(n) time?
+
+Make sure all even positioned elements are greater than their adjacenct odd elemnets, and we don't need to worry about odd positioned elemnets. Traverse all even positioned elements of input array, and do the following:
+
+- If the current element is smaller than the previous odd elemnet, swap previous and current.
+- If the current element is smaller than the next odd element, swap next and current.
+
+![alt text](image-14.png)
+
+### Q40. Merge sorto uses
+
+1) Divide and conquer stragegy
+2) Backtracking approach
+3) heuristic search
+4) greedy approach
+
+1.
+
+### Q41. Which of the following algorithm design techniques is used in the quicksort
+
+1) Dynamic programming
+2) Backtracking
+3) Divide and conquer
+4) Greedy method
+
+3.
+
+### Q42. For merging two sorted lists of sizes m and n into a sorted list of size m+n, we required comparisons of
+
+1) O(m)
+2) O(n)
+3) O(m+n)
+4) O(logm+logn)
+
+3.
+
+### Q43. Quick sort is run on two inputs shown below to sort in ascending order
+i) 1,2,3...n
+ii) n,n-1,n-2,...,2,1
+
+Let c1 and c2 be the number of comparisons made for inputs i) and ii) repsectively.
+
+1) C1 < C2
+2) C1 > C2
+3) C1 = C2
+4) we cannot say anything for arbitrary n.
+
+Since the given problems needs the output in ascending order, quicksort on already sorted order gives the worst case O(n^2). So i) generates worst case and ii) needs fewer comarpisons.
+
+### Q44. Give the correct matching for the following pairs:
+
+1) O(logn)
+2) O(n)
+3) O(nlogn)
+4) O(n^2)
+A) Selection
+B) Insertion sort
+C) Binary search
+D) Merge sort
+
+1-C , 2-A , 3-D , 4-B
+
+### Q45. Let s be a sorted array of n integers. Let t(n) denote the time taken for the msot efficient algorithm to determine if there are two elements with sum less than 1000 in s. which of the following statements is true?
+
+1) t(n) is O(1)
+2) n < t(n) < nlogn
+3) nlogn < t(n) < nC2
+4) t(n)=nC2
+
+1, Since the given array is already sorted it is enough if we check the first two elements of the array.
+
+### Q46. The usual O(n^2) implementation of insertion sort to sort an array uses linear search to identify the postion where an element is to be inserted into the already sorted part of the array. If, instead, we use binary search to identify the position, the worst case running time will
+
+1) remain O(n^2)
+2) become O(n(logn)^2)
+3) become O(nlogn)
+4) become O(n)
+
+1, If we use binary search then there will be log(n!) comparisons in the worst case, whic is O(nlogn). But the algorithm as a whole will still have a running time of O(n^2) on average because of the series of swaps required for each isnertion.
+
+### Q47. In Quick sort, for sorting n elements, the n/4th smallest element is sleected as pivot using an O(n) time algorithm. What is the worst case time complexity of the quick sort?
+
+1) O(n)
+2) O(nlogn)
+3) O(n^2)
+4) O(n^2logn)
+
+The recursion expression becomes: T(n) = T(n/4) + T(3n/4) +en. Solving the recursion using variant of master theorem, we get O(nlogn)
+
+
+### Q48. Consider the quicksort algorithm. Suppose there is a procedure for finding a pivot element which splits the list into sub-lists each of which contains at least one-fifth of the elements. Let t(n) be the number of comarpisons requried to sort n elements. Then
+
+1) T(n)<=2T(n/5)+n
+2) T(n)<=T(n/5)+T(4n/5)+n
+3) T(n)<=2T(4n/5)+n
+4) T(n)<=2T(n/2)+n
+
+3, For the case where n/5 elements are in one subset, T(n/5) comarpisons are needed for the first subset with n/5 elements, T(4n/5) is for the rest 4n/5 elements, and n is for finding the pivot. if tehre are mroe than n/5 elements in one set then other set will have less than 4n/5 elements and time complexity will be less than T(n/5) + T(4n/5) + n.
+
+### Q49. Which of the following sorting algorithms has the lowest worst-case complexity
+
+1) Merge sort
+2) Bubble sort
+3) Quick sort
+4) Selection sort
+
+1.
+
+### Q50. Which one of the following in place sorting algorithms needs the minimum number of swaps?
+
+1) Quick sort
+2) Insertion sort
+3) Selection sort
+4) Heap sort
+
+3.
+
+### Q51. You have an array of n elements. Suppose you implement quicksort by always choosing the central element of the array as the pivot. Then the tighest upper bound for the worst case performance is
+
+1) O(n^2)
+2) O(nlogn)
+3) Θ(nlogn)
+4) O(n^3)
+
+A, When we choose the first element as the pivot, the worst caes of quick sort comes if the input is sorted-either ascending or descending order.
+
+### Q52.
