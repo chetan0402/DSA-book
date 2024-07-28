@@ -492,4 +492,53 @@ The recursion expression becomes: T(n) = T(n/4) + T(3n/4) +en. Solving the recur
 
 A, When we choose the first element as the pivot, the worst caes of quick sort comes if the input is sorted-either ascending or descending order.
 
-### Q52.
+### Q52. Let P be a quicksort program to sort numbers in ascending order using the first element as pivot. Let t1 and t2 be the nuber of comparisons made by P for the inputs {1,2,3,4,5} & {4,1,5,3,2} respectively. Which one of the following holds?
+1) t1=5
+2) t1 < t2
+3) t1 > t2
+4) t1=t2
+
+c, quick sort's worst case occurs when first (or last) element is chosen as pivot with sorted arrays.
+
+### Q53. The minimum number of comparisons required to find the minimum and the maximum of 100 numebrs is _
+
+147 (formula for the minimum number of comparisons required is 3n/2 -3 with n numbers).
+
+### Q54. The number of elemenets that can be sorted in T(logn) time using heap sort is
+
+1) O(1)
+2) O(sqrt(logn))
+3) O(logn/loglogn)
+4) O(logn)
+
+4, Sorting an array with k elements takes time O(klogk) as k grows. We want to choose k such that O(klogk)=O(logn). Choosing k=O(logn) doesn't necessarily work,since O(klogk)=O(logn loglogn) is not equal to O(logn). On the other hand, if you choose k=T(logn/loglogn), then the runtime of the sort will be
+
+![alt text](image-15.png)
+
+Notice that 1 - logloglogn/loglogn tends towards 1 as n goes to infinity, so the above expression actually is O(logn), as required. Therefore, if you try to sort an array of size O(logn/loglogn) using heap sort, as a function of n,the runtime is O(logn).
+
+### Q55. Which one of the following is the tightest upper bound that repesents the number of swaps required to sort n numbers using selection sort?
+
+1) O(logn)
+2) O(n)
+3) O(nlog)
+4) O(n^2)
+
+2, Selection sort requires only O(n) swaps.
+
+### Q56. Which one of the following in the recurrence equation for the worst case time complexity of the quicksort algorithm for sorting n(>=2) numbers? In the recurrence equations given the options below, c is a constant
+
+1) T(n)=2T(n/2)+cn
+2) T(n)=T(n-1)+T(0)+cn
+3) T(n)=2T(n-2)+cn
+4) T(n)=T(n/2)+cn
+
+2, when the pivot is the smallest element at partitioning on a block of size n the result yields one empty sub-block, one element in the correct place and sub block of of size n-1.
+
+### Q57. True or False. In randomized quicksort, each key is involved in the same number of comparisons.
+
+False
+
+### Q58. True or False: If quicksort is written so that the partition algorithm always uses the median value of the segment as the pivot, then the worst-case performance is O(nlogn).
+
+True
