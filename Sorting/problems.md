@@ -288,3 +288,65 @@ append() appens the first argument to the tail of a singly linked list whose hea
 
 ![alt text](image-12.png)
 
+### Q29. Given an array of 100,000 pixel color values, each of which is an integer in the range [0,255]. Which sorting algorithm is preferable for sorting them?
+
+Counting sort. There are only 256 key values, so the auxiliary aray would only be of size 256, and there would be only two passes through the data, which would be very efficient in both time and space.
+
+### Q30. Similar to Q29, if we have a telephone directory with 100 million entries, which sorting algorithm is best?
+
+Bucket sort. In bucket sort the buckets are defined by the last 7 digits. This requires an auxiliary arrary of size 10 million and has the advantage of requiring only one pass through the data on disk. Each bucket contains all telephone numbers with same last 7 digits but with different area codes. THe buckets can then be sorted by area code with slection orinsertion sort; there are only a handful of area codes.
+
+### Q31. GIve an algorithm for merging K-sorted lists.
+
+Refer to priority queues chapter.
+
+### Q32. Given a big file containing billions of numbers. Find maximum 10 numbers from this file.
+
+Refer to priority queues chapter.
+
+### Q33. There are two sorted arrays A and B. The first one is of size m+n containing only m elements. Another one is of size n and contains n elements. Merge these two arrays into the first array of size m+n such that the output is sorted.
+
+The trick for this problem is to start filling the destination array from the back with the largest elements. We will end up with a merged and sorted destination array.
+
+```c
+void merge(int A[],int m,int B[],int n){
+    int count=m;
+    int i=n-1,j=count-1,k=m-1;
+    for(;k>=0;k--){
+        if(B[i]>A[j] || j<0){
+            A[k]=B[i];
+            i--;
+            if(i<0) break;
+        }else{
+            A[k]=A[j];
+            j--;
+        }
+    }
+}
+```
+
+Time complexity: O(m+n)
+
+### Q34. Nuts and bolts problem: Given a set of n nuts of different sizes and n bolts such that there is a one-to-one correspondence between the nuts and bolts, find for each nut its corresponding bolt. Assume that we can only compare nuts to bolts: we cannot compare nuts to nuts and bolts to bolts.
+
+Alternative way of framming the question: We are given a box which contians bolts and nuts. Assume there are n nuts and n bolts and that each nut matches exactly one bolt. By trying to match a bolt and  a nut we can see which one is bigger, but we cannot compare two bolts or two nuts directly. Design an efficienct algorithm for matching the nuts and bolts.
+
+**Brute Force approach**: Start with the first bolt and comapre it with each nut until we find a match. In the worst case, re require n comaprisons. Repeat this for successive bolts on all remaining gives O(n^2) complexity.
+
+### Q35. For Q34, can we improve the complexity?
+
+In Q34, we got O(n^2) complexity in the worst case. Its analysis is the same as that of quick sort. The improvement is also along the same lines. To reduce the worst case complexity, instead of selecting the first bolt every time, we can select a random bolt and match it with nuts. This randomized selection reduces the probabulity of getting the worst case.
+
+### Q36. For Q34, can we further imrpove the complexity?
+
+We can us ea divide and conquer technique or solving this problem and the solution is very similar to randomized quick sort. For simplicity let us assume that bolts and nuts are represetned in two arrays B and N.
+
+The algorithm first performs a partition operation as follows: pick a random boltB[t]. Using this boltrearrage the array of nuts into three groups of element:
+- First the nuts smaller than B[i]
+- Then the nuts that matches B[i], and
+- Finally, the nuts larger than B[i].
+
+Next, using the nut that matches B[i], perform a similar partition on array of bolts. THis pair of partitioning operations can easily be implemented in O(n) time, and it leavaes the bolts and nuts nicely partitioned so that the "pivot" bolt and nut are aligned with each other and all other bolts and nuts are on the correct side of these pibots - smaller nuts and bolts precede the pivots, and larger nuts and bolts follow the pivots. Our algorithm then completes by recursively applying itself to the subarray to the left and right of pivot position to match these remainin bolts and nuts. We can assume by induction on n that these recursive calls will properly mathc the remaining bolts.
+
+O(nlogn)
+
