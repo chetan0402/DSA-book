@@ -215,3 +215,86 @@ Yes, by using XOR operations. Let the repeating numbers be X and Y, if we XOR al
 ![alt text](image-14.png)
 
 Time complexity: O(n)
+
+### Q23. Consider Q19. Let us assume that the numbers are in range 1 to n. Is there yet other way of solving the problem?
+
+We can solve this by creating two simple mathematical equations. let us assume that two numbers we are going to find are X and Y. We know the sum for n numbers is n(n+1)/2 and the product is n!. Make two equations using these sum and product formulae, and get values of two unknowns using the two equations. Let the summation of all numbers in array be S and product be P and the numbers which are being repeated are X and Y.
+
+![alt text](image-15.png)
+
+Using the eabove two equations, we can find out X and Y. There can be an addition and multiplication oveflow problem with this approach.
+
+Time complexity: O(n)
+
+### Q24. Similar to Q19, let us assume that the numbers are in the range to n. Also, n-1 elements are repeating thrice and reminaing element repeated twice. Find the element which repeated twice.
+
+If we XOR all the elements in the array and all integers from 1 to n, then all the element which rare repeated thrice will become zero. This is because, since the elmenet is repeating thrice and XOR anotehr time from range makes the element appear four times. As a result, the output of a XOR a XOR a XOR a = 0. It is the same case with ll elements that are repeated three times.
+
+With the same logic, for the elmenets which repeated tiwce, if we XOR the input elements and also the range, then the total number of appearances for that elemnet is 3. As a result, the output of a XOR a XOR a = a. Finally, we get the element which repeated twice.
+
+Time complexity: O(n)
+
+### Q25. Given an array of n elemenets. Find two elements in the array such that their sum is equal to given element K.
+
+**Brute Force solution**: One simple solution to this is, for each input element, check whether there is any element whose sum is K. this we can solve just by using two simple for loops. The code for this solution canbe given as:
+
+![alt text](image-16.png)
+
+Time compelxity: O(n^2)
+
+### Q26. For Q25, can we improve the time complexity?
+
+Yes. Let us assume that we have sorted the given array. This operation takes O(nlogn). On the sorted array, maintain indices loIndex=0 nd hiIndex=n-1 and compute A[loIndex]+A[hiIndex]. If the sum equals K, then we are done with the solution. If the sum is less than K, decrement hiIndex, if the sum is greater than K, incremenet loIndex
+
+Time complexity: O(nlogn)
+
+### Q27. Does the solution of Q25 work even if the array is not sorted?
+
+Yes. Since we are checking all possibilities, the algorithm ensures that we get the pair of numebrs if they exist.
+
+### Q28. Is there any other way of solving Q25?
+
+Yes, using hash table. Since our objective is to find two indexes of the array whose sum is K. Let us say those indexes are X and Y. That means A[X]+A[Y]=K. What we need is, for each element of the inptu array A[X], check whether K-A[X] also exists in the input array. Now, let us simplify that searching with hash table.
+
+**Algorithm**:
+- For each element of the input array, insert it into the hash table. Let us say the current element is A[X].
+- Before proceeding to the next element we check whether K-A[X] also exists in the hash table or not.
+- There existence of such number indicates that we are able to find the indexes.
+- Otherwise proceed to the next input element.
+
+Time complexity: O(n)
+
+### Q29. Given an array A of n elements. Find three indices, i,j & k such that A[i]^2 + A[j]^2 = A[k]^2?
+
+**Algorithm**:
+- Sort the given array in-place.
+- For each array index i compute A[i]^2 and store in array.
+- Search for 2 numbers in array from 0 to i-1 which adds to A[i] similar to Q25. This will give us the result in O(n) time. If we find such a sum, return true, otherwise continue.
+
+![alt text](image-17.png)
+
+Time complexity: O(nlogn) + n*O(n) = n^2
+
+### Q30. Two elements whose sum is closet to zero. Given an array with both positive and negative numbers, find the two elements such that their sum is closet to zero. For the below array, algorithm shoudl give -80 and 85. Example [1,60,-10,70,-80,85]
+
+**Brute force solution**: For each element, find the sum with every other element in the array and compare sums. Finally, return the minimum sum.
+
+O(n^2)
+
+### Q31. Can we improve the time complexity of Q30?
+
+Use sorting.
+
+**Algorithm**:
+1) Sort all the elements of the given input array.
+2) Maintain two indexes, one at the beginning (i=1) and the other at the ending (j=n-1). Also, maintain two variables to keep track of the smallest positive sum closet to zero and the smallest negative sum closet to zero.
+3) While i<j:
+   1) If the current pair sum is >zero and < positiveClosert then update postiveClosert. Decrement j.
+   2) If the current pair sum is < zero and >negativeClosest then update the negativeClosest. Increment i.
+   3) Else, print the pair.
+
+![alt text](image-18.png)
+
+Time complexity: O(nlogn)
+
+### Q32.
