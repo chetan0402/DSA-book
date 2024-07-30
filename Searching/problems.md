@@ -297,4 +297,29 @@ Use sorting.
 
 Time complexity: O(nlogn)
 
-### Q32.
+### Q32. Given an array of n elements. Find three elements in the array such that their sum is equal to given element K?
+
+**Brute force solution**: The default solution to this is, for each pair of input element check whether there is any element whose sum is K. This we can solve just by using three simple for loops. The code for this solution can be given as:
+
+![alt text](image-19.png)
+
+Time complexity: O(n^3)
+
+### Q33. Does the solution of Q32 work even if the array is not sorted?/
+
+Yes. Since we are checking all possibilities, the algorithm ensures that we can find three numbers whose sum is K if they exist.
+
+### Q34. Can we use sorting technique for solving Q32?
+
+Yes.
+
+![alt text](image-20.png)
+
+Time complexity: O(n^2)
+
+### Q35. Can we use hashing technique for solvint Q32?
+
+Yes. Since our objective is to find three indexes of the array whose usm is K. Let us say those indexes are X,Y,Z. That means, A[X]+A[Y]+A[Z]=K.
+
+Let us assume that we have kept all possible sums along with their pairs in hash table. That means the key to hash table is K-A[X] and values for K-A[X] are all possible pairs of input whose sum is if -A[X].
+
