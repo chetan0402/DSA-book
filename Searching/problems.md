@@ -323,3 +323,338 @@ Yes. Since our objective is to find three indexes of the array whose usm is K. L
 
 Let us assume that we have kept all possible sums along with their pairs in hash table. That means the key to hash table is K-A[X] and values for K-A[X] are all possible pairs of input whose sum is if -A[X].
 
+**Algorithm**:
+- Before starting the search, insert all possible sums with pairs of elements into the hash table.
+- For each element of input array, insert into the hash table. Let us say the currnet elemnet is A[X]
+- Check whether there exist a hash entry in the table with key: K-A[X]
+- If such element exists then scan the element pairs of K-A[X] and return all possible pairs by including A[X] also
+- If no such element exists (with K-A[X] as key) then go to next element.
+
+Time complexity: O(n^2)
+
+### Q36. GIven an array of n integers, the 3-sum problem is to find three integers whose sum is closest to zero.
+
+This is the same as that of Q32 with K value is zero.
+
+### Q37. Let A be an array of n distinct integers. Suppose A has the following property: there exists an index 1<=k<=n such that A[l],...,A[k] is an increasing sequence and A[k+1],...,A[n] is a decreasing sequence. Design and analyze an efficient algorithm for finding k. Similar question: Let us assume that the given array iss sorted but starts with negative numbers and ens with positive numbers. In this array find the starting index of positive numbers. Assume that we know the legnth of input array. Design a O(logn) algorithm.
+
+```c
+int search(int A[],int n,int first,int last){
+    int mid,first=0,last=n-1;
+    while(first<=last){
+        if(first==last) return A[first];
+        else if(first==last-1) return max(A[first],A[last]);
+        else{
+            mid=first+(last-first)/2;
+            if(A[mid-1]<A[mid] && A[mid]>A[mid+1]) return A[mid];
+            else if(A[mid-1]<A[mid] && A[mid]<A[mid+1]) first=mid+1;
+            else if(A[mid-1]>A[mid] && A[mid]>A[mid+1]) last=mid-1;
+            else return INT_MIN;
+        }
+    }
+}
+```
+
+The recursion equation is T(n)=2T(n/2)+c. We get O(logn)
+
+### Q38. If we don't know n,how do we solve the Q37?
+
+Repeatedly compute A[1],A[2],A[4],A[8],A[16] and so on,until we find a value of n such that A[n]>0
+
+Time complexity: O(logn), since we are moving at the rate of 2.
+
+### Q39. Given an input array of size unknown with all 1's in the beginning and 0s in the end. Find the index in the array from where 0s strat. Consider there are millions of 1s and 0s in the array.
+
+This problem is almost similar to Q38. Check the bits at the rate of 2^k where k = 0,1,2.. Since we are moving at the rate of 2, the complexity of O(logn)
+
+### Q40 Given a sorted array of n integers that has been rotated an unknown number of times, give a O(logn) algorithm that finds an elemnet in the array.
+
+Let us assume that the given array is A[] and use the solution of Q37 with an extension. The function below FindPivot returns the k value. Find the pivot point, divide the array into two sub-arrays and call binary search.
+
+The main indea for finding the pivot point is - for a sorted (in increasing order) and pivoted array, the pivot element is the only element for which the enxt element to it is smaller than it. Using the above criteria and the binary search methodology we can get pivot element in O(logn) time.
+
+**Algorithm**:
+1) Find out the pivot point and divide the array into two sub-arrays.
+2) Now call binary search for one of the two sub-arrays
+   1) If the element is greater than the first element then search in left subarray
+   2) else search in right subarray
+3) If element is found in sleected subarraay, then return index else return -1.
+
+```c
+int findPivot(int A[],int start,int finish){
+    if(finish-start==0) return start;
+    else if(start==finish-1){
+        if(A[start]>=A[finish]) return start;
+        else return finish;
+    }else{
+        mid=start+(finish-start)/2;
+        if(A[start]>=A[mid]) return findPivot(A,start,mid);
+        else return findPivot(A,mid,finish);
+    }
+}
+
+int search(int A[],int n,int x){
+    int pivot=findPivot(A,0,n-1);
+    if(A[pivot]==x) return pivot;
+    if(A[pivot]<=x) return binarySearch(A,0,pivot-1,x);
+    else return binarySearch(A,pivot+1,n-1,x);
+}
+
+int binarySearch(int A[],int low,int high,int x){
+    if(high>=low){
+        int mid=low+(high-low)/2;
+        if(x==A[mid]) return mid;
+        if(x>A[mid]) return binarySearch(A,mid+1,high,x);
+        else return binarySearch(A,low,mid-1,x);
+    }
+    return -1;
+}
+```
+
+Time complexity: O(logn)
+
+### Q41. For Q40, can we solve with recursion?
+
+Yes.
+
+```c
+int binarySearchRotated(int A[],int start,int finish,int data){
+    int mid=start+(finish-start)/2;
+    if(start>finish) return -1;
+    if(data==A[mid]) return mid;
+    else if(A[start]<=A[mid]){
+        if(data>=A[start] && data<A[mid])
+            return binarySearchRotated(A,start,mid-1,dat);
+        else return binarySearchRotated(A,mid+1,finish,data);
+    }else{
+        if(data>A[mid] && data<=A[finish])
+            return binarySearchRotated(A,mid+1,finish,data);
+        else return binarySearchRotated(A,start,mid-1,data);
+    }
+}
+```
+
+Time complexity: O(logn)
+
+### Q42. Bitonic search: An array is bitonic if it is comprised of an increasing sequence of itnegers follwed imeediately by a decreasing sequence of integers. Given a bitonic array A of n distinct integers, decribe how to determine whether a given integer is in the array in O(logn) steps.
+
+The solution is same as that for Q37.
+
+### Q43 Yet, otehr way of framing Q37. Let A[] be an array that starts out increasing, reaches a maximum, and then decreases. Design an O(logn) algorithm to find the index of maximum value.
+
+### Q44. Give an O(nlogn) algorithm for computing the median of a sequence of n integers.
+
+Sort and return element at n/2.
+
+### Q45. Given two sorted lists of size m and n, find median of all elements in O(log(m+n)) time.
+
+Refer to divide and conquer chapter.
+
+### Q46. Given a sorted array A of n elements, possibly with duplicatse, find the index of the first occurrence of a number in O(logn) time.
+
+To find the first occurrence of a number we need to check for the following condition.
+Return the position if any one of the following is true:
+
+`mid==low && A[mid]==data || A[mid]==data && A[mid-1]<data`
+
+```c
+int binarySearchFirstOccurrence(int A[],int low,int high,int data){
+    int mid;
+    if(high>=low){
+        mid=low+(high-low)/2;
+        if((mid==low && A[mid]==data) || (A[mid]==data && A[mid-1]<data))
+            return mid;
+        else if(A[mid]>=data)
+            return binarySearchFirstOccurrence(A,low,mid-1,data);
+        else return binarySearchFirstOccurrence(A,mid+1,high,data);
+    }
+    return -1;
+}
+```
+
+Time complexity: O(logn)
+
+### Q47. Given a sorted array A of n elements, possibly with duplicates. Find the index of the last occurrence of a number in O(logn) time.
+
+To find the last occurrence of a number we need to check for the following condition. Return the position if any one of the following is true:
+
+`mid==high && A[mid]==data || A[mid]==data && A[mid+1]>data`
+
+```c
+int binarySearchLastOccurrence(int A[],int low,int high,int data){
+    int mid;
+    if(high>=low){
+        mid=low+(high-low)/2;
+        if((mid==high && A[mid]==data) || (A[mid]==data && A[mid+1]>data))
+            return mid;
+        else if(A[mid]<=data)
+            return binarySearchLastOccurrence(A,mid+1,high,data);
+        else return binarySearchLastOccurrence(A,low,mid-1,data);
+    }
+    return -1;
+}
+```
+
+Time complexity: O(logn)
+
+### Q48. Given a sorted array of n elements, possibly with duplicates. Find the number of occurrences of number.
+
+**Brute force solution**: Do a linear search of the array and increment count as and when we find the element data in the array.
+
+```c
+int linearSearchCount(int A[],int n,int data){
+    int count=0;
+    for(int i=0;i<n;i++)
+        if(A[i]==data)
+            count++;
+    return count;
+}
+```
+
+Time complexity: O(n)
+
+### Q49. Can we improve the time complexity of Q48?
+
+Yes. We can solve this by using one binary search call followed by another small scan.
+
+**Alogirthm**:
+
+- Do a binary search for the data in the array. Let us assume its position in K.
+- Now traverse towards the left from K and count the number of occurrences of data. Let this count be leftCount.
+- Similarly, traverse towards right and count the number of occurrences of data. Let this count be rightCount.
+- Totatl number of occurrences = leftCount+1+rightCount
+
+Time complexity: O(logn +S) where S is the number of occurrences of data.
+
+### Q50. Is there any alternative way of solving Q48?
+
+**Algorithm**:
+- Find first occurrence of data and call its index as firstOccurrence
+- Find last occurence of data and calls its index as lastOccurrence
+- Return lastOccurrence-firstOccurrence+1
+
+Time complexity: O(logn)
+
+### Q51. What is the next number in the sequence 1,11,21 and why?
+
+Read the given number loudly. This is just a fun problem.
+
+### Q52. Finding second smallest number efficiently.
+
+We can construct a heap of given elements using up just less than n comparisons. Then we find the second smallest using logn comparisons for getMax() operation. Overall, we get n+logn+c
+
+### Q53. Is there any other solution for Q52?
+
+Alternatively, split the n numbers into groups of 2, perform n/2 comparisons successively to find the largest, using a tournament-like method. The first round will yield the maximum in n-1 comarpisons. The second round will be performed on the winners of the first round and hte ones that the maximum popped. This will yield logn-1 comparison for a total of n+logn-2. THe above solution is called the tournament problem.
+
+### Q54. An element is a majority if it appears more than n/2 times. Give an algorithm takes an array of n element as argument and identifies a majority (if it exists).
+
+The basic solution is to have two loops and keep track of the maximum count for all different elements. If the maximum count becomes greater than n/2, then break the loops and return the element having maximum count. If maximum count doesn't become more tha n/2, then the majority element doesn't exist.
+
+Time complexity: O(n^2)
+
+### Q55. Can we improve Q54 time complexity to O(nlogn)?
+
+Using binary search we can achieve this. Node of the Binary Search Tree (used in this approach) will be as follows.
+
+```c
+struct TreeNode{
+    int element;
+    int count;
+    struct TreeNode*left;
+    struct TreeNode*right;
+} BST;
+```
+
+Insert elements in BST one by one and if an element is already present then increment the count of the node. At any stage, if the count of a node becomes more than n/2, then return. This method works well for the cases where n/2+1 occurrences of the majority element are present at the start of the array for example {1,1,1,1,1,2,3,4}.
+
+Time complexity: If a binary search tree is used then worst time complexity will be O(n^2). If a balanced-binary-search tree is used then O(nlogn). Space complexity: O(n)
+
+### Q56. Is there any other of achieving O(nlogn) complexity for Q54?
+
+Sort the input array and scan the sorted array to find the majority element.
+
+Time complexity: O(nlogn). Space complexity: O(1)
+
+### Q57. Can we improve the complexity for Q54?
+
+If an element occurs more than n/2 times in A the it must be the median of A. But, the reverse is not true, so once the median is found, we must check to see how many times it occurs in A. We can use linear selection which takes O(n) time.
+
+```c
+int checkMajority(int A[],int n){
+    // Use linear selection to find the median m of A.
+    // Do one more pass through A and count the number of occurrences of m.
+        // If m occurs more tha n/2 times then return true;
+        // Otherwise return false.
+}
+```
+
+### Q58. Is there any other way of solving Q54?
+
+Since only one element is repeating, we can use a simple scan of the input array by keeping track of the count for the elements. If the count is 0 then we can assume that the element visited for the first time otherwise that the resultant element.
+
+```c
+int majorityNum(int A[],int n){
+    int count=0,element=-1;
+    for(int i=0;i<n;i++){
+        // If the counter is 0 then set the current candidate to majority num and set the counter to 1.
+        if(count==0){
+            element=A[i];
+            count=1;
+        }else if(element==A[i]){
+            // Incremenet counter if the counter is not 0 and element is same as current candidate.
+            count++;
+        }else{
+            // Decremenet counter if the counter is not 0 and element is different from current candidate.
+            count--;
+        }
+    }
+    return element;
+}
+```
+
+Time complexity: O(n). Space complexity: O(1)
+
+### Q59. Given an array of 2n elements of which n elements are the same and the remaining n elements are all different. Find the majority element.
+
+The repeated elements will occupy half the array. No matter what arrangement it is, only one of the below will be true:
+- All duplicate elements will be at a relative distance of 2 from each other. Ex. n,1,n,100,n,54,n...
+- At least two duplicate elements will be next ot each other. Ex: n,n,1,100,n,54,n..
+
+In worst case, we will need two passes over the array:
+- First pass: compare A[i] and A[i+1]
+- Second pass: compare A[i] and A[i+2]
+
+Somethignw ill match and that's your element. This will cost O(n) in time.
+
+### Q60. Given an array with 2n+1 integer elements, n elements appear twice in arbitrary places in the array and a single integer appears only once somewhere insie. FInd the lonely integer with O(n) operations and O(1) extra memory.
+
+Except for one element, all elements are repeated. We know that A XOR A = 0. Based on this if we XOR all the input elements then we get the remaining element.
+
+```c
+int solution(int*A){
+    int i,res;
+    for(i=res=0;i<2*n+1;i++) res=res^A[i];
+    return res;
+}
+```
+
+Time complexity: O(n)
+
+### Q61. Throwing eggs from an n-story building: Suppose we have an n story building and a number of eggs. Also assume that an egg breaks if it is thrown from floor F or higher, and will not break otherwise. Devise a strategy to determine floor F,while breaking O(logn) eggs.
+
+Refer to divide and conquer chapter.
+
+### Q62. Local minimum of an array: Given an array A of n distinct integers, design an O(logn) algorithm to find a local minimum: an index i such that A[i-1] < A[i] < A[i+1]
+
+Check the middle value A[n/2], and two neighbors A[n/2-1] and A[n/2+1]. If A[n/2] is local minimum, stop; otherwise search in half with smaller neighbor.
+
+### Q63. Give an n * n array of elements such that each row is in ascending order and each column is in ascending order, devise an O(n) algorithm to determine if a given element x is in the array. You may assume all elements in the n * n array are distinct.
+
+Let us assume that the given matrix is A[n][n]. Start with the last row, first column [or first row, last column]. If the element we are searching for is greater than the element at A[1][n], then the first column can be eliminated. If the search element is less than the element at A[1][n], then the last row can be completley eliminated. Once the first column or the last row is eliminated, startthe process again with the left-bottom end of the remaining array. In this algorithm, there would be maximum n elements that the search element would be compared with.
+
+Time complexity: O(n). This is because we will traverse at most 2n points.
+
+### Q64. Given an n * n array of n^2 numbers, give an O(n) algorithm to find a pair of indices i and j such that A[i][j] < A[i+1][j] * A[i][j], A[i][j] < A[i-1][j], and A[i][j] < A[i][j-1].
+
+This problem is the same as Q63.
