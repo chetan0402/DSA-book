@@ -658,3 +658,82 @@ Time complexity: O(n). This is because we will traverse at most 2n points.
 ### Q64. Given an n * n array of n^2 numbers, give an O(n) algorithm to find a pair of indices i and j such that A[i][j] < A[i+1][j] * A[i][j], A[i][j] < A[i-1][j], and A[i][j] < A[i][j-1].
 
 This problem is the same as Q63.
+
+### Q65. Given n * n matrix, and in each row all 1's are followed by 0's. Find the row with the maximum number of 0's.
+
+Start with first row, last column. If the element is 0 then move to the previous column in the same row and at the same time increase the counter to indicate the maximum number of 0's. If the element is 1 then move to the next row in the same column. Repeat this process until reach last row, first column.
+
+Time complexity: O(2n)
+
+### Q66. Given an input array of size unknown, with all numbers in the beginning and special symbols in the end. Find the index in the array from where the special symbols start.
+
+Refer to divide and conquer chapter.
+
+### Q67. Separate even and odd numbers: Given an array A[], write a function that segregates even and odd numbers. The functions should put all even numbers first, and then odd numbers. Example: Input = {12,34,45,9,8,90,3} Output = {12,34,90,8,9,45,3}
+
+The problem is very similar to seperate 0's and 1's (Q68) in an array, and both problems are variations of the famour dutch national flag problem.
+
+The logic is similar to quick sort
+
+1) Initialize two index varibales left and right: left=0, right=n-1
+2) Keep incrementing the left index untill you see an odd number.
+3) Keep decrementing the right index until you see an even number.
+4) If left < right then swap A[left] and A[right]
+
+Time complexity: O(n)
+
+### Q68. The following is another way of structuring Q67, but with a slight difference. Separate 0's and 1's in an array: We are given array of 0's and 1's in random order. Separate 0's on the left side and 1's on the right side of the array. Traverse the array only once. Input array = [0,1,0,1,0,0,1,1,1,0] Output = [0,0,0,0,0,1,1,1,1,1]
+
+Counting 0's or 1's
+
+1) Count the number of 0's. Let the count be C.
+2) Once we have the count, put C 0's at the beginning and 1's at the remaining n-C positions in the array.
+
+Time complexity: O(n)
+
+### Q69. Can we solve Q68 in one scan?
+
+Yes. Use two indexes to travesre: Maintain two indexes. Initialize the first index left as 0 and second index right as n-1. Do the following while left < right:
+
+1) Keep the incrementing index left while there are 0s in it
+2) Keep the decrementing index right while there are 1s in it
+3) if left < right then exchange A[left] and A[right]
+
+Time complexity: O(n)
+
+### Q70. Sort an array of 0's,1;s and 2's [or R's, G's and B's]: Given an array A[] consisting of 0's,1's and 2's, give an algorithm for sorting A[]. The algorithm should put all 0's first, then all 1's and finally all 2's at the end. Example input = {0,1,1,0,1,2,1,2,0,0,0,1}, Output = {0,0,0,0,0,1,1,1,1,1,2,2}
+
+```c
+void Sorting012sDutchFlagProblem(int A[],int n){
+    int low=0,mid=0,high=n-1;
+    while(mid<=high){
+        switch(A[mid]){
+            case 0:
+                swap(A[low],A[mid]);
+                low++;mid++;
+                break;
+            case 1:
+                mid++;
+                break;
+            case 2:
+                swap(A[mid],A[high]);
+                high--;
+                break;
+        }
+    }
+}
+```
+
+Time complexity: O(n)
+
+### Q71. Maximum difference between two elements: Given an array A[] of integers, find out the difference between any two elements such that the larger element appears after the smaller number in A[]. Examples: If array is [2,3,10,6,4,8,1] then returned value should be 8. If array is [7,9,5,6,3,2] then the returned value should be 2
+
+Refer to divide and conquer chapter.
+
+### Q72. Given an array of 101 elemnets. Out of 101 elements, 25 are repeated twice, 12 elements are repeated 4 times, and one element is repeated 3 times. Find the element which repeated 3 times in O(1)
+
+Before solving this problem, let us consider the following XOR operation property: a XOR a = 0. That means, if we apply the XOR on the same element then the result is 0.
+
+Time complexity: O(n)
+
+### Q73.
