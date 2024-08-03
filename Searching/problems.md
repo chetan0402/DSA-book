@@ -736,4 +736,92 @@ Before solving this problem, let us consider the following XOR operation propert
 
 Time complexity: O(n)
 
-### Q73.
+### Q73. Given a number n, give an algorithm for finding the number of trailing zeros in n1!.
+
+```c
+int NumberOfTrailingZeroInNumber(int n){
+    int i,count=0;
+    if(n<0) return -1;
+    for(i=5;n/i>0;i*=5) count+=n/i;
+    return count;
+}
+```
+
+Time complexity: O(logn)
+
+### Q74. Given an array of 2n integers in the following format a1 a2 a3 ... an b1 b2 b3 ... bn. Shuffle the array to a1 b1 a2 b2 a3 b3 .. an bn without any extra memory.
+
+A brute force solution involves two nested loops to rotate the elements in the second half of the array to the left. THe first loop runs n times to cover all elements in the second half of the array. The second loop rotates the elements to the left. Note that the start index in the second loop depends on which element we are rotating and the end index depends on how many positions we need to move to the left.
+
+```c
+void ShuffleArray(){
+    int n=4;
+    int A[]={1,3,5,7,2,,4,6,8};
+    for(int i=0,q=1,k=n;i<n;i++,k++,q++){
+        for(int j=k;j>i+q;j--){
+            swap(A[j-1],A[j]);
+        }
+    }
+    for(int i=0;i<2*n;i++) printf("%d ",A[i]);
+}
+```
+
+Time complexity: O(n^2)
+
+### Q75. Can we improve Q74 solution?
+
+Refer to the divide and conquer chapter. A better solution of time complexity O(nlogn) can be achieved using the divide and concur technique. Let us look at an example
+
+1) Start the array: a1 a2 a3 a4 b1 b2 b3 b4
+2) Split the array into two halves: a1 a2 a3 a4 : b1 b2 b3 b4
+3) Exchange elements around the center: exchange a3 a4 with b1 b2 and you get: a1 a2 b1 b2 a3 a4 b3 b4
+4) Split a1 a2 b1 b2 into a1 a2 : b1 b2 Then split a3 a4 b3 b4 into a3 a4 : b3 b4
+5) Exchange elements around the center for each subarray you get: a1 b2 a2 b2 and a3 b3 a4 b4
+
+Note that this solution only handles the case when n=2^i. In our example n=4 which makes it easy to recursively split the array into two halves. The basic idea behind swapping elements around the center before calling the recursive function is to produce smaller size problems. A solution with linear time complexity may be achieved if the elemnt are of a specific nature. For example, if you can calculate the new position of the element using the value of the element itself.
+
+### Q76. Given an array A[], find the maximum j-i such that A[j]>A[i]. For example, input: {34,8,10,3,2,80,30,33,1} and output: 6 (j=7,i=1)
+
+**Brute force approach**: Run two loops. In the other loop, pick elements one by one from the left. In the inner loop, compare the picked element with the elements starting from the right side. Stop the inner loop when you see an element greater than the picked element and keep updating the maximum j-i so far.
+
+Time complexity: O(n^2)
+
+### Q77. Can we improve the complexity of Q76?
+
+To solve this problem, we need to get two optimum indexes of A[]: left index i and right index j. For an element A[i], we do not need to consider A[i] for the left index if there is an element smaller than A[i] on the left side of A[i]. Similarly, if there is a greater element on the right side of A[j] then we do not need to consider this j for the right index.
+
+So we construct two auxiliary arrays LeftMins[] and rightMaxs[] such that LeftMins[i] holds the smallest element on the left side of A[i] including A[i], and RightMaxs[j] holds the greater elements on the right side of A[j] including A[j]. After constructing these two auxiliary arrays, we traverse both these arrays from left to right.
+
+While traversing LeftMins[] and RightMaxs[], if we see the LeftMins[i] is greater than RightMaxs[j], then we must move ahead in LeftMins[] because all elements on left of LeftMins[i] are greater than or equal to LeftMins[i]. Otherwise we must move ahead in RightMaxs[j] to look for a greaer y-i value.
+
+Time complexity: O(n)
+
+### Q78. Given an array of elemnets, how do you check whether the list is pariwise sorted or not? A list is considered pairwise sorted if each surccessive pair of numbers is in sorted (non-decreasing) order.
+
+```c
+int checkPairwiseSorted(int A[],int n){
+    if(n==0 || n==1) return 1;
+    for(int i=0;i<n-1;i+=2){
+        if(A[i]>A[i+1]) return 0;
+    }
+    return 1;
+}
+```
+
+Time complexity: O(n)
+
+### Q79. Given an array of n elements, how do you print the frequencies of element without using extra space. Assume all elemnets are positive, editable and less than n.
+
+Use negation technique
+
+Array should have numbers in the range [1,n]. The if condition (A[pos]>0 && A[expectedPos]>0) means that both th enumbers at indices pos and expectedPos are actual numbers in the array but not their frequencies. So we will swap them so that the number at the index pos will go to the position where it should have been if the numebrs 1,2,3...n are kept in 0,1,2,...,n-1 indices. In the above example input array, intially pos=0,so,10 at index 0 will go to index 9 after the swap. As this is the first occurrence of 10, make it to -1. Note that we are sorted the frequencies as negaitve numbers to differencetiate between actual numbers and frequencies.
+
+The else if condition means A[pos] is a number of A[expectedPos] is its frequency without including the occurence of A[pos]. So increment the frequency by 1. As we count its occurrence we need to move to next pos, so pos++, but before moving to that next position we should make the frequency of the number pos+1 which corresponds to index pos to zero, since such a number has not yet occurred.
+
+The final else part  means the current index pos already has the frequency of the number pos+1 so move to the next pos, hence pos++.
+
+Time complexity: O(n)
+
+### Q80. Which is faster and by how much, al inear search of only 1000 elemnets on a 5-GHz comptuer or a binary search of 1 million elements on a 1-GHz computer. Assume that the execuation of each instruction on the 5-GHz computer is five times faster than on the 1-GHz computer and that each iteration of the linear search algorithm is twice as fast as each iteration of the binary search algorithm.
+
+A binary search of 1 million elements would require log2(1 mil) or about 20 iterations at most. A linear search of 1000 elemnets would require 500 iterations on the average. Therefore, binary search would be 25 faster than linear search. However, since linear search iterations are twice as fast, binary search would be 12 times faster than linear searhc overall, on the same machine. SInce we run them on different machines, where an instruction on 5-ghz machine is 5 times faster than an instruciton on 1-ghz machine, binary search would be about 2 times faster than linear search!
