@@ -60,3 +60,111 @@ Given a collection of elements, a hash function that maps each item into a uniqu
 One way to awlays have a perfect hash function is to increase the size of the hash table so taht each possible value in the element range can be accommodated. This guarantees that each element will have a unique slot. Althought this is practical for small numbers of elements, it is not feasible when the number of possible elements is large. For example, if the elements were nine-digit social secuirty numbers, this method would require almost one billion slots. if we only want to store data for a class of 25 students, we will be wasting an enormous amount of memory.
 
 Our goal is to create a hash function that minimizes the number of coolisions, is easy to compute, and evenly distributes the elements in the hash table. There are a number of common ways to extend the simple remainder method. WE will consider a few of them here.
+
+The folding method for constructing hash functions begins by dividing the element into equal size peices. These peices are then added together to give the resulting hash value. For example, if our example was th ephone 436-555-4601, we would take teh digits and divide them into groups os 2. After the addition, we get 210. If we assume our hash table has 11 slots, then we need to perform the extra of dividing by 11 and keeping the remainder. In this case 1, so the phone number hashes to slot 1. Some folding methods go one step further anad reverse every other piece before teh addition.
+
+### How to choose hash function?
+
+The basic problems associated with the creation of hash tables are:
+
+- An efficient hash function should be designed so that it distributes the index values of inserted objects uniformaly across the table.
+- An efficient collision resolution algorithm should be designed so that it computes an alternative index for a key whose hash index corresponds to a location previously inserted in the hash table.
+- We must choose a hash function which can be calculated quickly, returns values within the range of locations in our table, and minimizes coolisions.
+
+### Characteristics of good hash functions
+
+A good hash function should have the following characteristics:
+
+- Minimize collision
+- Be easy and quick to compute
+- Distribute key values evenly in the hash table
+- Use all the information provided in the key
+- Have a high load factor for a given set of keys
+
+## Load factor
+
+The load factor of a non-empty hash table is the number of items stored in the table divided by the size of the table. This is the decision paramter when we want to rehash or expand the existing hash table entries. This also helps us in determining the efficiency of the hashing function. That means, it tell whether the hash function is distributing the keys uniformly or not.
+
+## Collisions
+
+Hash functions are used to map each key to a differnet address space, but practically it is not possible to create such a hash function and the problem is called collision. Collision is the condition where two records are stored in the same location.
+
+## Collisions Resolution techniques
+
+The process of finding an alternate location is called collision resolution. Even though hash table have collision problems, they are more efficient in many cases compared to all other data structures, like search trees. There are a number of collision resolution techniques, and the most popular are direct chaining and open addressing.
+
+- Direct chaining: An array of linked list application
+  - Seperate chaining
+- Open addressing: Array-based implementaiton
+  - Linear probing
+  - Quadratic probing
+  - Double hashing
+
+## Seperate chaining
+
+Collision resolution by chaining combines linked represnetation with hash table. When two or more records hash to the ame location these records are constituted into singly-linked list called a chain.
+
+![alt text](image-1.png)
+
+## Open Addressing
+
+In open addressing all keys are stored in the hash table itself. This approach is also known as closed hashing. This procedure is based on probing. A collision is resolved by probing.
+
+### Linear probing
+
+THe interval between probes is fixed at 1. In linear probing, we search the hash table sequentially, starting from the original hash location. If a loation is occupied, we check the next location. We wrap around from the last table location to the first table location if necessary. The function for rehashing is the following:
+
+`rehash(key)=(n+1)%tablesize`
+
+One of the problems with linear probing is that table items tend to cluster together in the hash table. This means that the table contains groups of consecutively occupied locations that are called clustering.
+
+Clusters can get close to one another, and merge into a larger cluster. Thus, the one part of the table might be quite dence, even though another part has relatively few items, Clustering causes long probe searches and therefore decreases the overall efficiency.
+
+The next location to be probed is determined by the step-size, where other step-sizes are possible. The step-size should be relatively prime to the table size. If we choose the table size to be a prime number, then any step-size is relatively prime to the table size. Clustering cannot be avoided by larger step-sizes.
+
+### Quadratic probing
+
+The interval between probs increases proportionally to the hash value. The problem of clustering can be eliminated if we use the quadratic probing method.
+
+In quadratic probing, we start from the original hash location i. if a location is occupied, we check the locations i + 1^1, i + 2^2 ... We warp around from the last table location to the first table location if necessary.
+
+`rehash(key)=(n+k^2)&tablesize`
+
+Hash function: key mod 11
+![alt text](image-2.png)
+
+Even though clustering is avoided by quadratic probing, still there are chances of clustering. Clustering is caused by multiple search keys mapped to the same hash key. Thus, the probing sequence for such search keys is prolonged by repeated conflicts along the probing sequence. Both linear and quadratic probing use a probing sequence that is independnet of the search key.
+
+### Double hashing
+
+The interval between probs is computed by another hash function. Double hashing reduces clustering in a better way. The increments for the probing sequence are computed by using a second hash function.
+
+We first probe the location h1(key). If the location is occupied, we probe the location h1(key)+h2(key), h1(key)+2 h2(key)+..
+
+![alt text](image-3.png)
+
+## Comparison of coolisoin resolution techniques
+
+### Comparisons: Linear probing vs double hashing
+
+The choice between linear probing and double hashing depends on the cost of computing the hash function and on the load factor of the table. Both use few probes but double hashing take more time between it hashes to compare two hash functions for long keys.
+
+### Comparisons: Open Addressing vs Separate chaining
+
+it is somewhat complicated because we have to account for the memory usage. Seperate chaining uses extra memory for links. Open addressing needs extra memory implicity within the table to terminate the probe sequence. Open addressing hash tables cannot be used if the data does not have unique keys. An alternative is to use seperated chained hash tables.
+
+### Comparison: Open addressing methods
+
+![alt text](image-4.png)
+
+## How hashing gets O(1) complexity
+
+From the previous discussion, one doubts how hashing gets O(1) if multiple elements map to the same location...
+
+The answer to this problem in simple. By using the load factor we make sure that each block on the average stores the maximum number of elements less than the load factor. Also, in practice this factor is a constant.
+
+If the average number of elements in a block is greater than the load factor, we rehash the elements with bigger hash table size. One thing we should rememebr is that we consider average occupancy when deciding the rehash.
+
+The access time of the table depends on the load factor which in turn depends on the hash function. This is because hash function distirbutes the elements to the hash table. For this reason, we say hash table gives O(1) complexity on average. Also, we generally use hash tables in cases where searches are more than insertion and deletion operations.
+
+## Hashing techniques
