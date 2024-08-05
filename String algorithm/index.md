@@ -56,3 +56,70 @@ for(int i=0;i<m-1;i++){
     value+=P[i];
 }
 ```
+
+### Step by step explanation
+
+First: remove the first digit: 123-100*1=23
+Second: multiply by 10 to shift it: 23*10=230
+Third: Add last digit: 230+4=234
+
+The algorithm runs by comparing, t(i) with p. When t(i)==p, then we have found the substring P in T, starting from position i.
+
+## String matching with finite automata
+
+In this method we use the finite automata which is the concept of the theory of computation (ToC). Before looking at the algorithm, first let us look at the definition of finite automata.
+
+### Finite automata
+
+A finite automaton F is a 5-tuple (Q,q0,A,sigma,delta) where
+
+- Q is the finite set of states
+- q0 subset Q is the start state
+- A subset Q is a set of accepting states
+- sigma is a finite input alphabet
+- delta is the transition function that gives the next state for a given curren state and input
+
+### How does finite automata work?
+
+- The finite automaton F begins in state q0.
+- Read charactesr from sigma one at a time
+- If F is in state q and reads input character a, F moves to state delta(q,d)
+- At the end, if its state is in A, then we say, F accepted the input string read so far
+- If the input string is not accepted it is called the rejected string
+
+![alt text](image.png)
+
+### Important notes for constructing with ifnite automata
+
+For building the automata, first we start with the initial state. The FA will be in state k if k characters of the pattern have been matched. If the next text character is equal to the pattern character c, we have matched k+1 characters and the FA enters state k+1. If the next text character is not equal to the pattern character, then the FA go to a state 0,1,2,...,k depending on how many initial pattern characters match the text characters ending with c.
+
+### Matching algorithm
+
+Now, let us concentrate on the matching algorithm.
+
+- For a given pattern P[0...m-1], first we need to build a finite automaton F
+  - The state set is Q={0,1,2,...,m}
+  - The start state is 0
+  - The only accepting state is m
+  - Time to build F can be large if sigma is large
+- Scan the text string T[0..n-1] to find all occurrences of the pattern P[0..m-1]
+- String matching is efficient: O(n)
+  - Each character is examined exactly once
+  - Constant time for each character
+  - But the time to compute delta is O(m|sigma|). This is because delta has O(m|sigma|) entries. If we assume |sigma| is constant then the complexity becomes O(m).
+
+**Algorithm**:
+
+```c
+finiteAutomataStringMatcher(int P[],int m,int F,func delta){
+    q=0;
+    for(int i=0;i<m;i++)
+        q=delta(q,T[i]);
+        if(q==m)
+            printf("Pattern occurs with shift:%d",i-m);
+}
+```
+
+Time complexity: O(m)
+
+## KMP Algorithm
