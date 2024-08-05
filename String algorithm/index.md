@@ -24,4 +24,35 @@ In the subsequenct setcions, we start with the brute force method and gradually 
 
 ## Brute force method
 
-In this method, for each possible position in the text T we check whether
+In this method, for each possible position in the text T we check whether the pattern P matches or not. Since the length of T is n, we have n-m+1 possible choices for comparisons. This is because we do not need to check the last m-1 locations of T as the pattern length is m. The following algorithm searches for the first occurrence of a pattern string P in a text string T.
+
+### Algorithm
+
+Time complexity: (nm)
+
+## Rabin-Karp String matching algorithm
+
+In this method, we will use the hashing technique and instead of checking for each possible position in T, we check only if the hashing of P and the hashing of m character of T give the same result.
+
+Initially, apply the hash function to the first m characters of T and check whether this result and P's hashing result is the same or not. If they are not the same, then go to the next character of T and again apply the hash function to m characters. If they are the same then we compare those m characters of T with P.
+
+### Selecting Hash function
+
+At each step, since we are finding the hash of m character of T, we need an efficient hash function. If the hash function takes O(m) complexity in every step, then the total complexity is O(nm). This is worse than the brute force method because first we are applying the hash function and also comparing.
+
+Our objective is to select a hash function which takes O(1) complexity for finding the hash of m characters of T every time. Only then can we reduce the total complexity of the algorithm. If the hash function is not good (worst case), the complexity of Rabin-Karp algorithm is O(nm). If we select a good hash function, the complexity of the rabin-karp algorithm complexity is O(m+n). Now let us see how to select a hash function which can compute the hash of m character of T at each step in O(1).
+
+For simplicity, let's assume that the characters used in string T are only integers. That means, all characters in T are digits. Since all of them are integers, we can view a string of m consecutive characters as decimal numbers. For example, string '61815' corresponds to the number 61815. With the above assumption, the pattern P is also a decimal value, and let us assume that the decimal value of P is p. For th given text T[0..n-1], let t(i) denote the decimal value of length-m substring T[i..i+m-1] for i=0,1,....,n-m-1. So, t(i)==p if and only if T[i...i+m-1]==P[0...m-1]
+
+We can compute p in O(m) time using Horner's rule as:
+
+`p = P[m-1]+10(P[m-2]+10(P[m-3]+...+10(P[1]+10P[0])))`
+
+The code for above assumption is:
+```c
+int value=0;
+for(int i=0;i<m-1;i++){
+    value*=10;
+    value+=P[i];
+}
+```
