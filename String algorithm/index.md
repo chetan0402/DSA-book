@@ -123,3 +123,68 @@ finiteAutomataStringMatcher(int P[],int m,int F,func delta){
 Time complexity: O(m)
 
 ## KMP Algorithm
+
+As before, let us assume that T is the string to be search and P is the pattern to be matched. This algorithm was presented by Knuth, Morris and Pratt. It takes O(n) time complexity for searching a pattern. To get O(n) time complexity, it avoids the comparisons with elements of T that were previously involved in comparison with some element of the pattern P.
+
+The algorithm uses a table and in general we can it prefix function or prefix table or fail function F. First we will see how to fill this table and later how to search for a pattern using this table. The prefix function F for a pattern stores the knowledge about how the pattern matches against shifts of itself. This information can be used to avoid useless shifts of the pattern P. It means that this table can be used for avoidding backtracking on the string T.
+
+### Prefix Table
+
+```c
+int F[];
+void prefix_table(int P[],int m){
+  int i=1,j=0,F[0]=0;
+  while(i<m){
+    if(P[i]==P[j]){
+      F[i]=j+1;
+      i++;
+      j++;
+    }else if(j>0) j=F[j-1];
+    else{
+      F[i]=0;
+      i++;
+    }
+  }
+}
+```
+
+As an example, assume that P = a b a b a c a. For this pattern, let us follow the step-by-step instructions for filling the prefix table F. Initially: m=length[P]=7,F[0]=0 and F[1]=0.
+
+i=1,j=0,F[1]=0
+![alt text](image-1.png)
+i=2,j=0,F[2]=1
+![alt text](image-2.png)
+i=3,j=1,F[3]=2
+![alt text](image-3.png)
+i=4,j=2,F[4]=3
+![alt text](image-4.png)
+i=5,j=3,F[5]=1
+![alt text](image-5.png)
+i=6,j=1,F[6]=1
+![alt text](image-6.png)
+
+At this step the filling of the prefix table is complete
+
+### Matching algorithm
+
+The KMP algorithm takes pattern P, string T and prefix function F as input, and finds a match of P in T.
+
+```c
+int KMP(char T[],int n,int P[],int m){
+  int i=0,j=0;
+  prefix_table(P,m);
+  while(i<n){
+    if(T[i]==P[j]){
+      if(j==m-1)
+        return i-j;
+      else{
+        i++;
+        j++;
+      }
+    }else if(j>0)
+      j=F[j-1];
+    else i++;
+  }
+  return -1;
+}
+```
