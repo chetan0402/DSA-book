@@ -188,3 +188,185 @@ int KMP(char T[],int n,int P[],int m){
   return -1;
 }
 ```
+
+Time complexity: O(m+n)
+
+Now, to understand the process let us go through an example. Assume that T = b a c b a b a b a b a c a c a & P = a b a b a c a . Since we have already fiflled the prefix table, let us use it and go to the matching algorithm. Initially: n = size of T = 15; m = size of P = 7.
+
+Step 1: i=0,j=0, comparing P[0] with T[0]. P[0] does not match with T[0]. P will be shifted one position to the right
+![alt text](image-7.png)
+Step 2: i=1,j=0, comparing P[0] with T[1], matches. Since there is a match P, is ont shifted.
+![alt text](image-8.png)
+Step 3: i=2,j=1, comparing P[1] with T[2], not matched. Backtracking on P comparing P[0] and T[2].
+![alt text](image-9.png)
+Step 4: i=3,j=0, comparing P[0] with T[3], not matched.
+![alt text](image-10.png)
+Step 5: i=4,j=0, comparing P[0] with T[4], matches.
+![alt text](image-11.png)
+Step 6: i=5,j=1, comparing P[1] with T[5], matches.
+![alt text](image-12.png)
+Step 7: i=6,j=2, comparing P[2] with T[6], matches.
+![alt text](image-13.png)
+Step 8: i=7,j=3, comparing, matches.
+![alt text](image-14.png)
+Step 9: i=8,j=4, matches.
+![alt text](image-15.png)
+Step 10: i=9,j=5, doesn't back, backtracing
+![alt text](image-16.png)
+![alt text](image-17.png)
+....
+
+Total nnumber of shifts = 6 shifts.
+
+### Boyer-Moore algorithm
+
+Like the KMP algorithm, this also does some pre-processing and we call it last function. The algorithm scans the characters of the pattern from right to left beginning with the rightmost character. During the testing of a possible placemenet of pattern P in T, a mismatch is handlded as follows: Let us assume that the current character being matched is T[i]=c and the corresponding pattern character is P[j]. If c is not contained anywhere in P, then shift the pattern P completely past T[i]. Otherwise, shift P until an occurrence of character c in P gets aligned with T[i]. This technique avoids needles comparisons by shifting the pattern relative to the text.
+
+The last function takes O(m+|sigma|) time and the actual search takes O(nm) time. Therefore the worst case running time of Boyer-Moore algorithm is O(nm+|sigma|). This indicates that the worst-case running time is quadratic, in the case of n==m, the same as the brute force algorithm.
+
+- The boyer-moore algorithm is very fast on the large alphabet
+- For the same alphabet, boyer-moore is not preferable
+- For binary strings, the KMP algorithm is recommended.
+- For the very shortest patterns, the brute force algorithm is better
+
+## Data structures for storings strings
+
+If we have a set of strings and a word which we want to search in that set, in order to perform the search operation faster, we need an efficient way of storing the strings. To store sets of strings we can use any of the following data strcutures.
+- Hashing tables
+- Binary search trees
+- Tries
+- Ternary search trees
+
+## Hash tables for strings
+
+As seen in the hashing chapter, we can use hash tables for storing the integers or strings. In this case, the keys are nothing but the strings. The problem with hash table implementation is that we lose the ordering information - after applying the hash function, we do not know where it will map to. As a result, some queries take more time. For example, to find all the words startings with the letter "K", with hash table representation we need to scan the complete hash table. THis is because the hash function takes the complete key, performs hash on it, and we do not know the location of each word.
+
+## Binary search trees for strings
+
+In this representation, every node is used for sorting the strings alpahbetically. This is possible because the strings have a natural ordering: A comes before B, which comes before C, and so on. This is beacuse words can be ordered and we can use a BST to store and retrieve them. For, let us assume that we want to store the following string using BSTs:
+
+this is a career monk string
+
+For the given string there many ways of representing them in BST. One such possibility is shown in the tree blow:
+![alt text](image-18.png)
+
+### Issues with binary search tree representation
+
+This method is good in terms of storage efficiency. But the disadvantage of this representation is that, at every node, the search operation performs the complete match of the given key with the node data, and as a result the time complexity of the search oepration increases. So, from this we can say the BST representation of strings is good in terms of storage but not in terms of time.
+
+## Tries
+
+Now, let us see the alternative representation that reduces the time complexity of the search operation. THe name trie is taken from the word re"trie".
+
+### What is a trie?
+
+A trie is a tree and each node in it contains the number of pointers equal to the number of characters of the alphabet. For example, if we assume that all the strings are formed with english alphabet characters "a" to "z" then each node of the trie contians 26 pointers. A trie data structure can be declared as:
+
+```c
+struct TrieNode{
+  char data;
+  int is_end_of_string;
+  struct TrieNode*child[26];
+}
+```
+
+Suppose we want to store the strings "a","all","als", and "as,: trie for these strings will look like:
+
+![alt text](image-19.png)
+
+### Why tries?
+
+The tries can insert and find strings in O(L) time (where L represents the length of a single word). THis is much faster then hash table and binary search tree representaitons
+
+### Trie declaration
+
+![alt text](image-20.png)
+
+### Inserting a string in trie
+
+To insert a string, we just need to start at the root node and follow the corresponding path. Once we reach the NULL pointer, we just need to create a skew of tail nodes for the remaining characters of the given strings.
+
+```c
+void insertInTrie(struct TrieNode*root,char*word){
+  if(!*word) return;
+  if(!root){
+    struct TrieNode*newNode=(struct TrieNode*)malloc(sizeof(struct TrieNode*));
+    newNode->data=*word;
+    for(int i=0;i<26;i++) newNode->child[i]=NULL;
+    if(!*(word+1)) newNode->is_end_of_string=1;
+    else newNode->child[*word]=insertInTrie(newNode->child[*word],word+1);
+    return newNode;
+  }
+  root->child[*word]=insertInTrie(root->child[*word],word+1);
+  return root;
+}
+```
+
+Time complexity: O(L), where L is the length of the string to be inserted.
+
+Note: For real dictionary implementation, we may need a few more checks such as checking whether the given string is already there in the dictionary or not.
+
+### Searching a string in Trie
+
+The same is the case with the search operation: we just need to start at the root and follow the pointers. The complexity of the search operation is euqal to the length of the given string that want to search.
+
+```c
+int searchInTrie(struct TrieNode*root,char*word){
+  if(!root) return -1;
+  if(!*word){
+    if(root->is_end_of_string) return 1;
+    else return -1;
+  }
+  if(root->data=*word) return searchInTrie(root->child[*word],word+1);
+  else return -1;
+}
+```
+
+Time complexity: O(L), where L is the legnth of the strings to be searched.
+
+### Issues with tries representation
+
+The main disadvantages of tries is that they need lot of memory for stroing the strings. As we have seen above, for each node we have too many node pointers. In many cases, the occupancy of each node is less. The final conclusion regarding tries data structure is that they are faster but require huge memory for storign the stirngs.
+
+Node: there are some improved tries represnetions called trie compression techqniues. But, even with those technique we can reduce the mrmory only at the leaces and not at the internal nodes.
+
+## Ternary search trees
+
+This representation was initially provided by Job Bently and Sedgewick. A ternay search tree takes the advantages of binary search trees and tries. That emans it combines the memory efficiency of BSTs and the time efficiency of tries.
+
+### Ternary search trees declaration
+
+```c
+struct TSTNode{
+  char data;
+  int is_end_of_string;
+  struct TSTNode*left;
+  struct TSTNode*eq;
+  struct TSTNode*right;
+}
+```
+
+THe ternary search tree (TST) uses three pointers:
+- The left pointer poitns to the TST containing all the strings which are alphabeticaly les sthan data.
+- The right pointer point to the TST containing all the strings which are alphabetically greater than data.
+- The eq pointer points to the TST containing all the strings which are alphabetically equal to data. That means, if we want to search for a string, and if the current character of the input string and the data of current node is TST are the same, then we need to proceed to the next character in the input string and search it in the subtree which is pointed by the eq.
+
+### Inserting strings in Ternary searcht ree
+
+For simplicity let us assume that we want to store the following words in TST: boats, boat, bat and bats. Initially, let us start with boats string
+
+![alt text](image-21.png)
+
+Now, if we want to insert the string boat, then the TST becoems
+
+![alt text](image-22.png)
+
+Now, let us insert the enxt string: bat
+
+![alt text](image-23.png)
+
+Now, let us insert the final word: bats
+
+![alt text](image-24.png)
+
+Based on these examples, we can write the insertion algorithm as below. We will combine the insertion operation of BST and tries.
