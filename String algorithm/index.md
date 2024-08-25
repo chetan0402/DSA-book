@@ -370,3 +370,106 @@ Now, let us insert the final word: bats
 ![alt text](image-24.png)
 
 Based on these examples, we can write the insertion algorithm as below. We will combine the insertion operation of BST and tries.
+
+```c
+struct TSTNode*insertInTST(struct TSTNode*root,char*word){
+  if(root==NULL){
+    root = (struct TSTNode*) malloc(sizeof(struct TSTNode));
+    root->data = *word;
+    root->is_end_of_string=1;
+    root->left=root->eq=root->right=NULL;
+  }
+  if(*word<root->data) root->left=insertInTST(root->left,word);
+  else if(*word=root->data){
+    if(*(word+1)) root->eq=insertInTST(root->eq,word+1);
+    else root->is_end_of_string=1;
+  }
+  else root->right=insertInTST(root->right,word);
+  return root;
+}
+```
+
+Time complexity: O(L), where L is the length of the string to be inserted.
+
+### Searching in ternary search tree
+
+If after inserting the words we want to search for them, then we have to follow the same as that of binary search. The only difference is, in case of match we should check for the remaining characters instead of return.
+
+```c
+int searchInTSTRecursive(struct TSTNode*root,char*word){
+  if(!root) return -1;
+  if(*word<root->data) return searchInTSTRecursive(root->left,word);
+  else if(*word>root->data) return searchInTSTRecursive(root->right,word);
+  else{
+    if(root->is_end_of_string && *(word+1)==0) return 1;
+    return searchInTSTRecursive(root->eq,++word);
+  }
+}
+int searchInTSTNon(struct TSTNode*root,char*word){
+  while(root){
+    if(*word<root->data) root=root->left;
+    else if(*word==root->data){
+      if(root->is_end_of_string && *(word+1)==0) return 1;
+      word++;
+      root=root->eq;
+    }
+    else root=root->right;
+  }
+  return -1;
+}
+```
+
+### Displaying all words of ternary search tree
+
+If we want to print all the strings of TST we can use the following algorithm. If we want to print them in sorted order, we need to follow the inorder traversal of TST.
+
+```c
+char word[1024];
+void displayAllWords(struct TSTNode*root){
+  if(!root) return;
+  displayAllWords(root->left);
+  word[i]=root->data;
+  if(root->is_end_of_string){
+    word[i]='\0';
+    printf("%c",word);
+  }
+  i++;
+  displayAllWords(root->eq);
+  i--;
+  displayAllWords(root->right);
+}
+```
+
+### Finding the length of the largest word in TST
+
+```c
+int maxLenOfLargestWordInTST(struct TSTNode*root){
+  if(!root) return 0;
+  return max(maxLenOfLargestWordInTST(root->left),maxLenOfLargestWordInTST(root->eq)+1,maxLenOfLargestWordInTST(root->right));
+}
+```
+
+## Comparing BSTs, Tries and TSTs
+
+- Hash table and BST implementation stores complete the string at each node. As a result they take more tiem for searching. But they are memory efficient.
+- TSTs can grow and shrink dynamically but hash tables resize only based on load factor.
+- TSTs allow partial search whereas BSTs and hash tables do not support it
+- TSTs can display the words in sorted order, but in hash tables we cannot get the sorted order.
+- Tries perform search oeprations very fast but they take huge memory for storing the string
+- TSTs combine the advantages of BSTs and tries. That means they combine the memory efficiency of BSTs and the time efficiency of tries.
+
+## Suffix trees
+
+Suffix trees are an important data structure for strings. With suffix trees we can answer the queries very fast. But this requires some preprocessing and construction of a suffix tree. Even though the construction of a suffix tree is complicated, it solves many other string-related problemsn in linear time.
+
+Note: suffix trees use a tree for one string, whereas hash tables, BSTs Tries and TSTs store a set of strings. That means, a suffix tree answers the queries related to one string.
+
+### Observaion of prefix and suffix
+
+WE can easily see that for a given text T and pattern P, the exact string matching problem can also be defined as:
+- Find a suffix of T such that P is a prefix of this suffix or
+- Find a prefix of T such that P is a suffix of this prefix
+
+Example: Let the text to be searched be T=acebkkbac and the pattern be P=kkb. For this example, P is a prefix of the suffix kkbac and also a suffix of the prefix acebkkb.
+
+### What is a suffix tree?
