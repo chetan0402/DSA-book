@@ -473,3 +473,71 @@ WE can easily see that for a given text T and pattern P, the exact string matchi
 Example: Let the text to be searched be T=acebkkbac and the pattern be P=kkb. For this example, P is a prefix of the suffix kkbac and also a suffix of the prefix acebkkb.
 
 ### What is a suffix tree?
+
+In simple terms, the suffix tree for text T is a Trie-like data structure that represnts that suffixes of T. The definition of suffix trees can be given as: A suffix tree fro a n character string T[1...n] is a rooted tree with the following properties
+
+- A suffix tree will contain n leaves which are numbered from 1 to n
+- Each internal node should have at least 2 children
+- Edge edge in a tree is labeled by a nonempty substring of T
+- No two edges of a node begin with the same character
+- The paths from the root to the leaves represent all the suffixes of T
+
+### Construction of suffix trees
+
+#### Algorithm
+1. Let S be the set of all suffixes of T. Append $ to each of the suffixes.
+2. Sort the suffixes in S based on their first character.
+3. For each group S_c (C is memeber of sigma):
+   1. If S_c group has only one element, then create a leaf node.
+   2. Otherwise, find the longest common prefix of the suffixes in S_c group, create an internal node, and recursively continue with Step 2, S begin the set of remaining suffixes from S_C after splitting off the longest common prefix
+
+For better understanding, let us go through an example. Let the given text be T=tatat. For this string, give a number to each of the suffixes.
+
+![alt text](image-25.png)
+
+Now, sort the suffixes based on their initial characters.
+![alt text](image-26.png)
+In the three groups, the first group has only one element. So, as per the algorithm, create a leaf node for it, as shown below.
+![alt text](image-27.png)
+
+Now, for S_2 and S_3, let us find the longest prefix in the group, and the result is shown below.
+![alt text](image-28.png)
+
+For S_2 and S_3, create internal nodes, and the edge contains the longest common prefix of those groups.m
+![alt text](image-29.png)
+
+Now we have to remove the longest common preifx from S_2 and S_3 group element.
+![alt text](image-30.png)
+
+Our next step is solving S_2 and S_3 recursively. First let us take S_2. In this group, if we sort them based on their first character, it is easy to see that the first group contains only one element $, and the second group also contians only one elemnet, at$. Since both groups have only one element, we can directly create leaf nodes for them.
+
+![alt text](image-31.png)
+
+At this step, both S_1 and S_2 elements are done and the only remaining group is S_3. As similar to earlier steps, in the S_3 group, if we sort them based on their first character, it is easy to see that there is only one element in the first group and it is $. For S_3 remaining elements, remove the longest common prefix.
+
+![alt text](image-32.png)
+
+In the S_3 second group, there are two elements: $ and at$. We can directly add the leaf nodes for the first group element $. Let us add S_3 subtree as shown below.
+
+![alt text](image-33.png)
+
+Now, S_3 contains two elements. If we sort them based on their first character, it is easy to see that there are only two elemnets and among them one is $ and other is at$. We can directly add the leaf node for them. Let us add S_3 subtree as shown below.
+
+![alt text](image-34.png)
+
+Since there are no more elements, this is the completion of the construction of the suffix tree for string T=tatat. The time-complexity of the consutrction of a suffix tree using the above algorithm is O(n^2) where n is the length of the input string because there are n distinct suffixes. The longest has lenght n, the second longest has length n-1, and so on.
+
+**Note**:
+- There are O(n) algorithms for consturcting suffix tres.
+- To improve the complexity, we can use indices instead of string for branches.
+
+### Applications of suffix trees
+
+All the problems below on strings can be sovled withs uffix trees very efficiently.
+- Exact string matching: Given a text T and a pattern P, how do we check whether P appears in T or not?
+- Longest repeated substring: Given a text T how do we find the substring of T that is the maximum repeated substring?
+- Longest palindrome: Given a text T how do we find the substring of T that is the longest palindrome of T?
+- longest common substring: Given two strings, how do we find the longest common substring?
+- longest common prefix: Given two strings X[i...n] and Y[j..m], how do we find the lognest common prefix?
+- How do we search for a regular expression in given text T?
+- given a text T and a pattern P, how do we find the first occurrence of P in T?
