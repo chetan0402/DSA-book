@@ -114,3 +114,28 @@ Let's convert the above intuitive method into an algorithm. Since we are doing s
 ![alt text](image-43.png)
 
 ### Q15. Given two strings str1 and str2, write a functoin that prints all interleavings of the given two strings. We may assume that all characters in both strings are different. Example. Inputs: str1 = "AB", str2="CD" and output: ABCD ACBD ACDB CABD CADB CDAB. An interleaved stirng of given two strings preserves the order of characters in individual strings. For example, in all the interleavings of above first example, "A" comes before "B" and "C bomes before D".
+
+Let the length of str1 be m and the legnth of str2 be n. Let us assume that all characters in st1 and str2 are different. Let count(m,n) be the count of all interleaved strings in such strings. The value of count(m,n) can be written as following.
+
+`Count(m,n) = Count(m-1,n)+Count(m,n-1)`
+`Count(1,0)=1 and Count(1,0)=1`
+
+To print all interleavings, we can first fix the first character of str1[0..m-1] in output strings, and recursively call for str1[1..m-1] and str2[0...n-1]. And then we can fix the first character of str2[0..n-1] and recursively call for str1[0...m-1] and str2[1...n-1].
+
+![alt text](image-44.png)
+
+### Q16. Given a matrix with size n * n containing random integers. Give an algorithm which checks whether rows match with a column or not. For example, if ith row matches with jth column, and ith row contains the elements - [2,6,5,8,9]. Then, column would also contain the elements - [2,6,5,8,9].
+
+We can build a trie for the data in the columns. Then we can compare the rows with the trie. This would allow us to exit as soon as the beginning of a row does not match any column. Also this owuld let us check a row against all columns in one pass.
+
+If we do not want to waste memory for empty pointers then we can further improve the solution by constructing a suffix tree.
+
+### Q17. Write a method to replace all spaces in a string with '%20'. Assueme string has sufficient space at end of string to hold additional characters.
+
+Find the number of spaces. Then, starting from end,replace the characters. Starting from end reduces the overwrites.
+
+![alt text](image-45.png)
+
+### Q18. Running length encoding: Write an algorithm to compress the given string by using the counter of repeated characters and if new corn-pressed string length is not smaller than the original string then return the original string
+
+![alt text](image-46.png)
