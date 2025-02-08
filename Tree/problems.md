@@ -371,22 +371,7 @@ Algorithm: BuildTree()
 - same as above but for right subtree
 - return newNode
 
-```c
-struct BinaryTreeNode*BuildBinaryTree(int inOrder[],int preOrder[],int Start,int End){
-    static int preIndex=0;
-    struct BinaryTreeNode*newNode;
-    if(Start>End) return NULL;
-    newNode=(struct BinaryTreeNode*)malloc(sizeof(struct BinaryTreeNode));
-    if(newNode==NULL) return;
-    newNode->data=preOrder[preIndex]; // Get current node from preorder
-    preIndex++;
-    if(Start==End) return newNode; // if this node has no children then return
-    int inIndex=Search(inOrder,Start,End,newNode->data); // else find the index of thsi node in Inorder
-    newNode->left=BuildBinaryTree(inOrder,preOrder,Start,End-1);
-    newNode->right=BuildBinaryTree(inOrder,preOrder,Start+1,End);
-    return newNode;
-}
-```
+[Code](Q27.cpp)
 
 #### Don't understand yet.
 
